@@ -5,36 +5,31 @@ struct ContentView: View {
     @StateObject private var motion = MotionManager.shared
     @State private var gameState: GameState = .menu
     @State private var finalScore: Int = 0
-    @State private var highScore: Int = UserDefaults.standard.integer(forKey: "highScore")
+    @State private var highScore: Int = UserDefaults.standard.integer(forKey: "boxerHighScore")
 
     enum GameState { case menu, playing, gameOver }
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-
             switch gameState {
-            case .menu:    MenuView(isConnected: motion.isConnected, onStart: startGame)
+            case .menu:    MenuView(isConnected: motion.isConnected, onStart: { gameState = .playing })
             case .playing: GameView(onGameOver: handleGameOver)
             case .gameOver:
-                GameOverView(score: finalScore, highScore: highScore, onRestart: startGame, onMenu: {
-                    gameState = .menu
-                })
+                GameOverView(score: finalScore, highScore: highScore,
+                             onRestart: { gameState = .playing },
+                             onMenu:    { gameState = .menu })
             }
         }
-        .onAppear { motion.start() }
+        .onAppear  { motion.start() }
         .onDisappear { motion.stop() }
     }
 
-    private func startGame() {
-        gameState = .playing
-    }
-
-    private func handleGameOver(score: Int) {
+    private func handleGameOver(_ score: Int) {
         finalScore = score
         if score > highScore {
             highScore = score
-            UserDefaults.standard.set(score, forKey: "highScore")
+            UserDefaults.standard.set(score, forKey: "boxerHighScore")
         }
         withAnimation { gameState = .gameOver }
     }
@@ -47,47 +42,54 @@ struct MenuView: View {
     let onStart: () -> Void
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(spacing: 28) {
             Spacer()
 
-            Text("AirDodge")
-                .font(.system(size: 52, weight: .black, design: .rounded))
+            // Title glove icon
+            Text("🥊")
+                .font(.system(size: 72))
+
+            Text("AirBoxer")
+                .font(.system(size: 54, weight: .black, design: .rounded))
                 .foregroundStyle(
-                    LinearGradient(colors: [.cyan, .blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    LinearGradient(colors: [.yellow, .orange],
+                                   startPoint: .topLeading, endPoint: .bottomTrailing)
                 )
 
-            Text("Tilt your head to dodge obstacles\nand collect orbs to boost your score")
+            Text("Slip, duck & dodge punches\nwith your head movements")
                 .font(.system(size: 16, weight: .medium))
                 .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
 
-            VStack(spacing: 8) {
-                HStack(spacing: 8) {
-                    Circle()
-                        .fill(isConnected ? Color.green : Color.orange)
-                        .frame(width: 10, height: 10)
-                    Text(isConnected ? "AirPods connected" : "AirPods not detected — demo mode")
-                        .font(.system(size: 14))
-                        .foregroundColor(isConnected ? .green : .orange)
-                }
-
-                if !isConnected {
-                    Text("Put on your AirPods Pro for head tracking")
-                        .font(.system(size: 12))
-                        .foregroundColor(.gray)
-                }
+            // AirPods status
+            HStack(spacing: 8) {
+                Circle()
+                    .fill(isConnected ? Color.green : Color.orange)
+                    .frame(width: 10, height: 10)
+                Text(isConnected ? "AirPods connected — head tracking ON"
+                                 : "AirPods not detected — demo mode")
+                    .font(.system(size: 14))
+                    .foregroundColor(isConnected ? .green : .orange)
             }
+            .padding(.vertical, 4)
 
-            ControlHintView()
+            // Dodge guide
+            DodgeGuideView()
 
             Button(action: onStart) {
-                Text("Play")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
-                    .foregroundColor(.black)
-                    .frame(width: 160, height: 56)
-                    .background(Color.cyan)
-                    .clipShape(Capsule())
-                    .shadow(color: .cyan.opacity(0.6), radius: 12)
+                HStack(spacing: 10) {
+                    Text("🥊")
+                    Text("Fight!")
+                }
+                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .foregroundColor(.black)
+                .frame(width: 180, height: 58)
+                .background(
+                    LinearGradient(colors: [.yellow, .orange],
+                                   startPoint: .leading, endPoint: .trailing)
+                )
+                .clipShape(Capsule())
+                .shadow(color: .orange.opacity(0.5), radius: 14)
             }
 
             Spacer()
@@ -96,34 +98,37 @@ struct MenuView: View {
     }
 }
 
-struct ControlHintView: View {
+struct DodgeGuideView: View {
     var body: some View {
         VStack(spacing: 10) {
-            Text("Controls").font(.caption).foregroundColor(.gray).textCase(.uppercase)
-            HStack(spacing: 24) {
-                HintItem(symbol: "arrow.up.arrow.down", label: "Pitch head\nup / down")
-                HintItem(symbol: "arrow.left.arrow.right", label: "Tilt head\nleft / right")
+            Text("HOW TO DODGE").font(.caption).foregroundColor(.gray).textCase(.uppercase)
+            HStack(spacing: 16) {
+                DodgeItem(icon: "arrow.left", label: "Tilt left", color: .cyan)
+                DodgeItem(icon: "arrow.right", label: "Tilt right", color: .cyan)
+                DodgeItem(icon: "arrow.down", label: "Nod down", color: .purple)
             }
         }
-        .padding()
-        .background(Color.white.opacity(0.05))
+        .padding(16)
+        .background(Color.white.opacity(0.06))
         .cornerRadius(16)
     }
 }
 
-struct HintItem: View {
-    let symbol: String
+struct DodgeItem: View {
+    let icon: String
     let label: String
+    let color: Color
     var body: some View {
         VStack(spacing: 6) {
-            Image(systemName: symbol)
-                .font(.system(size: 20))
-                .foregroundColor(.cyan)
+            Image(systemName: icon)
+                .font(.system(size: 22, weight: .bold))
+                .foregroundColor(color)
             Text(label)
                 .font(.caption)
                 .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
         }
+        .frame(width: 70)
     }
 }
 
@@ -157,18 +162,21 @@ struct GameOverView: View {
     var isNewRecord: Bool { score == highScore && score > 0 }
 
     var body: some View {
-        VStack(spacing: 28) {
+        VStack(spacing: 30) {
             Spacer()
 
-            Text(isNewRecord ? "New Record!" : "Game Over")
-                .font(.system(size: 40, weight: .black, design: .rounded))
+            Text("🥊 KO 🥊")
+                .font(.system(size: 44))
+
+            Text(isNewRecord ? "New Record!" : "Down for the Count")
+                .font(.system(size: 32, weight: .black, design: .rounded))
                 .foregroundColor(isNewRecord ? .yellow : .white)
 
-            VStack(spacing: 8) {
+            VStack(spacing: 6) {
                 Text("\(score)")
-                    .font(.system(size: 72, weight: .black, design: .rounded))
+                    .font(.system(size: 76, weight: .black, design: .rounded))
                     .foregroundStyle(
-                        LinearGradient(colors: [.cyan, .blue], startPoint: .top, endPoint: .bottom)
+                        LinearGradient(colors: [.yellow, .orange], startPoint: .top, endPoint: .bottom)
                     )
                 Text("points").font(.headline).foregroundColor(.gray)
             }
@@ -181,13 +189,14 @@ struct GameOverView: View {
 
             VStack(spacing: 14) {
                 Button(action: onRestart) {
-                    Text("Play Again")
+                    Text("Fight Again")
                         .font(.system(size: 20, weight: .bold, design: .rounded))
                         .foregroundColor(.black)
                         .frame(width: 200, height: 54)
-                        .background(Color.cyan)
+                        .background(LinearGradient(colors: [.yellow, .orange],
+                                                   startPoint: .leading, endPoint: .trailing))
                         .clipShape(Capsule())
-                        .shadow(color: .cyan.opacity(0.5), radius: 10)
+                        .shadow(color: .orange.opacity(0.5), radius: 10)
                 }
 
                 Button(action: onMenu) {
