@@ -4,9 +4,13 @@ import UIKit
 
 struct ContentView: View {
     @StateObject private var motion = MotionManager.shared
+    @StateObject private var gameCenter = GameCenter.shared
     @State private var gameState: GameState = .menu
     @State private var finalScore: Int = 0
     @State private var highScore: Int = UserDefaults.standard.integer(forKey: "boxerHighScore")
+    @State private var settingsPresented = false
+    @State private var isPaused = false
+    @Environment(\.scenePhase) private var scenePhase
 
     enum GameState { case menu, playing, gameOver }
 
@@ -18,11 +22,12 @@ struct ContentView: View {
             case .menu:
                 MenuView(isConnected: motion.isConnected,
                          highScore: highScore,
-                         onStart: { withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) { gameState = .playing } })
+                         onStart: { withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) { gameState = .playing } },
+                         onSettings: { settingsPresented = true })
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
 
             case .playing:
-                GameView(onGameOver: handleGameOver)
+                GameView(isPaused: isPaused, onGameOver: handleGameOver)
                     .transition(.opacity)
 
             case .gameOver:
@@ -31,9 +36,39 @@ struct ContentView: View {
                              onMenu:    { withAnimation(.spring) { gameState = .menu } })
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
             }
+
+            // Pause overlay — visible only when in fight AND user backgrounded the app.
+            if gameState == .playing && isPaused {
+                PauseOverlay(onResume: {
+                    Haptics.impact(.light)
+                    withAnimation(.easeOut(duration: 0.2)) { isPaused = false }
+                })
+                .transition(.opacity)
+            }
         }
-        .onAppear  { motion.start() }
+        .onAppear {
+            motion.start()
+            gameCenter.authenticate()
+        }
         .onDisappear { motion.stop() }
+        .onChange(of: scenePhase) { phase in
+            // Pause whenever the app is no longer the active foreground app.
+            // Don't auto-resume on .active — show "Tap to resume" so the player
+            // is ready (AirPods reseated, eyes back on screen).
+            if gameState == .playing {
+                switch phase {
+                case .background, .inactive:
+                    isPaused = true
+                case .active:
+                    break  // wait for user tap
+                @unknown default:
+                    isPaused = true
+                }
+            }
+        }
+        .sheet(isPresented: $settingsPresented) {
+            SettingsView()
+        }
     }
 
     private func handleGameOver(_ score: Int) {
@@ -42,8 +77,52 @@ struct ContentView: View {
             highScore = score
             UserDefaults.standard.set(score, forKey: "boxerHighScore")
         }
+        gameCenter.submitKnockout()
         Haptics.notify(.warning)
         withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) { gameState = .gameOver }
+    }
+}
+
+// MARK: - Pause Overlay
+
+private struct PauseOverlay: View {
+    let onResume: () -> Void
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.7).ignoresSafeArea()
+            VStack(spacing: 24) {
+                Image(systemName: "pause.circle.fill")
+                    .font(.system(size: 80, weight: .bold))
+                    .foregroundStyle(
+                        LinearGradient(colors: [.yellow, .orange],
+                                       startPoint: .topLeading, endPoint: .bottomTrailing)
+                    )
+                Text("PAUSED")
+                    .font(.system(size: 32, weight: .black, design: .rounded))
+                    .tracking(4)
+                    .foregroundStyle(.white)
+                Text("The fight stopped when you switched away.")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.6))
+                    .multilineTextAlignment(.center)
+                Button(action: onResume) {
+                    Text("TAP TO RESUME")
+                        .tracking(2)
+                        .font(.system(size: 16, weight: .heavy, design: .rounded))
+                        .foregroundStyle(.black)
+                        .frame(width: 240, height: 54)
+                        .background(
+                            LinearGradient(colors: [.yellow, .orange],
+                                           startPoint: .leading, endPoint: .trailing)
+                        )
+                        .clipShape(Capsule())
+                        .shadow(color: .orange.opacity(0.5), radius: 14)
+                }
+                .padding(.top, 8)
+            }
+            .padding(40)
+        }
     }
 }
 
@@ -86,18 +165,28 @@ struct MenuView: View {
     let isConnected: Bool
     let highScore: Int
     let onStart: () -> Void
+    let onSettings: () -> Void
 
     @State private var titlePulse = false
     @State private var glovePulse = false
 
     var body: some View {
         VStack(spacing: 24) {
-            // Top bar with best score
+            // Top bar with best score + settings
             HStack {
                 if highScore > 0 {
                     BestBadge(score: highScore)
                 }
                 Spacer()
+                Button(action: { Haptics.impact(.light); onSettings() }) {
+                    Image(systemName: "gearshape.fill")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.65))
+                        .frame(width: 36, height: 36)
+                        .background(.ultraThinMaterial, in: Circle())
+                        .overlay(Circle().stroke(.white.opacity(0.12), lineWidth: 1))
+                }
+                .accessibilityLabel("Settings")
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
@@ -304,6 +393,7 @@ private struct PressActionStyle: ButtonStyle {
 // MARK: - Game
 
 struct GameView: View {
+    let isPaused: Bool
     let onGameOver: (Int) -> Void
     @State private var scene: GameScene?
 
@@ -325,6 +415,9 @@ struct GameView: View {
                     s.onGameOver = onGameOver
                     scene = s
                 }
+            }
+            .onChange(of: isPaused) { newValue in
+                scene?.isPaused = newValue
             }
         }
     }

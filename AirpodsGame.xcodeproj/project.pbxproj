@@ -9,15 +9,19 @@
 /* Begin PBXBuildFile section */
 		0E299544852E0CDE287B5533 /* AirpodsGameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26832D38B43B0B13E2F57862 /* AirpodsGameApp.swift */; };
 		38B6C2E1967136E25FE53F03 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB0DDF50D1011695CB81164D /* MotionManager.swift */; };
+		4CBBE8BE9CA1F44D589C52DB /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67801A9167296B004DE20ECB /* Settings.swift */; };
 		5B818A3D579319A4766C4E11 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ECD6B55FEDB74B020755136 /* ContentView.swift */; };
+		9320EF59076D061D6D059546 /* GameCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D5010E6D0157B92DC3E5A3 /* GameCenter.swift */; };
 		A41F94995C410E9C6F0BCF08 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = EE837F894D0D4E2B7235448F /* AppIcon.icon */; };
 		AFDD821EE4BBB68BA7D5DEAF /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796F6D35E3D9E420671C89DB /* GameScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		26832D38B43B0B13E2F57862 /* AirpodsGameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirpodsGameApp.swift; sourceTree = "<group>"; };
+		46D5010E6D0157B92DC3E5A3 /* GameCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenter.swift; sourceTree = "<group>"; };
 		5ECD6B55FEDB74B020755136 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6768DFA7EE4404B4709BA3ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		67801A9167296B004DE20ECB /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		796F6D35E3D9E420671C89DB /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		953E641886343623A73FBD20 /* AirpodsGame.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AirpodsGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE837F894D0D4E2B7235448F /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
@@ -36,8 +40,10 @@
 		1C41182CDCFD8BA136D9FF4F /* Game */ = {
 			isa = PBXGroup;
 			children = (
+				46D5010E6D0157B92DC3E5A3 /* GameCenter.swift */,
 				796F6D35E3D9E420671C89DB /* GameScene.swift */,
 				FB0DDF50D1011695CB81164D /* MotionManager.swift */,
+				67801A9167296B004DE20ECB /* Settings.swift */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -135,8 +141,10 @@
 			files = (
 				0E299544852E0CDE287B5533 /* AirpodsGameApp.swift in Sources */,
 				5B818A3D579319A4766C4E11 /* ContentView.swift in Sources */,
+				9320EF59076D061D6D059546 /* GameCenter.swift in Sources */,
 				AFDD821EE4BBB68BA7D5DEAF /* GameScene.swift in Sources */,
 				38B6C2E1967136E25FE53F03 /* MotionManager.swift in Sources */,
+				4CBBE8BE9CA1F44D589C52DB /* Settings.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

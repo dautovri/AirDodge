@@ -56,15 +56,24 @@ enum PunchType: CaseIterable {
 
 class GameScene: SKScene {
 
-    // MARK: Head zone thresholds (degrees)
-    private let rollThreshold:  Double = 14.0
-    private let duckThreshold:  Double = 22.0
+    // MARK: Head zone thresholds (degrees) — read from user settings each frame
+    // so changing sensitivity in Settings affects the next dodge resolution.
+    private var rollThreshold: Double  { sensitivity.rollThreshold }
+    private var duckThreshold: Double  { sensitivity.duckThreshold }
+    private var sensitivity: MotionSensitivityLevel {
+        let raw = UserDefaults.standard.integer(forKey: SettingsKey.motionSensitivity)
+        return MotionSensitivityLevel(rawValue: raw) ?? .standard
+    }
+    private var hapticsEnabled: Bool {
+        UserDefaults.standard.bool(forKey: SettingsKey.hapticsEnabled)
+    }
+    private var maxStreak: Int = 0   // for GameKit leaderboard submission
 
     // MARK: State
     private let maxHp: Int = 5
     private var hp: Int = 5                     { didSet { updateHpBar() } }
     private var score: Int = 0                  { didSet { scoreLabel.text = "\(score)" } }
-    private var combo: Int = 0                  { didSet { updateCombo() } }
+    private var combo: Int = 0                  { didSet { updateCombo(); maxStreak = max(maxStreak, combo) } }
     private var round: Int = 1
     private var gameOver = false
     private var waitingForDodge = false
@@ -583,7 +592,7 @@ class GameScene: SKScene {
             .scale(to: 1.0, duration: 0.1)
         ]))
 
-        lightImpact.impactOccurred(intensity: 0.6)
+        if hapticsEnabled { lightImpact.impactOccurred(intensity: 0.6) }
 
         windUpGlove(for: punch)
 
@@ -662,10 +671,12 @@ class GameScene: SKScene {
         score += 10 * max(combo, 1)
 
         // Haptic
-        if combo >= 3 {
-            notify.notificationOccurred(.success)
-        } else {
-            mediumImpact.impactOccurred(intensity: 0.8)
+        if hapticsEnabled {
+            if combo >= 3 {
+                notify.notificationOccurred(.success)
+            } else {
+                mediumImpact.impactOccurred(intensity: 0.8)
+            }
         }
 
         // Flash green
@@ -702,7 +713,7 @@ class GameScene: SKScene {
         combo = 0
         hp -= 1
 
-        heavyImpact.impactOccurred()
+        if hapticsEnabled { heavyImpact.impactOccurred() }
 
         // Screen shake
         let dx: CGFloat = 14
@@ -774,7 +785,7 @@ class GameScene: SKScene {
         telegraphDuration = max(0.65, telegraphDuration - 0.12)
         restDuration      = max(0.55, restDuration - 0.08)
 
-        notify.notificationOccurred(.success)
+        if hapticsEnabled { notify.notificationOccurred(.success) }
 
         let banner = SKLabelNode(fontNamed: "AvenirNext-Heavy")
         banner.text      = "ROUND \(round)!"
@@ -798,7 +809,9 @@ class GameScene: SKScene {
     private func triggerKO() {
         gameOver = true
 
-        notify.notificationOccurred(.error)
+        if hapticsEnabled { notify.notificationOccurred(.error) }
+        // Submit best dodge streak from this fight to GameKit (silent if not authed)
+        GameCenter.shared.submitStreak(maxStreak)
 
         // Big KO text
         let ko = SKLabelNode(fontNamed: "AvenirNext-Heavy")
