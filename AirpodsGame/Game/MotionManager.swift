@@ -1,5 +1,9 @@
 import CoreMotion
 import Combine
+import os
+
+/// Subsystem visible via `idevicesyslog | grep AirBoxer.motion`
+private let log = Logger(subsystem: "com.airdodge.AirpodsGame", category: "AirBoxer.motion")
 
 // CMHeadphoneMotionManager wrapper.
 //
@@ -59,6 +63,11 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
     private var smoothedRoll: Double = 0
     private var lastDataAt: Date?
     private var watchdog: Timer?
+    /// True between a successful `startDeviceMotionUpdates` call and the
+    /// next `stop()`/`restart()`. Used to make `start()` idempotent so
+    /// SwiftUI lifecycle re-firing (`.onAppear` triggered by view recycling
+    /// or state changes) doesn't kill the in-flight motion stream.
+    private var isStreaming = false
 
     static let shared = MotionManager()
 
@@ -70,23 +79,31 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
     func start() {
         let available = manager.isDeviceMotionAvailable
         let auth = CMMotionActivityManager.authorizationStatus()
-        print("[MotionManager] start(): isDeviceMotionAvailable=\(available), authStatus=\(auth.rawValue), delegate-isActive=\(manager.isDeviceMotionActive)")
+        let isActive = manager.isDeviceMotionActive
+        log.notice("start(): available=\(available), auth=\(auth.rawValue), active=\(isActive)")
 
         // If the user previously denied Motion & Fitness, no data will ever
         // flow even with AirPods perfectly paired. Surface this immediately.
         if auth == .denied || auth == .restricted {
             status = .permissionDenied
-            print("[MotionManager] -> .permissionDenied (auth=\(auth.rawValue))")
+            log.notice("-> .permissionDenied (auth=\(auth.rawValue))")
             return
         }
 
         guard available else {
             status = .unavailable
-            print("[MotionManager] -> .unavailable")
+            log.notice("-> .unavailable")
             return
         }
-        // If we're already running and have a status, don't restart.
-        if status.isLive || status == .waitingForData { return }
+        // Idempotency: if we already issued startDeviceMotionUpdates, reject
+        // every subsequent start() until stop()/restart() is called explicitly.
+        // SwiftUI re-fires .onAppear during view recycling and the second call
+        // would tear down the in-flight motion stream just as data is about
+        // to arrive (see device logs from 2026-05-06).
+        if isStreaming {
+            log.notice("start() called while already streaming — ignoring")
+            return
+        }
 
         // Until either the delegate fires or data starts flowing, we're hunting.
         if status == .unknown || status == .unavailable {
@@ -96,20 +113,20 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
         manager.startDeviceMotionUpdates(to: .main) { [weak self] motion, error in
             guard let self else { return }
             if let error {
-                print("[MotionManager] data error: \(error.localizedDescription)")
+                log.notice("data error: \(error.localizedDescription)")
                 // CMHeadphoneMotionManager logs its own errors; we keep the
                 // last known status. Don't downgrade live → waitingForData on
                 // a single transient error.
                 return
             }
             guard let motion else {
-                print("[MotionManager] data callback fired with nil motion")
+                log.notice("data callback fired with nil motion")
                 return
             }
             let firstFrame = self.lastDataAt == nil
             self.lastDataAt = Date()
             if !self.status.isLive {
-                print("[MotionManager] data flowing -> .live (firstFrame=\(firstFrame))")
+                log.notice("data flowing -> .live (firstFrame=\(firstFrame))")
                 self.status = .live
             }
             let rawPitch = motion.attitude.pitch * 180 / .pi
@@ -120,7 +137,8 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
             self.roll  = self.smoothedRoll
             self.yaw   = motion.attitude.yaw * 180 / .pi
         }
-        print("[MotionManager] startDeviceMotionUpdates dispatched")
+        isStreaming = true
+        log.notice("startDeviceMotionUpdates dispatched")
 
         // Watchdog: if we believe pods are connected but no frames arrived
         // for 2s, downgrade to waitingForData (covers "pods on desk").
@@ -141,6 +159,7 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
         manager.stopDeviceMotionUpdates()
         watchdog?.invalidate()
         watchdog = nil
+        isStreaming = false
         if status.isLive || status == .waitingForData {
             status = .waitingForAirPods
         }
@@ -151,11 +170,12 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
     /// or routing changed mid-session and CMHeadphoneMotionManager didn't
     /// auto-pick them up.
     func restart() {
-        print("[MotionManager] restart() requested")
+        log.notice("restart() requested")
         manager.stopDeviceMotionUpdates()
         watchdog?.invalidate()
         watchdog = nil
         lastDataAt = nil
+        isStreaming = false
         status = .unknown
         start()
     }
@@ -166,12 +186,12 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
         // Pods are now routed to this iPhone. Data may not be flowing yet
         // (need them in the ears). Mark as waitingForData; the data callback
         // upgrades to .live as soon as a frame arrives.
-        print("[MotionManager] delegate: didConnect -> .waitingForData")
+        log.notice("delegate: didConnect -> .waitingForData")
         if !status.isLive { status = .waitingForData }
     }
 
     func headphoneMotionManagerDidDisconnect(_ manager: CMHeadphoneMotionManager) {
-        print("[MotionManager] delegate: didDisconnect -> .waitingForAirPods")
+        log.notice("delegate: didDisconnect -> .waitingForAirPods")
         status = .waitingForAirPods
     }
 }
