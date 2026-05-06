@@ -127,7 +127,9 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         backgroundColor = SKColor(red: 0.06, green: 0.05, blue: 0.09, alpha: 1)
         setupBackground()
-        setupVignette()
+        // setupVignette() removed — the 70px black strips were darkening the
+        // SCORE/ROUND chips and the dodge hint, hurting readability for a
+        // cinematic flourish that the rest of the design didn't need.
         setupOpponent()
         setupHUD()
         setupZoneIndicator()
@@ -177,24 +179,6 @@ class GameScene: SKScene {
             rope.zPosition   = -2
             addChild(rope)
         }
-    }
-
-    private func setupVignette() {
-        // Soft dark edges via 4 thin gradient strips around the screen
-        let stripColor = SKColor(white: 0, alpha: 0.55)
-        let edge: CGFloat = 70
-
-        let top = SKShapeNode(rectOf: CGSize(width: size.width, height: edge))
-        top.fillColor = stripColor; top.strokeColor = .clear
-        top.position  = CGPoint(x: size.width / 2, y: size.height - edge / 2)
-        top.alpha = 0.55; top.zPosition = 50
-        addChild(top)
-
-        let bottom = SKShapeNode(rectOf: CGSize(width: size.width, height: edge))
-        bottom.fillColor = stripColor; bottom.strokeColor = .clear
-        bottom.position  = CGPoint(x: size.width / 2, y: edge / 2)
-        bottom.alpha = 0.55; bottom.zPosition = 50
-        addChild(bottom)
     }
 
     // MARK: Opponent
