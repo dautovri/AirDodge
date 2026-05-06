@@ -25,6 +25,7 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
     enum Status {
         case unknown                      // not started yet
         case unavailable                  // hardware/OS does not support headphone motion
+        case permissionDenied             // user denied Motion & Fitness — must open Settings
         case waitingForAirPods            // available; pods not connected/paired
         case waitingForData               // pods connected; no motion frames yet (likely not in ears)
         case live                         // motion data flowing
@@ -33,6 +34,7 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
             switch self {
             case .unknown:            return "Looking for AirPods…"
             case .unavailable:        return "Headphone motion not available"
+            case .permissionDenied:   return "Tap to grant Motion & Fitness in Settings"
             case .waitingForAirPods:  return "AirPods not detected — pair Pro, Max, or 3rd gen"
             case .waitingForData:     return "AirPods paired — put them in your ears"
             case .live:               return "AirPods connected"
@@ -66,8 +68,21 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
     }
 
     func start() {
-        guard manager.isDeviceMotionAvailable else {
+        let available = manager.isDeviceMotionAvailable
+        let auth = CMMotionActivityManager.authorizationStatus()
+        print("[MotionManager] start(): isDeviceMotionAvailable=\(available), authStatus=\(auth.rawValue), delegate-isActive=\(manager.isDeviceMotionActive)")
+
+        // If the user previously denied Motion & Fitness, no data will ever
+        // flow even with AirPods perfectly paired. Surface this immediately.
+        if auth == .denied || auth == .restricted {
+            status = .permissionDenied
+            print("[MotionManager] -> .permissionDenied (auth=\(auth.rawValue))")
+            return
+        }
+
+        guard available else {
             status = .unavailable
+            print("[MotionManager] -> .unavailable")
             return
         }
         // If we're already running and have a status, don't restart.
@@ -80,15 +95,23 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
 
         manager.startDeviceMotionUpdates(to: .main) { [weak self] motion, error in
             guard let self else { return }
-            if error != nil {
+            if let error {
+                print("[MotionManager] data error: \(error.localizedDescription)")
                 // CMHeadphoneMotionManager logs its own errors; we keep the
                 // last known status. Don't downgrade live → waitingForData on
                 // a single transient error.
                 return
             }
-            guard let motion else { return }
+            guard let motion else {
+                print("[MotionManager] data callback fired with nil motion")
+                return
+            }
+            let firstFrame = self.lastDataAt == nil
             self.lastDataAt = Date()
-            if !self.status.isLive { self.status = .live }
+            if !self.status.isLive {
+                print("[MotionManager] data flowing -> .live (firstFrame=\(firstFrame))")
+                self.status = .live
+            }
             let rawPitch = motion.attitude.pitch * 180 / .pi
             let rawRoll  = motion.attitude.roll  * 180 / .pi
             self.smoothedPitch = self.smoothing * self.smoothedPitch + (1 - self.smoothing) * rawPitch
@@ -97,6 +120,7 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
             self.roll  = self.smoothedRoll
             self.yaw   = motion.attitude.yaw * 180 / .pi
         }
+        print("[MotionManager] startDeviceMotionUpdates dispatched")
 
         // Watchdog: if we believe pods are connected but no frames arrived
         // for 2s, downgrade to waitingForData (covers "pods on desk").
@@ -128,10 +152,12 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
         // Pods are now routed to this iPhone. Data may not be flowing yet
         // (need them in the ears). Mark as waitingForData; the data callback
         // upgrades to .live as soon as a frame arrives.
+        print("[MotionManager] delegate: didConnect -> .waitingForData")
         if !status.isLive { status = .waitingForData }
     }
 
     func headphoneMotionManagerDidDisconnect(_ manager: CMHeadphoneMotionManager) {
+        print("[MotionManager] delegate: didDisconnect -> .waitingForAirPods")
         status = .waitingForAirPods
     }
 }

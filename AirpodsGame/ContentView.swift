@@ -274,14 +274,16 @@ private struct ConnectionChip: View {
         case .live:                                  return .green
         case .waitingForData:                        return .yellow
         case .waitingForAirPods, .unknown:           return .orange
-        case .unavailable:                           return .red
+        case .permissionDenied, .unavailable:        return .red
         }
     }
 
     private var label: String { status.label }
 
+    private var isTappable: Bool { status == .permissionDenied }
+
     var body: some View {
-        HStack(spacing: 10) {
+        let chip = HStack(spacing: 10) {
             ZStack {
                 Circle()
                     .fill(dotColor)
@@ -300,6 +302,11 @@ private struct ConnectionChip: View {
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
+            if isTappable {
+                Image(systemName: "arrow.up.right.square")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(dotColor)
+            }
         }
         .padding(.horizontal, 14).padding(.vertical, 9)
         .background(.ultraThinMaterial, in: Capsule())
@@ -321,6 +328,18 @@ private struct ConnectionChip: View {
                     pulse = true
                 }
             }
+        }
+
+        if isTappable {
+            Button {
+                Haptics.impact(.light)
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            } label: { chip }
+            .buttonStyle(.plain)
+        } else {
+            chip
         }
     }
 }
