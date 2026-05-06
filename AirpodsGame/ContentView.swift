@@ -14,6 +14,17 @@ struct ContentView: View {
 
     enum GameState { case menu, playing, gameOver }
 
+    /// Allow entering the fight without live AirPods data ONLY in the iOS
+    /// Simulator — head tracking can't deliver data there, but we still
+    /// want to inspect the UI. On real hardware the motion gate stands.
+    private var canStart: Bool {
+        #if targetEnvironment(simulator)
+        return true
+        #else
+        return motion.status.isLive
+        #endif
+    }
+
     var body: some View {
         ZStack {
             BackgroundGradient()
@@ -22,7 +33,7 @@ struct ContentView: View {
             case .menu:
                 MenuView(motionStatus: motion.status,
                          highScore: highScore,
-                         canStart: motion.status.isLive,
+                         canStart: canStart,
                          onStart: { startFight() },
                          onSettings: { settingsPresented = true })
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
@@ -33,7 +44,7 @@ struct ContentView: View {
 
             case .gameOver:
                 GameOverView(score: finalScore, highScore: highScore,
-                             canRestart: motion.status.isLive,
+                             canRestart: canStart,
                              onRestart: { startFight() },
                              onMenu:    { withAnimation(.spring) { gameState = .menu } })
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
@@ -77,7 +88,7 @@ struct ContentView: View {
     /// live, but if any path slips through (race on motion.start, returning
     /// from settings), this guards the actual state transition.
     private func startFight() {
-        guard motion.status.isLive else {
+        guard canStart else {
             Haptics.notify(.warning)
             return
         }

@@ -101,8 +101,6 @@ class GameScene: SKScene {
     private var warningLabel:       SKLabelNode!
     private var warningBanner:      SKShapeNode!
     private var comboLabel:         SKLabelNode!
-    private var dodgeHint:          SKLabelNode!
-    private var debugReadout:       SKLabelNode!
 
     // Three-zone targets
     private var leftZoneRing:       SKShapeNode!
@@ -133,6 +131,13 @@ class GameScene: SKScene {
         setupOpponent()
         setupHUD()
         setupZoneIndicator()
+        // Force the HP bar to render its full-HP green state on entry. The
+        // didSet observer only fires when `hp` is reassigned, so the initial
+        // value of 5 was leaving the bar at its placeholder green geometry
+        // but with the default green color from setupHUD — except the
+        // animation in updateHpBar is what guarantees the right color
+        // transition, so trigger it once here.
+        updateHpBar()
 
         [lightImpact, heavyImpact, mediumImpact].forEach { $0.prepare() }
         notify.prepare()
@@ -249,19 +254,33 @@ class GameScene: SKScene {
     }
 
     private func makeGlove(at pos: CGPoint) -> SKShapeNode {
+        // Neon yellow glove with a hard white inner core. Per Gemini design
+        // review: red gloves visually merged into the red hit-flash + red
+        // ring ropes, killing threat readability. Yellow makes them the
+        // ONLY bright element on screen, so the player's eye locks onto
+        // them whenever they move.
         let g = SKShapeNode(circleOfRadius: 28)
-        g.fillColor   = SKColor(red: 0.92, green: 0.18, blue: 0.18, alpha: 1)
-        g.strokeColor = SKColor(red: 1, green: 0.55, blue: 0.55, alpha: 0.85)
-        g.lineWidth   = 2
+        g.fillColor   = SKColor(red: 1.00, green: 0.86, blue: 0.20, alpha: 1)   // bright yellow
+        g.strokeColor = SKColor(red: 1.00, green: 1.00, blue: 1.00, alpha: 0.95) // hard white rim
+        g.lineWidth   = 2.5
         g.glowWidth   = 6
         g.position    = pos
         g.zPosition   = 8
         addChild(g)
 
-        let detail = SKShapeNode(rectOf: CGSize(width: 36, height: 14), cornerRadius: 7)
-        detail.fillColor   = SKColor(red: 1, green: 0.45, blue: 0.45, alpha: 0.55)
+        // Inner white core — the "hard inner core" Gemini called out, makes
+        // the glove read at a glance even during a screen-flash event.
+        let core = SKShapeNode(circleOfRadius: 14)
+        core.fillColor   = SKColor(red: 1, green: 1, blue: 1, alpha: 0.85)
+        core.strokeColor = .clear
+        core.position    = CGPoint(x: 0, y: 0)
+        g.addChild(core)
+
+        // Subtle dark stripe across the knuckles for shape recognition.
+        let detail = SKShapeNode(rectOf: CGSize(width: 36, height: 6), cornerRadius: 3)
+        detail.fillColor   = SKColor(red: 0.30, green: 0.20, blue: 0.10, alpha: 0.55)
         detail.strokeColor = .clear
-        detail.position    = CGPoint(x: 0, y: 4)
+        detail.position    = CGPoint(x: 0, y: 6)
         g.addChild(detail)
 
         return g
@@ -375,27 +394,12 @@ class GameScene: SKScene {
         comboLabel.zPosition = 20
         addChild(comboLabel)
 
-        // Dodge hint at bottom
-        dodgeHint = SKLabelNode(fontNamed: "AvenirNext-Medium")
-        dodgeHint.text = "Tilt your head to dodge"
-        dodgeHint.fontSize  = 12
-        dodgeHint.fontColor = SKColor(white: 1, alpha: 0.32)
-        dodgeHint.position  = CGPoint(x: size.width / 2, y: 30)
-        dodgeHint.zPosition = 15
-        addChild(dodgeHint)
-
-        // Debug readout — small text in bottom-left showing live pitch/roll
-        // values. Validates sign conventions match the zone logic. Tiny enough
-        // not to interfere with gameplay; can be hidden via UserDefaults flag
-        // later if shipping to App Store with this on.
-        debugReadout = SKLabelNode(fontNamed: "Menlo")
-        debugReadout.text = "p=0  r=0"
-        debugReadout.fontSize  = 9
-        debugReadout.fontColor = SKColor(white: 1, alpha: 0.22)
-        debugReadout.horizontalAlignmentMode = .left
-        debugReadout.position  = CGPoint(x: 12, y: 12)
-        debugReadout.zPosition = 15
-        addChild(debugReadout)
+        // Note: removed the persistent "Tilt your head to dodge" hint and the
+        // p=… r=… debug readout — Gemini design review flagged both as visual
+        // clutter that hurt aesthetic identity and information density. The
+        // mechanic is taught in the menu's HOW TO DODGE card; in-fight
+        // feedback should be reserved for state changes (telegraphs, hits,
+        // dodges) rather than persistent instructions.
     }
 
     private func makeChip(width: CGFloat, height: CGFloat) -> SKNode {
@@ -542,10 +546,6 @@ class GameScene: SKScene {
         case .center:
             headDot.fillColor = SKColor(red: 0.30, green: 0.90, blue: 1.0,  alpha: 0.95)
         }
-
-        // Live debug readout — corner text showing raw sensor values
-        debugReadout.text = String(format: "p=%+5.1f  r=%+5.1f  z=%@",
-                                    pitch, roll, zone.label)
     }
 
     private func highlight(ring: SKShapeNode, active: Bool, color: SKColor) {
@@ -699,15 +699,35 @@ class GameScene: SKScene {
         addChild(flash)
         flash.run(.sequence([.fadeOut(withDuration: 0.35), .removeFromParent()]))
 
+        // Positive feedback text — moved above opponent + black-outlined for
+        // consistency with hit text. Stays green since "SLIPPED!" doesn't
+        // collide with a red flash, but the outline reads better against
+        // the spotlight glow than flat green-on-grey did.
+        let dodgeText = combo >= 3 ? "PERFECT SLIP! 🥊" : "SLIPPED!"
+        let dodgePosition = CGPoint(x: size.width / 2, y: size.height * 0.78)
+        let dodgeGroup = SKNode()
+        dodgeGroup.position = dodgePosition
+        dodgeGroup.zPosition = 30
+        for offset in [CGPoint(x: -3, y: 0), CGPoint(x: 3, y: 0),
+                       CGPoint(x: 0, y: -3), CGPoint(x: 0, y: 3),
+                       CGPoint(x: -2, y: -2), CGPoint(x: 2, y: 2),
+                       CGPoint(x: -2, y: 2), CGPoint(x: 2, y: -2)] {
+            let outline = SKLabelNode(fontNamed: "AvenirNext-Heavy")
+            outline.text = dodgeText
+            outline.fontSize = 32
+            outline.fontColor = .black
+            outline.position = offset
+            dodgeGroup.addChild(outline)
+        }
         let dodge = SKLabelNode(fontNamed: "AvenirNext-Heavy")
-        dodge.text      = combo >= 3 ? "PERFECT SLIP! 🥊" : "SLIPPED!"
-        dodge.fontSize  = 30
+        dodge.text      = dodgeText
+        dodge.fontSize  = 32
         dodge.fontColor = SKColor(red: 0.30, green: 1, blue: 0.55, alpha: 1)
-        dodge.position  = CGPoint(x: size.width / 2, y: size.height * 0.46)
-        dodge.zPosition = 30
-        addChild(dodge)
-        dodge.run(.sequence([
-            .group([.moveBy(x: 0, y: 30, duration: 0.5), .fadeOut(withDuration: 0.5)]),
+        dodge.position  = .zero
+        dodgeGroup.addChild(dodge)
+        addChild(dodgeGroup)
+        dodgeGroup.run(.sequence([
+            .group([.moveBy(x: 0, y: 30, duration: 0.55), .fadeOut(withDuration: 0.55)]),
             .removeFromParent()
         ]))
 
@@ -744,15 +764,38 @@ class GameScene: SKScene {
         addChild(flash)
         flash.run(.sequence([.fadeOut(withDuration: 0.4), .removeFromParent()]))
 
+        // Hit text — moved ABOVE opponent (was at 0.46, now 0.78) so it
+        // doesn't occlude the incoming punch animation. Restyled as white
+        // with a thick black outline (black SKLabelNode behind, white in
+        // front with a 4px offset for the outline) — readable against the
+        // red hit-flash that the previous red text drowned in.
+        let hitText = ["OUCH!", "TOOK A HIT!", "MOVE FASTER!"].randomElement()!
+        let hitPosition = CGPoint(x: size.width / 2, y: size.height * 0.78)
+        let hitGroup = SKNode()
+        hitGroup.position = hitPosition
+        hitGroup.zPosition = 30
+        // Black outline rendered as 4 offset copies — a poor man's stroke
+        // for SKLabelNode which doesn't natively support text outlines.
+        for offset in [CGPoint(x: -3, y: 0), CGPoint(x: 3, y: 0),
+                       CGPoint(x: 0, y: -3), CGPoint(x: 0, y: 3),
+                       CGPoint(x: -2, y: -2), CGPoint(x: 2, y: 2),
+                       CGPoint(x: -2, y: 2), CGPoint(x: 2, y: -2)] {
+            let outline = SKLabelNode(fontNamed: "AvenirNext-Heavy")
+            outline.text      = hitText
+            outline.fontSize  = 32
+            outline.fontColor = .black
+            outline.position  = offset
+            hitGroup.addChild(outline)
+        }
         let hit = SKLabelNode(fontNamed: "AvenirNext-Heavy")
-        hit.text      = ["OUCH!", "TOOK A HIT!", "MOVE FASTER!"].randomElement()!
-        hit.fontSize  = 28
-        hit.fontColor = SKColor(red: 1, green: 0.3, blue: 0.3, alpha: 1)
-        hit.position  = CGPoint(x: size.width / 2, y: size.height * 0.46)
-        hit.zPosition = 30
-        addChild(hit)
-        hit.run(.sequence([
-            .group([.moveBy(x: 0, y: 25, duration: 0.5), .fadeOut(withDuration: 0.5)]),
+        hit.text      = hitText
+        hit.fontSize  = 32
+        hit.fontColor = .white
+        hit.position  = .zero
+        hitGroup.addChild(hit)
+        addChild(hitGroup)
+        hitGroup.run(.sequence([
+            .group([.moveBy(x: 0, y: 30, duration: 0.55), .fadeOut(withDuration: 0.55)]),
             .removeFromParent()
         ]))
 
