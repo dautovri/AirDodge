@@ -22,7 +22,8 @@ struct ContentView: View {
             case .menu:
                 MenuView(motionStatus: motion.status,
                          highScore: highScore,
-                         onStart: { withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) { gameState = .playing } },
+                         canStart: motion.status.isLive,
+                         onStart: { startFight() },
                          onSettings: { settingsPresented = true })
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
 
@@ -32,7 +33,8 @@ struct ContentView: View {
 
             case .gameOver:
                 GameOverView(score: finalScore, highScore: highScore,
-                             onRestart: { withAnimation(.spring) { gameState = .playing } },
+                             canRestart: motion.status.isLive,
+                             onRestart: { startFight() },
                              onMenu:    { withAnimation(.spring) { gameState = .menu } })
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
             }
@@ -68,6 +70,19 @@ struct ContentView: View {
         }
         .sheet(isPresented: $settingsPresented) {
             SettingsView()
+        }
+    }
+
+    /// Belt-and-suspenders gate. The buttons are disabled when AirPods aren't
+    /// live, but if any path slips through (race on motion.start, returning
+    /// from settings), this guards the actual state transition.
+    private func startFight() {
+        guard motion.status.isLive else {
+            Haptics.notify(.warning)
+            return
+        }
+        withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) {
+            gameState = .playing
         }
     }
 
@@ -164,6 +179,7 @@ private struct BackgroundGradient: View {
 struct MenuView: View {
     let motionStatus: MotionManager.Status
     let highScore: Int
+    let canStart: Bool
     let onStart: () -> Void
     let onSettings: () -> Void
 
@@ -237,11 +253,22 @@ struct MenuView: View {
 
             Spacer()
 
-            // Start button
-            FightButton(action: {
+            // Start button — disabled until AirPods are connected and
+            // delivering motion data. The fight is unplayable without head
+            // tracking, so we don't let the user enter the scene.
+            FightButton(isEnabled: canStart, action: {
                 Haptics.impact(.medium)
                 onStart()
             })
+
+            if !canStart {
+                Text("Connect AirPods to start fighting")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .tracking(0.5)
+                    .foregroundStyle(.white.opacity(0.4))
+                    .transition(.opacity)
+                    .padding(.top, -8)
+            }
 
             Spacer(minLength: 24)
         }
@@ -389,6 +416,7 @@ struct DodgeItem: View {
 }
 
 private struct FightButton: View {
+    var isEnabled: Bool = true
     let action: () -> Void
     @State private var pressed = false
     @State private var glow = false
@@ -401,18 +429,32 @@ private struct FightButton: View {
                     .tracking(2)
             }
             .font(.system(size: 22, weight: .black, design: .rounded))
-            .foregroundStyle(.black)
+            .foregroundStyle(isEnabled ? .black : Color.black.opacity(0.55))
             .frame(width: 220, height: 62)
             .background(
-                LinearGradient(colors: [.yellow, .orange, Color(red: 1, green: 0.35, blue: 0.2)],
-                               startPoint: .leading, endPoint: .trailing)
+                Group {
+                    if isEnabled {
+                        LinearGradient(colors: [.yellow, .orange, Color(red: 1, green: 0.35, blue: 0.2)],
+                                       startPoint: .leading, endPoint: .trailing)
+                    } else {
+                        // Desaturated grey when AirPods aren't live
+                        LinearGradient(colors: [Color.gray.opacity(0.55),
+                                                 Color.gray.opacity(0.45),
+                                                 Color.gray.opacity(0.55)],
+                                       startPoint: .leading, endPoint: .trailing)
+                    }
+                }
             )
             .clipShape(Capsule())
-            .overlay(Capsule().stroke(.white.opacity(0.35), lineWidth: 1))
-            .shadow(color: .orange.opacity(glow ? 0.7 : 0.45), radius: glow ? 22 : 14)
+            .overlay(Capsule().stroke(.white.opacity(isEnabled ? 0.35 : 0.15), lineWidth: 1))
+            .shadow(color: isEnabled ? .orange.opacity(glow ? 0.7 : 0.45) : .clear,
+                    radius: isEnabled ? (glow ? 22 : 14) : 0)
             .scaleEffect(pressed ? 0.96 : 1.0)
+            .opacity(isEnabled ? 1.0 : 0.7)
         }
         .buttonStyle(PressActionStyle(pressed: $pressed))
+        .disabled(!isEnabled)
+        .animation(.easeOut(duration: 0.25), value: isEnabled)
         .onAppear {
             withAnimation(.easeInOut(duration: 1.4).repeatForever(autoreverses: true)) {
                 glow.toggle()
@@ -469,6 +511,7 @@ struct GameView: View {
 struct GameOverView: View {
     let score: Int
     let highScore: Int
+    let canRestart: Bool
     let onRestart: () -> Void
     let onMenu: () -> Void
 
@@ -552,10 +595,18 @@ struct GameOverView: View {
             Spacer()
 
             VStack(spacing: 14) {
-                FightAgainButton(action: {
+                FightAgainButton(isEnabled: canRestart, action: {
                     Haptics.impact(.medium)
                     onRestart()
                 })
+
+                if !canRestart {
+                    Text("Reconnect AirPods to fight again")
+                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        .tracking(0.5)
+                        .foregroundStyle(.white.opacity(0.4))
+                        .transition(.opacity)
+                }
 
                 Button(action: {
                     Haptics.impact(.light)
@@ -593,6 +644,7 @@ struct GameOverView: View {
 }
 
 private struct FightAgainButton: View {
+    var isEnabled: Bool = true
     let action: () -> Void
     @State private var pressed = false
     var body: some View {
@@ -600,18 +652,29 @@ private struct FightAgainButton: View {
             Text("FIGHT AGAIN")
                 .tracking(2)
                 .font(.system(size: 18, weight: .black, design: .rounded))
-                .foregroundStyle(.black)
+                .foregroundStyle(isEnabled ? .black : Color.black.opacity(0.55))
                 .frame(width: 220, height: 56)
                 .background(
-                    LinearGradient(colors: [.yellow, .orange],
-                                   startPoint: .leading, endPoint: .trailing)
+                    Group {
+                        if isEnabled {
+                            LinearGradient(colors: [.yellow, .orange],
+                                           startPoint: .leading, endPoint: .trailing)
+                        } else {
+                            LinearGradient(colors: [Color.gray.opacity(0.55),
+                                                     Color.gray.opacity(0.45)],
+                                           startPoint: .leading, endPoint: .trailing)
+                        }
+                    }
                 )
                 .clipShape(Capsule())
-                .overlay(Capsule().stroke(.white.opacity(0.35), lineWidth: 1))
-                .shadow(color: .orange.opacity(0.5), radius: 14)
+                .overlay(Capsule().stroke(.white.opacity(isEnabled ? 0.35 : 0.15), lineWidth: 1))
+                .shadow(color: isEnabled ? .orange.opacity(0.5) : .clear, radius: isEnabled ? 14 : 0)
                 .scaleEffect(pressed ? 0.96 : 1)
+                .opacity(isEnabled ? 1.0 : 0.7)
         }
         .buttonStyle(PressActionStyle(pressed: $pressed))
+        .disabled(!isEnabled)
+        .animation(.easeOut(duration: 0.25), value: isEnabled)
     }
 }
 
