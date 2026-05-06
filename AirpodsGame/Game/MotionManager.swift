@@ -146,6 +146,20 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
         }
     }
 
+    /// User-initiated retry. Force-stops then re-starts the motion stream
+    /// from a clean slate. Helps when AirPods connect AFTER the app launched
+    /// or routing changed mid-session and CMHeadphoneMotionManager didn't
+    /// auto-pick them up.
+    func restart() {
+        print("[MotionManager] restart() requested")
+        manager.stopDeviceMotionUpdates()
+        watchdog?.invalidate()
+        watchdog = nil
+        lastDataAt = nil
+        status = .unknown
+        start()
+    }
+
     // MARK: - CMHeadphoneMotionManagerDelegate
 
     func headphoneMotionManagerDidConnect(_ manager: CMHeadphoneMotionManager) {

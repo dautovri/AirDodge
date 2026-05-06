@@ -295,6 +295,7 @@ private struct BestBadge: View {
 private struct ConnectionChip: View {
     let status: MotionManager.Status
     @State private var pulse = false
+    @State private var spinRetry = false
 
     private var dotColor: Color {
         switch status {
@@ -307,7 +308,10 @@ private struct ConnectionChip: View {
 
     private var label: String { status.label }
 
-    private var isTappable: Bool { status == .permissionDenied }
+    /// Chip is tappable in any non-live state. Tap = restart motion stream
+    /// (or open Settings when permission is the blocker).
+    private var isTappable: Bool { !status.isLive }
+    private var opensSettings: Bool { status == .permissionDenied }
 
     var body: some View {
         let chip = HStack(spacing: 10) {
@@ -330,9 +334,10 @@ private struct ConnectionChip: View {
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
             if isTappable {
-                Image(systemName: "arrow.up.right.square")
+                Image(systemName: opensSettings ? "arrow.up.right.square" : "arrow.clockwise")
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(dotColor)
+                    .rotationEffect(.degrees(spinRetry ? 360 : 0))
             }
         }
         .padding(.horizontal, 14).padding(.vertical, 9)
@@ -360,8 +365,14 @@ private struct ConnectionChip: View {
         if isTappable {
             Button {
                 Haptics.impact(.light)
-                if let url = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(url)
+                if opensSettings {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                } else {
+                    // Spin the retry icon for visual feedback while we restart
+                    withAnimation(.easeInOut(duration: 0.6)) { spinRetry.toggle() }
+                    MotionManager.shared.restart()
                 }
             } label: { chip }
             .buttonStyle(.plain)
