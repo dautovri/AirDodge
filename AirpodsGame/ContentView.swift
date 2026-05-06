@@ -20,7 +20,7 @@ struct ContentView: View {
 
             switch gameState {
             case .menu:
-                MenuView(isConnected: motion.isConnected,
+                MenuView(motionStatus: motion.status,
                          highScore: highScore,
                          onStart: { withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) { gameState = .playing } },
                          onSettings: { settingsPresented = true })
@@ -162,7 +162,7 @@ private struct BackgroundGradient: View {
 // MARK: - Menu
 
 struct MenuView: View {
-    let isConnected: Bool
+    let motionStatus: MotionManager.Status
     let highScore: Int
     let onStart: () -> Void
     let onSettings: () -> Void
@@ -227,7 +227,7 @@ struct MenuView: View {
                 .lineSpacing(2)
 
             // AirPods status chip
-            ConnectionChip(isConnected: isConnected)
+            ConnectionChip(status: motionStatus)
                 .padding(.top, 6)
 
             // Dodge guide
@@ -266,16 +266,27 @@ private struct BestBadge: View {
 }
 
 private struct ConnectionChip: View {
-    let isConnected: Bool
+    let status: MotionManager.Status
     @State private var pulse = false
+
+    private var dotColor: Color {
+        switch status {
+        case .live:                                  return .green
+        case .waitingForData:                        return .yellow
+        case .waitingForAirPods, .unknown:           return .orange
+        case .unavailable:                           return .red
+        }
+    }
+
+    private var label: String { status.label }
 
     var body: some View {
         HStack(spacing: 10) {
             ZStack {
                 Circle()
-                    .fill(isConnected ? Color.green : Color.orange)
+                    .fill(dotColor)
                     .frame(width: 10, height: 10)
-                if isConnected {
+                if status.isLive {
                     Circle()
                         .stroke(Color.green.opacity(0.5), lineWidth: 2)
                         .frame(width: 16, height: 16)
@@ -283,18 +294,29 @@ private struct ConnectionChip: View {
                         .opacity(pulse ? 0 : 1)
                 }
             }
-            Text(isConnected ? "AirPods connected"
-                             : "AirPods not detected — demo mode")
+            Text(label)
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
-                .foregroundStyle(isConnected ? .green : .orange)
+                .foregroundStyle(dotColor)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.horizontal, 14).padding(.vertical, 9)
         .background(.ultraThinMaterial, in: Capsule())
         .overlay(
-            Capsule().stroke((isConnected ? Color.green : Color.orange).opacity(0.4), lineWidth: 1)
+            Capsule().stroke(dotColor.opacity(0.4), lineWidth: 1)
         )
+        .onChange(of: status.isLive) { newValue in
+            if newValue {
+                withAnimation(.easeOut(duration: 1.4).repeatForever(autoreverses: false)) {
+                    pulse = true
+                }
+            } else {
+                pulse = false
+            }
+        }
         .onAppear {
-            if isConnected {
+            if status.isLive {
                 withAnimation(.easeOut(duration: 1.4).repeatForever(autoreverses: false)) {
                     pulse = true
                 }
