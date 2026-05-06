@@ -102,6 +102,7 @@ class GameScene: SKScene {
     private var warningBanner:      SKShapeNode!
     private var comboLabel:         SKLabelNode!
     private var dodgeHint:          SKLabelNode!
+    private var debugReadout:       SKLabelNode!
 
     // Three-zone targets
     private var leftZoneRing:       SKShapeNode!
@@ -398,6 +399,19 @@ class GameScene: SKScene {
         dodgeHint.position  = CGPoint(x: size.width / 2, y: 30)
         dodgeHint.zPosition = 15
         addChild(dodgeHint)
+
+        // Debug readout — small text in bottom-left showing live pitch/roll
+        // values. Validates sign conventions match the zone logic. Tiny enough
+        // not to interfere with gameplay; can be hidden via UserDefaults flag
+        // later if shipping to App Store with this on.
+        debugReadout = SKLabelNode(fontNamed: "Menlo")
+        debugReadout.text = "p=0  r=0"
+        debugReadout.fontSize  = 9
+        debugReadout.fontColor = SKColor(white: 1, alpha: 0.22)
+        debugReadout.horizontalAlignmentMode = .left
+        debugReadout.position  = CGPoint(x: 12, y: 12)
+        debugReadout.zPosition = 15
+        addChild(debugReadout)
     }
 
     private func makeChip(width: CGFloat, height: CGFloat) -> SKNode {
@@ -509,8 +523,16 @@ class GameScene: SKScene {
         let maxH: CGFloat = size.width * 0.32
         let maxV: CGFloat = size.height * 0.07
 
+        // Sign convention with the zone detection (currentHeadZone):
+        //   - looking down → pitch is NEGATIVE → triggers .duck
+        //   - the duck zone ring is positioned BELOW baseY (lower on screen)
+        //   - SpriteKit Y is up, so to move the dot DOWN toward the duck ring,
+        //     dy must be NEGATIVE when pitch is negative.
+        // Earlier code negated pitch here, which moved the dot UP when looking
+        // down — visually contradicting the zone state. Fixed by removing the
+        // negation so the dot tracks head direction directly.
         let dx = CGFloat(roll / 30.0) * maxH
-        let dy = CGFloat(-pitch / 40.0) * maxV
+        let dy = CGFloat(pitch / 40.0) * maxV
 
         let targetX = (cx + dx).clamped(to: cx - maxH ... cx + maxH)
         let targetY = (baseY + dy).clamped(to: baseY - maxV * 1.6 ... baseY + maxV * 0.5)
@@ -536,6 +558,10 @@ class GameScene: SKScene {
         case .center:
             headDot.fillColor = SKColor(red: 0.30, green: 0.90, blue: 1.0,  alpha: 0.95)
         }
+
+        // Live debug readout — corner text showing raw sensor values
+        debugReadout.text = String(format: "p=%+5.1f  r=%+5.1f  z=%@",
+                                    pitch, roll, zone.label)
     }
 
     private func highlight(ring: SKShapeNode, active: Bool, color: SKColor) {
