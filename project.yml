@@ -21,4 +21,12 @@ targets:
         DEVELOPMENT_TEAM: "27EZNUVV57"
         CODE_SIGN_STYLE: Automatic
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # Game Center entitlement deferred — requires Xcode → Signing &
+        # Capabilities → +Capability → Game Center (one-time human step
+        # when user has Apple ID logged into Xcode). Bundle ID
+        # com.airdodge.AirpodsGame already has GAME_CENTER capability
+        # enabled at Apple Developer (asc bundle-ids capabilities add
+        # ran 2026-05-04). Re-enable by uncommenting:
+        # CODE_SIGN_ENTITLEMENTS: AirpodsGame/AirpodsGame.entitlements
+        # ENABLE_GAME_CENTER: "YES"
     dependencies: []

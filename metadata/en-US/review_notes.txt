@@ -1,0 +1,25 @@
+This app does not require a login or account.
+
+AirBoxer is a head-tracking dodge game using AirPods motion sensors via Apple's CMHeadphoneMotionManager API. To test the app:
+
+1. Pair AirPods Pro, AirPods Max, or AirPods 3rd-generation with the test device. (AirBoxer requires a paired set with the H1/H2 chip — older AirPods do not deliver motion data.)
+2. Wear the AirPods.
+3. Launch AirBoxer. The app will request Motion permission on first launch — please accept; the app cannot function without it.
+4. From the menu, tap FIGHT.
+5. The opponent will telegraph each punch with a wind-up animation lasting ~1.6 seconds. During the wind-up:
+   - For a LEFT HOOK telegraph (orange warning text reading "DODGE RIGHT →"): tilt your head to the RIGHT.
+   - For a RIGHT HOOK telegraph ("← DODGE LEFT"): tilt your head to the LEFT.
+   - For a JAB telegraph ("SLIP ASIDE!"): tilt EITHER direction.
+   - For an UPPERCUT telegraph ("↓ DUCK!"): nod your head DOWNWARD.
+6. Successfully dodge to score points and build a combo. Get hit and lose 1 HP (start with 5).
+7. The fight ends in a knockout (KO) when HP reaches 0.
+
+If AirPods are not connected, the on-screen status chip shows "AirPods not detected — demo mode." Without motion input the player cannot dodge — this is expected behavior. Please make sure AirPods are paired before testing the gameplay.
+
+Game Center is OPTIONAL. If signed in, two leaderboard scores are submitted on KO: longest dodge streak and total knockouts. Sign-in is via standard iOS Game Center settings.
+
+The app collects no other data. No analytics. No advertising. No third-party SDKs. Privacy policy: https://airboxer.app/privacy
+
+Thank you for reviewing AirBoxer.
+
+Contact: airboxer@dautov.io

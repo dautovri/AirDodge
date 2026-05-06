@@ -1,0 +1,41 @@
+AirBoxer is a head-tracking boxing dodge game.
+
+Pair your AirPods. Tilt your head LEFT or RIGHT to slip a hook. NOD DOWN to duck an uppercut. Don't move into a punch — every opponent telegraphs every swing. The reflex IS the game.
+
+
+THE OPPONENTS
+
+• SANDBAG — Tutorial. Infinite HP. Verbal callouts on every tell. Learn the rhythm by feel.
+
+• VITRINE BLOOM — Paris. Record 0-99. Slow, telegraphed hooks and a glass jaw. Everyone's first real fight.
+
+• THE WARDEN — Stateville. Record 47-1. Fast telegraphs near the limit of human reaction. The final test.
+
+
+WHY HEAD TRACKING
+
+AirPods Pro, Max, and 3rd-gen have an H1/H2 motion chip that's been quietly shipping in 100 million ears since 2019. Almost no app uses it as primary input. AirBoxer does — every dodge is your actual head moving in real space, not a tap on a screen. Once you've slipped a hook with your head, taps feel small.
+
+
+DESIGNED FOR THE RING
+
+• 3 distinct opponents with original characters and original chiptune music
+• Per-fight HP, combo streaks, dodge-zone targeting, KO sequences
+• Game Center leaderboards: longest dodge streak, total knockouts
+• Adjustable motion sensitivity (5 detents) for different necks and play styles
+• Pause-on-background so phone calls don't cost you a fight
+• Sound + haptics toggles
+• Optional CRT scanline overlay
+• Built for iPhone, iOS 16+, with AirPods Pro / Max / 3rd-generation
+
+
+NO ADS. NO TRACKING. NO IAP.
+
+AirBoxer is a one-time premium purchase. No ads, no subscriptions, no in-app purchases, no analytics. The app collects nothing — your AirPods motion is read locally, used in real time, and discarded. Read the privacy policy at airboxer.app/privacy.
+
+
+A LOVE LETTER
+
+Inspired by a 1987 NES boxing classic. All characters in AirBoxer are original; the game is not affiliated with or endorsed by any other rights-holder. The slow telegraphed wind-ups of the 1987 era happen to map almost exactly to what AirPods motion can deliver in 2026 — that coincidence is the entire game.
+
+Pair AirPods. Slip the punches. Don't blink.

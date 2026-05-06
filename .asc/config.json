@@ -1,0 +1,13 @@
+{
+  "app_name": "AirBoxer",
+  "bundle_id": "com.airdodge.AirpodsGame",
+  "platform": "IOS",
+  "primary_locale": "en-US",
+  "additional_locales": ["es-ES", "es-MX", "fr-FR", "de-DE", "ja"],
+  "category": "GAMES",
+  "subcategory": "GAMES_ACTION",
+  "price_tier": "TIER_3",
+  "metadata_dir": "./metadata",
+  "screenshots_dir": "./marketing/screenshots",
+  "_comment": "app_id will be filled in after `asc apps create` runs in the next step"
+}

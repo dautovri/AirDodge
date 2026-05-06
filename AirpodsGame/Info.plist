@@ -20,8 +20,12 @@
     <string>$(CURRENT_PROJECT_VERSION)</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.action-games</string>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
     <key>NSMotionUsageDescription</key>
-    <string>AirDodge uses your AirPods motion sensors to control the game with head movements.</string>
+    <string>AirBoxer uses AirPods motion sensors to detect when you tilt your head to dodge punches. Motion data is processed in real time on-device and never leaves your phone.</string>
     <key>UIApplicationSceneManifest</key>
     <dict>
         <key>UIApplicationSupportsMultipleScenes</key>
@@ -29,7 +33,7 @@
     </dict>
     <key>UIRequiredDeviceCapabilities</key>
     <array>
-        <string>armv7</string>
+        <string>arm64</string>
     </array>
     <key>UISupportedInterfaceOrientations</key>
     <array>
