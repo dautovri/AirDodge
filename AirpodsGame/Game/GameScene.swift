@@ -80,7 +80,14 @@ class GameScene: SKScene {
     private var currentPunch: PunchType?
     private var punchLanded = false
 
-    // Timing (seconds)
+    /// The opponent driving this fight. Defaults to Vitrine Bloom — set
+    /// before `didMove(to:)` to use a different opponent.
+    var opponent: OpponentDefinition = .vitrineBloom
+
+    /// Owned audio playback. Silent no-op when files are missing.
+    private lazy var audio = AudioSystem()
+
+    // Timing (seconds) — initialized from the opponent in didMove(to:).
     private var telegraphDuration: TimeInterval = 1.6
     private var restDuration:      TimeInterval = 1.2
 
@@ -124,6 +131,14 @@ class GameScene: SKScene {
 
     override func didMove(to view: SKView) {
         backgroundColor = SKColor(red: 0.06, green: 0.05, blue: 0.09, alpha: 1)
+
+        // Pull timings + HP from the chosen opponent definition. Lets the
+        // 3-opponent roster (Sandbag / Vitrine Bloom / The Warden) all share
+        // this scene with no per-opponent code branching.
+        telegraphDuration = opponent.telegraphSec
+        restDuration      = opponent.restSec
+        hp                = min(opponent.initialHP, maxHp)  // cap at HUD max for the bar
+
         setupBackground()
         // setupVignette() removed — the 70px black strips were darkening the
         // SCORE/ROUND chips and the dodge hint, hurting readability for a
@@ -139,9 +154,19 @@ class GameScene: SKScene {
         // transition, so trigger it once here.
         updateHpBar()
 
+        // Start opponent music (silent no-op if file missing — see AudioSystem
+        // contract). Bell rings on first punch telegraph.
+        if let track = opponent.musicTrack {
+            audio.startMusic(named: track)
+        }
+
         [lightImpact, heavyImpact, mediumImpact].forEach { $0.prepare() }
         notify.prepare()
 
+        // Drumroll → bell → first punch. AudioSystem is silent if files
+        // aren't bundled yet, so the timing still works for testing.
+        audio.play(.drumRoll)
+        run(.wait(forDuration: 0.9)) { [weak self] in self?.audio.play(.bell) }
         run(.wait(forDuration: 1.0)) { [weak self] in self?.nextPunch() }
     }
 
@@ -580,7 +605,9 @@ class GameScene: SKScene {
     private func nextPunch() {
         guard !gameOver else { return }
 
-        let punch = PunchType.allCases.randomElement()!
+        // Pick from the opponent's allowed punch set. Sandbag throws all 4;
+        // Vitrine skips uppercut early on; The Warden throws everything fast.
+        let punch = opponent.punches.randomElement() ?? .jab
         currentPunch    = punch
         punchLanded     = false
         waitingForDodge = true
@@ -680,6 +707,8 @@ class GameScene: SKScene {
         combo += 1
         score += 10 * max(combo, 1)
 
+        audio.play(.dodgeCheer)
+
         // Haptic
         if hapticsEnabled {
             if combo >= 3 {
@@ -742,6 +771,9 @@ class GameScene: SKScene {
     private func onHit(_ punch: PunchType) {
         combo = 0
         hp -= 1
+
+        audio.play(.hitImpact)
+        audio.play(.buzzBuzz)
 
         if hapticsEnabled { heavyImpact.impactOccurred() }
 
@@ -838,6 +870,9 @@ class GameScene: SKScene {
         telegraphDuration = max(0.65, telegraphDuration - 0.12)
         restDuration      = max(0.55, restDuration - 0.08)
 
+        audio.play(.roundUp)
+        audio.play(.bell)
+
         if hapticsEnabled { notify.notificationOccurred(.success) }
 
         let banner = SKLabelNode(fontNamed: "AvenirNext-Heavy")
@@ -861,6 +896,9 @@ class GameScene: SKScene {
 
     private func triggerKO() {
         gameOver = true
+
+        audio.stopMusic(fadeOver: 0.6)
+        audio.play(.knockoutSting)
 
         if hapticsEnabled { notify.notificationOccurred(.error) }
         // Submit best dodge streak from this fight to GameKit (silent if not authed)
