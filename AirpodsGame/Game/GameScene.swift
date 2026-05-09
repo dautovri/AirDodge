@@ -87,6 +87,29 @@ class GameScene: SKScene {
     /// Owned audio playback. Silent no-op when files are missing.
     private lazy var audio = AudioSystem()
 
+    // MARK: Fight phase — locked in /plan-eng-review Issue 3
+    //
+    // Single SKScene + state machine instead of separate SKScenes. Cards are
+    // SKNode groups that show/hide based on `phase`. The dramatic beats
+    // (opponent intro, between-rounds pep talk, KO sequence) are co-located
+    // with the fight logic that triggers them.
+
+    enum FightPhase {
+        case intro                  // opponent name card, drumroll → bell → fighting
+        case fighting               // active dodge gameplay
+        case roundBreak(round: Int) // pep talk card between rounds
+        case ko                     // KO sequence, then onGameOver callback
+    }
+
+    private var phase: FightPhase = .intro { didSet { updatePhase() } }
+
+    // Card groups — populated in setupCards(), hidden by default
+    private var introCard:      SKNode!
+    private var roundBreakCard: SKNode!
+    private var koCard:         SKNode!
+    private var roundBreakText: SKLabelNode!  // updated per round break
+    private var koScoreText:    SKLabelNode!  // updated on KO with final score
+
     // Timing (seconds) — initialized from the opponent in didMove(to:).
     private var telegraphDuration: TimeInterval = 1.6
     private var restDuration:      TimeInterval = 1.2
@@ -132,12 +155,16 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         backgroundColor = SKColor(red: 0.06, green: 0.05, blue: 0.09, alpha: 1)
 
-        // Pull timings + HP from the chosen opponent definition. Lets the
+        // Pull timings from the chosen opponent definition. Lets the
         // 3-opponent roster (Sandbag / Vitrine Bloom / The Warden) all share
         // this scene with no per-opponent code branching.
+        // HP assignment is deferred until AFTER setupHUD() because the didSet
+        // observer on `hp` calls updateHpBar() which references hpBarFill —
+        // which doesn't exist yet at this point. Assigning here would crash
+        // with "Fatal error: Unexpectedly found nil while implicitly
+        // unwrapping an Optional value" on the SKShapeNode! property.
         telegraphDuration = opponent.telegraphSec
         restDuration      = opponent.restSec
-        hp                = min(opponent.initialHP, maxHp)  // cap at HUD max for the bar
 
         setupBackground()
         // setupVignette() removed — the 70px black strips were darkening the
@@ -146,12 +173,13 @@ class GameScene: SKScene {
         setupOpponent()
         setupHUD()
         setupZoneIndicator()
-        // Force the HP bar to render its full-HP green state on entry. The
-        // didSet observer only fires when `hp` is reassigned, so the initial
-        // value of 5 was leaving the bar at its placeholder green geometry
-        // but with the default green color from setupHUD — except the
-        // animation in updateHpBar is what guarantees the right color
-        // transition, so trigger it once here.
+        setupCards()
+
+        // Now that the HUD nodes exist, assign HP — didSet → updateHpBar()
+        // will paint the bar green for the full-HP frac.
+        hp = min(opponent.initialHP, maxHp)
+        // updateHpBar() also runs explicitly here in case `hp` happens to
+        // already equal the default 5 (no didSet fires on no-change).
         updateHpBar()
 
         // Start opponent music (silent no-op if file missing — see AudioSystem
@@ -163,11 +191,10 @@ class GameScene: SKScene {
         [lightImpact, heavyImpact, mediumImpact].forEach { $0.prepare() }
         notify.prepare()
 
-        // Drumroll → bell → first punch. AudioSystem is silent if files
-        // aren't bundled yet, so the timing still works for testing.
-        audio.play(.drumRoll)
-        run(.wait(forDuration: 0.9)) { [weak self] in self?.audio.play(.bell) }
-        run(.wait(forDuration: 1.0)) { [weak self] in self?.nextPunch() }
+        // Phase transitions handle drumroll/bell/intro card. Setting phase
+        // triggers updatePhase() which kicks off the intro animation +
+        // schedules the transition to .fighting.
+        phase = .intro
     }
 
     // MARK: Background — boxing ring canvas
@@ -518,6 +545,251 @@ class GameScene: SKScene {
         return ring
     }
 
+    // MARK: - Cards (FightPhase visuals)
+
+    private func setupCards() {
+        introCard      = makeIntroCard()
+        roundBreakCard = makeRoundBreakCard()
+        koCard         = makeKOCard()
+
+        introCard.isHidden      = true
+        roundBreakCard.isHidden = true
+        koCard.isHidden         = true
+
+        addChild(introCard)
+        addChild(roundBreakCard)
+        addChild(koCard)
+    }
+
+    /// Center-screen card showing opponent name / country / record. Mimics
+    /// the 1987 NES "VS" splash that introduces each fight.
+    ///
+    /// IMPORTANT: SpriteView is created with `ignoresSiblingOrder: true`,
+    /// which means child zPositions are ABSOLUTE in the scene, not relative
+    /// to the parent. Every child needs a zPosition explicitly above the
+    /// rest of the scene's content (zPos 0-50 range) for the card to appear
+    /// in front. Earlier defaults of 0 and -1 silently rendered the card
+    /// behind the opponent and HUD.
+    private func makeIntroCard() -> SKNode {
+        let group = SKNode()
+        group.position = CGPoint(x: size.width / 2, y: size.height * 0.55)
+        // Per SKNode docs: a child's effective zPosition is parent.zPosition +
+        // child.zPosition. With parent at 0, our zPos 90 children should render
+        // at absolute 90 — but they didn't. Setting parent zPosition explicitly
+        // forces children's absolute zPos far above the rest of the scene
+        // regardless of any odd composition rules.
+        group.zPosition = 100
+
+        let backdrop = SKShapeNode(rectOf: CGSize(width: size.width, height: size.height))
+        backdrop.fillColor   = SKColor(white: 0, alpha: 0.78)
+        backdrop.strokeColor = .clear
+        backdrop.position    = CGPoint(x: 0, y: -(size.height * 0.05))
+        backdrop.zPosition   = 90
+        group.addChild(backdrop)
+
+        let vs = SKLabelNode(fontNamed: "AvenirNext-Heavy")
+        vs.text      = "—  VS  —"
+        vs.fontSize  = 16
+        vs.fontColor = SKColor(red: 1.0, green: 0.85, blue: 0.30, alpha: 1)
+        vs.position  = CGPoint(x: 0, y: 90)
+        vs.zPosition = 91
+        group.addChild(vs)
+
+        let name = SKLabelNode(fontNamed: "AvenirNext-Heavy")
+        name.text      = opponent.name
+        name.fontSize  = 42
+        name.fontColor = SKColor(red: 1.0, green: 0.95, blue: 0.85, alpha: 1)
+        name.position  = CGPoint(x: 0, y: 30)
+        name.zPosition = 91
+        group.addChild(name)
+
+        let country = SKLabelNode(fontNamed: "AvenirNext-Bold")
+        country.text      = opponent.country
+        country.fontSize  = 18
+        country.fontColor = SKColor(white: 1, alpha: 0.6)
+        country.position  = CGPoint(x: 0, y: -10)
+        country.zPosition = 91
+        group.addChild(country)
+
+        let record = SKLabelNode(fontNamed: "Menlo-Bold")
+        record.text      = "RECORD  \(opponent.record)"
+        record.fontSize  = 14
+        record.fontColor = SKColor(red: 1.0, green: 0.65, blue: 0.10, alpha: 1)
+        record.position  = CGPoint(x: 0, y: -38)
+        record.zPosition = 91
+        group.addChild(record)
+
+        let hint = SKLabelNode(fontNamed: "AvenirNext-Medium")
+        hint.text      = opponent.isTutorial
+            ? "Take your time. You can't lose."
+            : "Slip the hooks. Duck the uppercut."
+        hint.fontSize  = 12
+        hint.fontColor = SKColor(white: 1, alpha: 0.55)
+        hint.position  = CGPoint(x: 0, y: -68)
+        hint.zPosition = 91
+        group.addChild(hint)
+
+        return group
+    }
+
+    private func makeRoundBreakCard() -> SKNode {
+        let group = SKNode()
+        group.position = CGPoint(x: size.width / 2, y: size.height * 0.55)
+        group.zPosition = 100
+
+        let backdrop = SKShapeNode(rectOf: CGSize(width: size.width, height: size.height))
+        backdrop.fillColor   = SKColor(white: 0, alpha: 0.7)
+        backdrop.strokeColor = .clear
+        backdrop.position    = CGPoint(x: 0, y: -(size.height * 0.05))
+        backdrop.zPosition   = 90
+        group.addChild(backdrop)
+
+        let header = SKLabelNode(fontNamed: "AvenirNext-Heavy")
+        header.text      = "BREAK"
+        header.fontSize  = 28
+        header.fontColor = SKColor(red: 1.0, green: 0.85, blue: 0.30, alpha: 1)
+        header.position  = CGPoint(x: 0, y: 60)
+        header.zPosition = 91
+        group.addChild(header)
+
+        roundBreakText = SKLabelNode(fontNamed: "AvenirNext-Medium")
+        roundBreakText.text                    = ""
+        roundBreakText.fontSize                = 16
+        roundBreakText.fontColor               = SKColor(red: 1.0, green: 0.95, blue: 0.85, alpha: 1)
+        roundBreakText.numberOfLines           = 3
+        roundBreakText.preferredMaxLayoutWidth = size.width * 0.78
+        roundBreakText.horizontalAlignmentMode = .center
+        roundBreakText.position                = CGPoint(x: 0, y: 0)
+        roundBreakText.zPosition               = 91
+        group.addChild(roundBreakText)
+
+        let hint = SKLabelNode(fontNamed: "AvenirNext-Bold")
+        hint.text      = "BELL IN 3…"
+        hint.fontSize  = 12
+        hint.fontColor = SKColor(white: 1, alpha: 0.55)
+        hint.position  = CGPoint(x: 0, y: -56)
+        hint.zPosition = 91
+        group.addChild(hint)
+
+        return group
+    }
+
+    private func makeKOCard() -> SKNode {
+        let group = SKNode()
+        group.position = CGPoint(x: size.width / 2, y: size.height * 0.55)
+        group.zPosition = 110
+
+        let backdrop = SKShapeNode(rectOf: CGSize(width: size.width, height: size.height))
+        backdrop.fillColor   = SKColor(red: 0.12, green: 0.02, blue: 0.02, alpha: 0.86)
+        backdrop.strokeColor = .clear
+        backdrop.position    = CGPoint(x: 0, y: -(size.height * 0.05))
+        backdrop.zPosition   = 95
+        group.addChild(backdrop)
+
+        let ko = SKLabelNode(fontNamed: "AvenirNext-Heavy")
+        ko.text      = "K.O."
+        ko.fontSize  = 96
+        ko.fontColor = SKColor(red: 1.0, green: 0.20, blue: 0.20, alpha: 1)
+        ko.position  = CGPoint(x: 0, y: 60)
+        ko.zPosition = 96
+        group.addChild(ko)
+
+        let dlc = SKLabelNode(fontNamed: "AvenirNext-Heavy")
+        dlc.text      = "DOWN FOR THE COUNT"
+        dlc.fontSize  = 14
+        dlc.fontColor = SKColor(white: 1, alpha: 0.65)
+        dlc.position  = CGPoint(x: 0, y: -10)
+        dlc.zPosition = 96
+        group.addChild(dlc)
+
+        koScoreText = SKLabelNode(fontNamed: "Menlo-Bold")
+        koScoreText.text      = "FINAL  0"
+        koScoreText.fontSize  = 18
+        koScoreText.fontColor = SKColor(red: 1.0, green: 0.85, blue: 0.30, alpha: 1)
+        koScoreText.position  = CGPoint(x: 0, y: -42)
+        koScoreText.zPosition = 96
+        group.addChild(koScoreText)
+
+        return group
+    }
+
+    // MARK: Phase transitions
+
+    private func updatePhase() {
+        introCard.isHidden      = true
+        roundBreakCard.isHidden = true
+        koCard.isHidden         = true
+
+        switch phase {
+        case .intro:
+            // Show intro card with a brief animation, then auto-advance to fighting
+            // after the bell rings.
+            introCard.isHidden = false
+            introCard.alpha    = 0
+            introCard.setScale(0.92)
+            introCard.run(.group([
+                .fadeIn(withDuration: 0.25),
+                .scale(to: 1.0, duration: 0.25),
+            ]))
+            audio.play(.drumRoll)
+
+            // Use wall-clock dispatch for phase transitions instead of
+            // SKAction.run(.wait...) — SpriteKit's action time can fast-forward
+            // when a freshly-created scene attaches to its view, causing the
+            // intro to "skip" entirely. asyncAfter ticks at the system timer
+            // regardless of scene state.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) { [weak self] in
+                self?.audio.play(.bell)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                guard let self else { return }
+                guard case .intro = self.phase else { return }   // skip if already advanced
+                self.introCard.run(.fadeOut(withDuration: 0.25))
+                self.phase = .fighting
+            }
+
+        case .fighting:
+            // Resume normal play. nextPunch only fires on first transition into
+            // .fighting (from intro or roundBreak); subsequent punches are
+            // scheduled by resetGlovesAndContinue() which calls nextPunch via
+            // run(.wait...).
+            nextPunch()
+
+        case .roundBreak(let nextRound):
+            roundBreakCard.isHidden = false
+            roundBreakCard.alpha    = 0
+            roundBreakText.text     = opponent.pepTalks.randomElement() ?? ""
+            roundBreakCard.run(.fadeIn(withDuration: 0.25))
+
+            // Auto-advance back to fighting after a 2.5s read time + bell.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) { [weak self] in
+                self?.audio.play(.bell)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [weak self] in
+                guard let self else { return }
+                guard case .roundBreak = self.phase else { return }
+                self.roundBreakCard.run(.fadeOut(withDuration: 0.25))
+                self.round = nextRound
+                self.roundLabel.text = "\(nextRound)"
+                self.telegraphDuration = max(0.65, self.telegraphDuration - 0.12)
+                self.restDuration      = max(0.55, self.restDuration  - 0.08)
+                self.phase = .fighting
+            }
+
+        case .ko:
+            koScoreText.text  = "FINAL  \(score)"
+            koCard.isHidden   = false
+            koCard.alpha      = 0
+            koCard.setScale(0.7)
+            koCard.run(.group([
+                .fadeIn(withDuration: 0.35),
+                .scale(to: 1.0, duration: 0.35),
+            ]))
+            audio.stopMusic(fadeOver: 0.6)
+            audio.play(.knockoutSting)
+        }
+    }
+
     // MARK: - Game Loop
 
     override func update(_ currentTime: TimeInterval) {
@@ -604,6 +876,10 @@ class GameScene: SKScene {
 
     private func nextPunch() {
         guard !gameOver else { return }
+        // Phase gate — punches only fire during .fighting. Stale scheduled
+        // calls from resetGlovesAndContinue's run(.wait...) early-return
+        // when the phase has flipped to .roundBreak / .ko / .intro since.
+        guard case .fighting = phase else { return }
 
         // Pick from the opponent's allowed punch set. Sandbag throws all 4;
         // Vitrine skips uppercut early on; The Warden throws everything fast.
@@ -770,7 +1046,12 @@ class GameScene: SKScene {
 
     private func onHit(_ punch: PunchType) {
         combo = 0
-        hp -= 1
+        // Tutorial fights (Sandbag) are immortal — player feels every hit
+        // visually + audibly but can't actually lose. Per CEO plan: the
+        // tutorial teaches the rhythm without punishing failure.
+        if !opponent.isTutorial {
+            hp -= 1
+        }
 
         audio.play(.hitImpact)
         audio.play(.buzzBuzz)
@@ -865,31 +1146,13 @@ class GameScene: SKScene {
     }
 
     private func advanceRound() {
-        round += 1
-        roundLabel.text = "\(round)"
-        telegraphDuration = max(0.65, telegraphDuration - 0.12)
-        restDuration      = max(0.55, restDuration - 0.08)
-
+        // Round increment happens inside the .roundBreak phase transition
+        // so the label updates right when the bell rings, not while the
+        // pep-talk card is still on screen. This function just triggers
+        // the transition — visuals are owned by updatePhase().
         audio.play(.roundUp)
-        audio.play(.bell)
-
         if hapticsEnabled { notify.notificationOccurred(.success) }
-
-        let banner = SKLabelNode(fontNamed: "AvenirNext-Heavy")
-        banner.text      = "ROUND \(round)!"
-        banner.fontSize  = 42
-        banner.fontColor = SKColor(red: 1, green: 0.85, blue: 0.20, alpha: 1)
-        banner.position  = CGPoint(x: size.width / 2, y: size.height / 2)
-        banner.zPosition = 35
-        banner.setScale(0.5)
-        banner.alpha = 0
-        addChild(banner)
-        banner.run(.sequence([
-            .group([.scale(to: 1.0, duration: 0.25), .fadeIn(withDuration: 0.2)]),
-            .wait(forDuration: 0.4),
-            .group([.moveBy(x: 0, y: 20, duration: 0.6), .fadeOut(withDuration: 0.6)]),
-            .removeFromParent()
-        ]))
+        phase = .roundBreak(round: round + 1)
     }
 
     // MARK: - KO
@@ -897,29 +1160,11 @@ class GameScene: SKScene {
     private func triggerKO() {
         gameOver = true
 
-        audio.stopMusic(fadeOver: 0.6)
-        audio.play(.knockoutSting)
-
         if hapticsEnabled { notify.notificationOccurred(.error) }
         // Submit best dodge streak from this fight to GameKit (silent if not authed)
         GameCenter.shared.submitStreak(maxStreak)
 
-        // Big KO text
-        let ko = SKLabelNode(fontNamed: "AvenirNext-Heavy")
-        ko.text      = "K.O."
-        ko.fontSize  = 100
-        ko.fontColor = SKColor(red: 1, green: 0.20, blue: 0.20, alpha: 1)
-        ko.position  = CGPoint(x: size.width / 2, y: size.height / 2)
-        ko.zPosition = 40
-        ko.setScale(0.3)
-        ko.alpha     = 0
-        addChild(ko)
-        ko.run(.group([
-            .scale(to: 1.0, duration: 0.3),
-            .fadeIn(withDuration: 0.3)
-        ]))
-
-        // Strong shake
+        // Strong shake under the KO card
         run(.sequence([
             .moveBy(x: -22, y: 0, duration: 0.05),
             .moveBy(x:  22, y: 0, duration: 0.05),
@@ -933,7 +1178,12 @@ class GameScene: SKScene {
         leftGlove.run(.scale(to: 0.8, duration: 0.4))
         rightGlove.run(.scale(to: 0.8, duration: 0.4))
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+        // updatePhase() handles the K.O. card animation + audio sting.
+        phase = .ko
+
+        // Hold the KO card for ~1.6s so the player can read the score, then
+        // hand off to the SwiftUI game-over view.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
             self.onGameOver?(self.score)
         }
     }
