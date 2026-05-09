@@ -10,6 +10,9 @@ struct ContentView: View {
     @State private var highScore: Int = UserDefaults.standard.integer(forKey: "boxerHighScore")
     @State private var settingsPresented = false
     @State private var isPaused = false
+    /// Currently selected opponent. Defaults to Sandbag for first-time users —
+    /// per the CEO plan, the tutorial is opponent #1 in the roster.
+    @State private var selectedOpponent: OpponentDefinition = .sandbag
     @Environment(\.scenePhase) private var scenePhase
 
     enum GameState { case menu, playing, gameOver }
@@ -34,12 +37,15 @@ struct ContentView: View {
                 MenuView(motionStatus: motion.status,
                          highScore: highScore,
                          canStart: canStart,
+                         selectedOpponent: $selectedOpponent,
                          onStart: { startFight() },
                          onSettings: { settingsPresented = true })
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
 
             case .playing:
-                GameView(isPaused: isPaused, onGameOver: handleGameOver)
+                GameView(isPaused: isPaused,
+                         opponent: selectedOpponent,
+                         onGameOver: handleGameOver)
                     .transition(.opacity)
 
             case .gameOver:
@@ -191,6 +197,7 @@ struct MenuView: View {
     let motionStatus: MotionManager.Status
     let highScore: Int
     let canStart: Bool
+    @Binding var selectedOpponent: OpponentDefinition
     let onStart: () -> Void
     let onSettings: () -> Void
 
@@ -257,8 +264,11 @@ struct MenuView: View {
             ConnectionChip(status: motionStatus)
                 .padding(.top, 6)
 
-            // Dodge guide
-            DodgeGuideView()
+            // Roster picker — 3 cards, one per opponent. Replaces the static
+            // 'HOW TO DODGE' guide that was redundant after the tutorial.
+            // Required by Apple Guideline 4.2 (minimum functionality) — the
+            // game ships with 3 opponents and the user must be able to pick.
+            OpponentPicker(selected: $selectedOpponent)
                 .padding(.horizontal, 24)
                 .padding(.top, 8)
 
@@ -393,21 +403,30 @@ private struct ConnectionChip: View {
     }
 }
 
-struct DodgeGuideView: View {
+struct OpponentPicker: View {
+    @Binding var selected: OpponentDefinition
+
     var body: some View {
-        VStack(spacing: 12) {
-            Text("HOW TO DODGE")
+        VStack(spacing: 10) {
+            Text("CHOOSE YOUR OPPONENT")
                 .font(.system(size: 11, weight: .heavy, design: .rounded))
                 .tracking(1.5)
                 .foregroundStyle(.white.opacity(0.45))
 
             HStack(spacing: 10) {
-                DodgeItem(icon: "arrow.left", label: "Slip Left",  color: .cyan)
-                DodgeItem(icon: "arrow.down", label: "Duck",       color: Color(red: 0.7, green: 0.45, blue: 1))
-                DodgeItem(icon: "arrow.right", label: "Slip Right", color: .cyan)
+                ForEach(OpponentDefinition.allOpponents, id: \.id) { opponent in
+                    OpponentCard(
+                        opponent: opponent,
+                        isSelected: opponent.id == selected.id,
+                        onTap: {
+                            Haptics.impact(.light)
+                            selected = opponent
+                        }
+                    )
+                }
             }
         }
-        .padding(.vertical, 16).padding(.horizontal, 18)
+        .padding(.vertical, 16).padding(.horizontal, 14)
         .frame(maxWidth: .infinity)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay(
@@ -417,23 +436,67 @@ struct DodgeGuideView: View {
     }
 }
 
-struct DodgeItem: View {
-    let icon: String
-    let label: String
-    let color: Color
-    var body: some View {
-        VStack(spacing: 8) {
-            ZStack {
-                Circle().fill(color.opacity(0.15)).frame(width: 44, height: 44)
-                Image(systemName: icon)
-                    .font(.system(size: 18, weight: .heavy))
-                    .foregroundStyle(color)
-            }
-            Text(label)
-                .font(.system(size: 12, weight: .semibold, design: .rounded))
-                .foregroundStyle(.white.opacity(0.75))
+private struct OpponentCard: View {
+    let opponent: OpponentDefinition
+    let isSelected: Bool
+    let onTap: () -> Void
+
+    /// Difficulty badge color matched to opponent identity from the data model.
+    private var accent: Color {
+        switch opponent.id {
+        case "sandbag":       return Color(red: 0.95, green: 0.85, blue: 0.50)
+        case "vitrine_bloom": return Color(red: 0.65, green: 0.45, blue: 0.85)
+        case "the_warden":    return Color(red: 1.00, green: 0.30, blue: 0.20)
+        default:              return .white
         }
-        .frame(maxWidth: .infinity)
+    }
+
+    private var difficulty: String {
+        // Telegraph speed encodes difficulty: 2.2s = easy, 1.6s = medium, 1.0s = hard
+        switch opponent.telegraphSec {
+        case 1.8...:  return "TRAINING"
+        case 1.3...:  return "REGULAR"
+        default:      return "BOSS"
+        }
+    }
+
+    var body: some View {
+        Button(action: onTap) {
+            VStack(spacing: 8) {
+                Text(difficulty)
+                    .font(.system(size: 8, weight: .heavy, design: .rounded))
+                    .tracking(1.2)
+                    .foregroundStyle(accent.opacity(0.85))
+                Text(opponent.name)
+                    .font(.system(size: 11, weight: .heavy, design: .rounded))
+                    .foregroundStyle(.white.opacity(isSelected ? 1.0 : 0.75))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
+                Text(opponent.country)
+                    .font(.system(size: 9, weight: .medium, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.4))
+                Text(opponent.record)
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(.white.opacity(0.55))
+                    .padding(.top, 2)
+            }
+            .padding(.vertical, 12).padding(.horizontal, 6)
+            .frame(maxWidth: .infinity, minHeight: 100)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(isSelected ? accent.opacity(0.18) : Color.white.opacity(0.04))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(isSelected ? accent : Color.white.opacity(0.10),
+                            lineWidth: isSelected ? 2 : 1)
+            )
+            .shadow(color: isSelected ? accent.opacity(0.45) : .clear,
+                    radius: isSelected ? 10 : 0)
+        }
+        .buttonStyle(.plain)
+        .animation(.easeOut(duration: 0.18), value: isSelected)
     }
 }
 
@@ -499,6 +562,7 @@ private struct PressActionStyle: ButtonStyle {
 
 struct GameView: View {
     let isPaused: Bool
+    let opponent: OpponentDefinition
     let onGameOver: (Int) -> Void
     @State private var scene: GameScene?
 
@@ -517,6 +581,7 @@ struct GameView: View {
                     let s = GameScene()
                     s.size = geo.size
                     s.scaleMode = .resizeFill
+                    s.opponent = opponent     // drive timings/HP/punch set/music
                     s.onGameOver = onGameOver
                     scene = s
                 }
