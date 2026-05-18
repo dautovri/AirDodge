@@ -2,3 +2,4 @@
 # Local design-review screenshots — not part of the build
 _fight-review*.png
 
+.wrangler/
