@@ -20,6 +20,8 @@
     <string>$(CURRENT_PROJECT_VERSION)</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
+    <key>UIRequiresFullScreen</key>
+    <true/>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.action-games</string>
     <key>ITSAppUsesNonExemptEncryption</key>
