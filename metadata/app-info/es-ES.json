@@ -1,0 +1,6 @@
+{
+  "name": "AirBoxer",
+  "subtitle": "Boxeo con movimiento de cabeza",
+  "privacyPolicyUrl": "https://airboxer.pages.dev/privacy/",
+  "privacyPolicyText": "AirBoxer no recopila nada. El movimiento de los AirPods se lee localmente y se descarta en tiempo real. Sin analíticas, sin publicidad, sin seguimiento, sin SDK de terceros. Las puntuaciones de Game Center son opcionales y las gestiona Apple."
+}
