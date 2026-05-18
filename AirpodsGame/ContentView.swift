@@ -10,6 +10,9 @@ struct ContentView: View {
     @State private var highScore: Int = UserDefaults.standard.integer(forKey: "boxerHighScore")
     @State private var settingsPresented = false
     @State private var isPaused = false
+    /// Tracks whether we just came back from background — triggers motion.restart()
+    /// to recover from CoreMotion suspension. See scenePhase handler below.
+    @State private var wasBackgrounded = false
     /// Currently selected opponent. Defaults to Sandbag for first-time users —
     /// per the CEO plan, the tutorial is opponent #1 in the roster.
     @State private var selectedOpponent: OpponentDefinition = .sandbag
@@ -77,12 +80,25 @@ struct ContentView: View {
             if gameState == .playing {
                 switch phase {
                 case .background, .inactive:
+                    wasBackgrounded = true
                     isPaused = true
                 case .active:
-                    break  // wait for user tap
+                    // /autoplan eng review finding #14: CoreMotion suspends
+                    // CMHeadphoneMotionManager on background. On return, the
+                    // stream is dead but isStreaming is still true so a plain
+                    // start() is a no-op. Force a restart from clean state.
+                    if wasBackgrounded {
+                        motion.restart()
+                        wasBackgrounded = false
+                    }
                 @unknown default:
                     isPaused = true
                 }
+            } else if phase == .active && wasBackgrounded {
+                // Even from the menu, if we came back from background, make
+                // sure the motion peer is alive so the FIGHT button gates correctly.
+                motion.restart()
+                wasBackgrounded = false
             }
         }
         .sheet(isPresented: $settingsPresented) {

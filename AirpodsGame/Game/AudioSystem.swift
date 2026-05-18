@@ -35,6 +35,7 @@ final class AudioSystem {
 
     private var music: AVAudioPlayer?
     private var samples: [SoundID: AVAudioPlayer] = [:]
+    private var musicWasPlayingBeforeInterruption: Bool = false
 
     // Read fresh each call so toggling Sound in Settings takes effect.
     private var soundEnabled: Bool {
@@ -44,6 +45,63 @@ final class AudioSystem {
     init(bundle: Bundle = .main) {
         configureAudioSession()
         preloadSamples(in: bundle)
+        registerInterruptionObserver()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    // MARK: - Interruption + route-change handling
+    // Fixes /autoplan eng review consensus finding #13: phone call / Siri /
+    // AirPods route change would silently kill music with no recovery path.
+
+    private func registerInterruptionObserver() {
+        let nc = NotificationCenter.default
+        nc.addObserver(self,
+                       selector: #selector(handleInterruption(_:)),
+                       name: AVAudioSession.interruptionNotification,
+                       object: nil)
+        nc.addObserver(self,
+                       selector: #selector(handleRouteChange(_:)),
+                       name: AVAudioSession.routeChangeNotification,
+                       object: nil)
+    }
+
+    @objc private func handleInterruption(_ note: Notification) {
+        guard
+            let info = note.userInfo,
+            let typeRaw = info[AVAudioSessionInterruptionTypeKey] as? UInt,
+            let type = AVAudioSession.InterruptionType(rawValue: typeRaw)
+        else { return }
+
+        switch type {
+        case .began:
+            musicWasPlayingBeforeInterruption = music?.isPlaying ?? false
+            music?.pause()
+        case .ended:
+            let options = (info[AVAudioSessionInterruptionOptionKey] as? UInt).map(AVAudioSession.InterruptionOptions.init(rawValue:))
+            if options?.contains(.shouldResume) == true && musicWasPlayingBeforeInterruption {
+                try? AVAudioSession.sharedInstance().setActive(true, options: [])
+                music?.play()
+            }
+        @unknown default:
+            break
+        }
+    }
+
+    @objc private func handleRouteChange(_ note: Notification) {
+        guard
+            let info = note.userInfo,
+            let reasonRaw = info[AVAudioSessionRouteChangeReasonKey] as? UInt,
+            let reason = AVAudioSession.RouteChangeReason(rawValue: reasonRaw)
+        else { return }
+
+        // When AirPods are pulled mid-game (oldDeviceUnavailable), pause music
+        // so audio doesn't suddenly blast through the phone speaker mid-fight.
+        if reason == .oldDeviceUnavailable {
+            music?.pause()
+        }
     }
 
     // MARK: - Audio session
