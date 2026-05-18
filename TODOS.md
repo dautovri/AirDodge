@@ -4,6 +4,47 @@ Captured during /plan-eng-review (2026-05-02) and /plan-ceo-review (2026-05-03)
 for the AirBoxer Polished Vertical Slice and App Store launch. All items are
 explicitly OUT of scope for v1.0 — recorded here so they don't get lost.
 
+---
+
+## ⬆️ PROMOTED INTO v1.0 by /autoplan (2026-05-14) — both Codex and Claude subagent agreed
+
+### 1. Daily Challenge mode
+
+**Why:** /autoplan dual-voice consensus: a single daily-seeded challenge mode does more for retention than opponent #3 does for content. Both reviewers flagged this as Medium urgency — replacing some localization polish or one opponent's polish budget with Daily Challenge is a better retention bet.
+
+**Minimum viable shape:**
+- A 4th menu entry "DAILY" alongside the 3 opponent cards
+- Uses Vitrine Bloom's sprite + audio (no new art)
+- Telegraph sequence is deterministic from `Date()` rounded to UTC midnight (so all players get the same fight that day)
+- Tracks current streak in `@AppStorage("dailyStreak")` — resets to 0 if a UTC day is missed
+- New GameKit leaderboard: `com.airdodge.AirpodsGame.leaderboard.daily_streak`
+
+**Effort:** 1-2 days CC.
+
+### 2. Sequenced opponent unlocks — RE-DEFERRED to v1.1 (2026-05-18)
+
+**Status:** Pulled in by /autoplan, then re-deferred when implementation revealed the codebase has no opponent-defeat path. `triggerKO()` only fires on PLAYER HP=0 (loss). `opponent.opponentHP` is defined on the data model but never decremented. To set `vitrineBloomDefeated = true` we'd first need to wire opponent HP drain + victory KO sequence + a separate victory card. ~1 day, not 2 hours. Bundled with v1.1 content drop where the win loop will be properly built.
+
+**Why originally:** /autoplan dual-voice consensus: 3 free cards = level select = no progression arc. Punch-Out's power was sequencing. Lock Warden behind beating Vitrine Bloom once.
+
+**Minimum viable shape:**
+- `@AppStorage("vitrineBloomDefeated") var beatenVB: Bool = false`
+- OpponentPicker shows Warden card greyed out with overlay text "BEAT VITRINE BLOOM" until `beatenVB == true`
+- Tutorial (Sandbag) always unlocked. Vitrine always unlocked.
+- Set `beatenVB = true` in `endFight(victory: true)` path when `opponent.id == "vitrine_bloom"`
+
+**Effort:** ~2 hours CC.
+
+---
+
+## ❌ REJECTED user challenges (logged for future reconsideration if v1.0 underperforms)
+
+- **C1 App Preview video into v1.0** — both models flagged critical (head-motion invisible in stills). User declined; keep in v1.1.
+- **C2 Free + $1.99 unlock IAP** — both models flagged premium-pricing risk for novelty mechanic. User declined; keep premium $2.99.
+- **C4 Tap-to-dodge accessibility** — both models flagged Apple-rejection risk + locks out one-AirPod users. User declined. **If App Store review rejects under Guideline 2.5.1 or 5.1.1, this is the fix — ~2 hours of work.**
+
+---
+
 ## Bump deployment target to iOS 17 + migrate MotionManager to @Observable
 
 **Why:** global preference (use `@Observable` over `ObservableObject`). Blocked currently by iOS 16 deployment target set in `project.yml`.

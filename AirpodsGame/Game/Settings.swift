@@ -105,7 +105,7 @@ struct SettingsView: View {
 
                 Section {
                     Button {
-                        if let url = URL(string: "https://dautovri.com/airboxer/privacy") {
+                        if let url = URL(string: "https://airboxer.pages.dev/privacy/") {
                             UIApplication.shared.open(url)
                         }
                     } label: {
