@@ -1,5 +1,5 @@
 {
-  "name": "AirBoxer",
+  "name": "AirBoxer: Motion Boxing",
   "subtitle": "頭の動きでよけるボクシング",
   "privacyPolicyUrl": "https://airboxer.pages.dev/privacy/",
   "privacyPolicyText": "AirBoxerは何も収集しません。AirPodsのモーションはローカルで読み取られ、リアルタイムで破棄されます。アナリティクス、広告、トラッキング、サードパーティSDKは一切ありません。Game Centerのスコアは任意で、Appleが管理します。"
