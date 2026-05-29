@@ -24,6 +24,9 @@ private let log = Logger(subsystem: "com.airdodge.AirpodsGame", category: "AirBo
 // We expose both a status enum (what level of trouble we're in) and a
 // human-readable hint so the UI can give the user actionable feedback.
 
+// NOTE: Uses ObservableObject + @Published rather than @Observable because the
+// deployment target is iOS 16 (the app advertises "iOS 16+" in store metadata);
+// @Observable requires iOS 17+. Migrate only if the iOS floor is raised.
 final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerDelegate {
 
     enum Status {

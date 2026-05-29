@@ -1,4 +1,7 @@
 import AVFoundation
+import os
+
+private let log = Logger(subsystem: "com.airdodge.AirpodsGame", category: "AirBoxer.audio")
 
 // AudioSystem — owns every sound in the game.
 //
@@ -36,6 +39,11 @@ final class AudioSystem {
     private var music: AVAudioPlayer?
     private var samples: [SoundID: AVAudioPlayer] = [:]
     private var musicWasPlayingBeforeInterruption: Bool = false
+    /// Incremented on every startMusic/stopMusic. A fade-out closure captures
+    /// the generation it was scheduled under and bails if it no longer matches,
+    /// so a fade in flight can't step down or stop a track that startMusic
+    /// swapped in after the fade began.
+    private var musicGeneration: Int = 0
 
     // Read fresh each call so toggling Sound in Settings takes effect.
     private var soundEnabled: Bool {
@@ -115,7 +123,7 @@ final class AudioSystem {
             try AVAudioSession.sharedInstance().setActive(true, options: [])
         } catch {
             // Session config failure is non-fatal — game keeps running silent.
-            print("[AudioSystem] session setup failed: \(error.localizedDescription)")
+            log.error("session setup failed: \(error.localizedDescription, privacy: .public)")
         }
     }
 
@@ -136,7 +144,7 @@ final class AudioSystem {
                 player.prepareToPlay()
                 samples[id] = player
             } catch {
-                print("[AudioSystem] failed to load \(id.rawValue): \(error.localizedDescription)")
+                log.error("failed to load \(id.rawValue, privacy: .public): \(error.localizedDescription, privacy: .public)")
             }
         }
     }
@@ -168,26 +176,33 @@ final class AudioSystem {
             player.prepareToPlay()
             player.play()
             music = player
+            musicGeneration &+= 1
         } catch {
-            print("[AudioSystem] failed to start music \(name): \(error.localizedDescription)")
+            log.error("failed to start music \(name, privacy: .public): \(error.localizedDescription, privacy: .public)")
         }
     }
 
     func stopMusic(fadeOver duration: TimeInterval = 0.5) {
         guard let m = music else { return }
+        musicGeneration &+= 1
+        let generation = musicGeneration
         guard duration > 0 else {
             m.stop()
             music = nil
             return
         }
         // Manual fade-out via timer because AVAudioPlayer.setVolume(_:fadeDuration:)
-        // is iOS 10+ but we want explicit control over the curve.
+        // is iOS 10+ but we want explicit control over the curve. Capture the
+        // specific player + generation so a startMusic swap mid-fade can't have
+        // its fresh track stepped down or stopped by this fade.
         let steps = 10
         let stepDuration = duration / Double(steps)
         let startVolume = m.volume
         for i in 1...steps {
-            DispatchQueue.main.asyncAfter(deadline: .now() + stepDuration * Double(i)) { [weak self] in
-                guard let self, let player = self.music else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + stepDuration * Double(i)) { [weak self, weak m] in
+                guard let self, let player = m,
+                      self.musicGeneration == generation,
+                      self.music === player else { return }
                 player.volume = startVolume * Float(steps - i) / Float(steps)
                 if i == steps {
                     player.stop()
@@ -197,13 +212,4 @@ final class AudioSystem {
         }
     }
 
-    /// Duck volume to a fraction of current (for round-break voice clarity).
-    /// Call .restoreMusicVolume() to bring it back.
-    func duckMusic(to fraction: Float = 0.3) {
-        music?.volume = (music?.volume ?? 0.6) * fraction
-    }
-
-    func restoreMusicVolume(to volume: Float = 0.6) {
-        music?.volume = volume
-    }
 }

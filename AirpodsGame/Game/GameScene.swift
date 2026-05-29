@@ -75,6 +75,12 @@ class GameScene: SKScene {
     private var score: Int = 0                  { didSet { scoreLabel.text = "\(score)" } }
     private var combo: Int = 0                  { didSet { updateCombo(); maxStreak = max(maxStreak, combo) } }
     private var round: Int = 1
+    /// Successful dodges since the last round break. Rounds advance on a fixed
+    /// dodge count rather than a score modulus — combo-scaled scoring jumps in
+    /// non-uniform steps (10 × combo) and could skip a `score % 60` check
+    /// entirely, making round breaks fire erratically or never.
+    private var dodgesThisRound: Int = 0
+    private let dodgesPerRound: Int = 6
     private var gameOver = false
     private var waitingForDodge = false
     private var currentPunch: PunchType?
@@ -982,6 +988,7 @@ class GameScene: SKScene {
     private func onDodgeSuccess(_ punch: PunchType) {
         combo += 1
         score += 10 * max(combo, 1)
+        dodgesThisRound += 1
 
         audio.play(.dodgeCheer)
 
@@ -1136,7 +1143,8 @@ class GameScene: SKScene {
             .scale(to: 1.0, duration: resetTime)
         ]))
 
-        if score > 0 && score % 60 == 0 {
+        if dodgesThisRound >= dodgesPerRound {
+            dodgesThisRound = 0
             advanceRound()
         }
 
@@ -1183,7 +1191,8 @@ class GameScene: SKScene {
 
         // Hold the KO card for ~1.6s so the player can read the score, then
         // hand off to the SwiftUI game-over view.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) { [weak self] in
+            guard let self else { return }
             self.onGameOver?(self.score)
         }
     }

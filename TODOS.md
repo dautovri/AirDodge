@@ -37,6 +37,56 @@ explicitly OUT of scope for v1.0 — recorded here so they don't get lost.
 
 ---
 
+## 🔎 /review findings (2026-05-29) — build 4 in App Review
+
+### P0 — Game Center "knockouts" leaderboard counts player LOSSES
+
+`ContentView.handleGameOver` runs only when the player is KO'd, and it
+unconditionally calls `gameCenter.submitKnockout()` (ContentView.swift:128).
+Because there is no opponent-defeat path (see item 2 above), the
+`...leaderboard.totalkos` board increments once per player death — the metric
+is semantically inverted. **Bundle the fix with the v1.1 win-loop work:** only
+call `submitKnockout()` from the victory path, never from `handleGameOver`.
+Until then the totalKOs leaderboard is meaningless and should arguably be hidden
+in App Store Connect Game Center config.
+
+### FIXED in this review (committed to branch, NOT in build 4)
+
+- **Round advance no longer keyed on `score % 60`.** Combo-scaled scoring
+  (`10 × combo`) jumped in non-uniform steps and could skip 60 entirely, so
+  round breaks fired erratically. Now counts successful dodges
+  (`dodgesPerRound = 6`). GameScene.swift.
+- **KO `asyncAfter` now `[weak self]`.** Was the one closure capturing `self`
+  strongly; scene lingered 1.6s past KO. GameScene.swift:~1186.
+- **AudioSystem fade-out guarded by a generation token.** A `startMusic` during
+  an in-flight fade could step down / stop the freshly-started track. Now bails
+  if `musicGeneration`/player identity changed. AudioSystem.swift.
+- **GameKit auth handler hops to `@MainActor`** before mutating published state
+  (was publishing from GameKit's arbitrary queue). GameCenter.swift.
+- **`print()` → `os.Logger`** in AudioSystem + GameCenter; removed dead
+  `duckMusic`/`restoreMusicVolume`.
+
+### NOT changed — convention rule does not apply here
+
+CLAUDE.md mandates `@Observable`/`@State`, but the deployment target is
+**iOS 16.0** (`IPHONEOS_DEPLOYMENT_TARGET = 16.0`) and the store metadata
+advertises "iOS 16+". `@Observable` requires iOS 17+ (build fails otherwise —
+verified). `MotionManager` + `GameCenter` correctly stay on
+`ObservableObject`/`@Published`. Migrate only alongside the existing
+"Bump deployment target to iOS 17" TODO below.
+
+### Still open (v1.1)
+
+- **Zero unit tests.** Pure logic — `currentHeadZone()`, sensitivity threshold
+  table, score/combo math — is untested despite a documented history of
+  pitch/roll sign-convention bugs. Extract a pure `FightEngine`/`GameLogic` and
+  add a test target. (Already partially captured below.)
+- **In-game strings are English-only** ("OUCH!", "SLIPPED!", "K.O.", "BREAK")
+  despite 5-locale store metadata. Hoist to `String(localized:)`.
+- **`GameScene.swift` is a ~1200-line god object.** Split HUD/cards/engine.
+
+---
+
 ## ❌ REJECTED user challenges (logged for future reconsideration if v1.0 underperforms)
 
 - **C1 App Preview video into v1.0** — both models flagged critical (head-motion invisible in stills). User declined; keep in v1.1.

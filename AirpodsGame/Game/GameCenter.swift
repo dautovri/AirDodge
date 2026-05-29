@@ -1,5 +1,8 @@
 import GameKit
 import SwiftUI
+import os
+
+private let log = Logger(subsystem: "com.airdodge.AirpodsGame", category: "AirBoxer.gamecenter")
 
 // GameKit integration. Authenticate at app launch; submit scores after KO.
 //
@@ -11,10 +14,9 @@ import SwiftUI
 //
 // If GKLocalPlayer isn't authenticated (offline / declined), submission is a
 // silent no-op — never block gameplay on Game Center availability.
-//
-// iOS 16 compatible: ObservableObject + @Published. Migrates to @Observable
-// when the deployment target bumps (see TODOS.md).
 
+// NOTE: ObservableObject + @Published rather than @Observable — deployment
+// target is iOS 16 (@Observable requires iOS 17+). See MotionManager note.
 final class GameCenter: ObservableObject {
 
     static let shared = GameCenter()
@@ -32,21 +34,25 @@ final class GameCenter: ObservableObject {
     // Call once at app launch.
     func authenticate() {
         let player = GKLocalPlayer.local
-        player.authenticateHandler = { [weak self] viewController, error in
-            guard let self else { return }
-            if let error {
-                print("[GameCenter] auth error: \(error.localizedDescription)")
-                self.isAuthenticated = false
-                return
+        // GameKit invokes the handler on an arbitrary queue — hop to the main
+        // actor before touching observable state.
+        player.authenticateHandler = { viewController, error in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                if let error {
+                    log.error("auth error: \(error.localizedDescription, privacy: .public)")
+                    self.isAuthenticated = false
+                    return
+                }
+                if viewController != nil {
+                    // Auth UI required. We don't auto-present — leaving it to the
+                    // user to sign in via Settings → "Sign in to Game Center".
+                    self.isAuthenticated = false
+                    return
+                }
+                self.isAuthenticated = player.isAuthenticated
+                self.displayName = player.alias
             }
-            if viewController != nil {
-                // Auth UI required. We don't auto-present — leaving it to the
-                // user to sign in via Settings → "Sign in to Game Center".
-                self.isAuthenticated = false
-                return
-            }
-            self.isAuthenticated = player.isAuthenticated
-            self.displayName = player.alias
         }
     }
 
