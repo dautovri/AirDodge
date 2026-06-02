@@ -1,6 +1,1 @@
-{
-  "name": "AirBoxer: Motion Boxing",
-  "subtitle": "Boxen mit Kopfbewegungen",
-  "privacyPolicyUrl": "https://airboxer.pages.dev/privacy/",
-  "privacyPolicyText": "AirBoxer sammelt nichts. Die Bewegung deiner Ohrhörer wird lokal gelesen und in Echtzeit verworfen. Keine Analytik, keine Werbung, kein Tracking, keine Drittanbieter-SDKs. Game-Center-Punktzahlen sind optional und werden von Apple verwaltet."
-}
+{"name":"AirBoxer: Motion Boxing","subtitle":"Boxen mit Kopfbewegungen","privacyPolicyUrl":"https://airboxer.pages.dev/privacy/","privacyPolicyText":"AirBoxer sammelt nichts. Die Bewegung der Bewegungssensoren deiner Ohrhörer wird lokal gelesen und in Echtzeit verworfen. Keine Analytik, keine Werbung, kein Tracking, keine Drittanbieter-SDKs. Game-Center-Punktzahlen sind optional und werden von Apple verwaltet."}
