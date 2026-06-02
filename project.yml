@@ -14,9 +14,20 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.airdodge.AirpodsGame
-        MARKETING_VERSION: "1.0"
-        CURRENT_PROJECT_VERSION: "1"
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "5"
+        TARGETED_DEVICE_FAMILY: "1"
         SWIFT_VERSION: "5.9"
         INFOPLIST_FILE: AirpodsGame/Info.plist
-        DEVELOPMENT_TEAM: ""
+        DEVELOPMENT_TEAM: "27EZNUVV57"
+        CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # Game Center entitlement deferred — requires Xcode → Signing &
+        # Capabilities → +Capability → Game Center (one-time human step
+        # when user has Apple ID logged into Xcode). Bundle ID
+        # com.airdodge.AirpodsGame already has GAME_CENTER capability
+        # enabled at Apple Developer (asc bundle-ids capabilities add
+        # ran 2026-05-04). Re-enable by uncommenting:
+        # CODE_SIGN_ENTITLEMENTS: AirpodsGame/AirpodsGame.entitlements
+        # ENABLE_GAME_CENTER: "YES"
     dependencies: []
