@@ -165,7 +165,7 @@ private struct CreditsView: View {
 
                 Text("Inspired by")
                     .font(.headline)
-                Text("The 1987 NES boxing classic. All characters are original.")
+                Text("The 1987 8-bit boxing arcades. All characters are original.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
 
