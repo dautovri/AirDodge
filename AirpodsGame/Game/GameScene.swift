@@ -568,7 +568,7 @@ class GameScene: SKScene {
     }
 
     /// Center-screen card showing opponent name / country / record. Mimics
-    /// the 1987 NES "VS" splash that introduces each fight.
+    /// the retro "VS" splash that introduces each fight.
     ///
     /// IMPORTANT: SpriteView is created with `ignoresSiblingOrder: true`,
     /// which means child zPositions are ABSOLUTE in the scene, not relative
