@@ -33,7 +33,9 @@ extension OpponentDefinition {
     static let sandbag = OpponentDefinition(
         id: "sandbag",
         name: "SANDBAG",
-        country: "TRAINING",
+        // Was "TRAINING", which duplicated the difficulty badge above it and
+        // made the card read as a rendering bug next to PARIS / STATEVILLE.
+        country: "THE GYM",
         record: "0-0",
         pepTalks: [
             "Tip: tilt your HEAD, not your phone.",

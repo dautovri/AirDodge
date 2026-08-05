@@ -130,6 +130,9 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
+            // The game is a dark, neon menu; a bright system sheet on top of it
+            // broke visual continuity hard. Pin the sheet to dark.
+            .preferredColorScheme(.dark)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") { dismiss() }

@@ -54,6 +54,7 @@ struct ContentView: View {
             case .gameOver:
                 GameOverView(score: finalScore, highScore: highScore,
                              canRestart: canStart,
+                             motionStatus: motion.status,
                              onRestart: { startFight() },
                              onMenu:    { withAnimation(.spring) { gameState = .menu } })
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
@@ -270,42 +271,63 @@ struct MenuView: View {
                     }
                 }
 
+            // `fixedSize` is required: without it this two-line tagline gets
+            // squeezed to one truncated line ("Slip, duck & dodge punches…")
+            // whenever the menu is vertically tight — which is exactly the
+            // no-motion layout an App Review reviewer sees first.
             Text("Slip, duck & dodge punches\nwith head movements")
                 .font(.system(size: 15, weight: .medium))
                 .foregroundStyle(.white.opacity(0.55))
                 .multilineTextAlignment(.center)
                 .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
 
-            // AirPods status chip
+            // Motion status chip
             ConnectionChip(status: motionStatus)
                 .padding(.top, 6)
 
-            // Roster picker — 3 cards, one per opponent. Replaces the static
-            // 'HOW TO DODGE' guide that was redundant after the tutorial.
-            // Required by Apple Guideline 4.2 (minimum functionality) — the
-            // game ships with 3 opponents and the user must be able to pick.
-            OpponentPicker(selected: $selectedOpponent)
-                .padding(.horizontal, 24)
-                .padding(.top, 8)
+            if motionStatus.isLive {
+                // Roster picker — 3 cards, one per opponent. Replaces the static
+                // 'HOW TO DODGE' guide that was redundant after the tutorial.
+                // Required by Apple Guideline 4.2 (minimum functionality) — the
+                // game ships with 3 opponents and the user must be able to pick.
+                OpponentPicker(selected: $selectedOpponent)
+                    .padding(.horizontal, 24)
+                    .padding(.top, 8)
+            } else {
+                // Guideline 2.1 (App Completeness): a reviewer on a bare device
+                // has no motion earbuds. Previously they got a grey dead button
+                // and one line of 12pt 40%-opacity grey text — indistinguishable
+                // from a broken build. This card takes the roster's slot and
+                // states the hardware requirement, the reason, and the next step
+                // outright. No touch-control fallback by design (see TODOS C4).
+                MotionRequirementCard(status: motionStatus)
+                    .padding(.horizontal, 24)
+                    .padding(.top, 8)
+            }
 
             Spacer()
 
-            // Start button — disabled until AirPods are connected and
-            // delivering motion data. The fight is unplayable without head
-            // tracking, so we don't let the user enter the scene.
+            // Start button — disabled until motion earbuds are connected and
+            // delivering data. The fight is unplayable without head tracking,
+            // so we don't let the user enter the scene.
             FightButton(isEnabled: canStart, action: {
                 Haptics.impact(.medium)
                 onStart()
             })
 
-            if !canStart {
-                Text("Connect motion earbuds to start fighting")
-                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+            if canStart && !motionStatus.isLive {
+                // Simulator-only bypass is active. Say so, otherwise an enabled
+                // FIGHT button sitting under a "no earbuds" chip reads as a bug.
+                Text("SIMULATOR PREVIEW — head tracking is inactive")
+                    .font(.system(size: 11, weight: .heavy, design: .rounded))
                     .tracking(0.5)
-                    .foregroundStyle(.white.opacity(0.4))
-                    .transition(.opacity)
-                    .padding(.top, -8)
+                    .foregroundStyle(.yellow.opacity(0.85))
+                    .padding(.top, -4)
             }
+            // No microcopy under the disabled button: the button now labels its
+            // own gate and the card above carries the full explanation. Three
+            // restatements of the same requirement read as unfinished.
 
             Spacer(minLength: 24)
         }
@@ -334,12 +356,15 @@ private struct ConnectionChip: View {
     @State private var pulse = false
     @State private var spinRetry = false
 
+    /// Nothing here is an error, so nothing here is alarm-red. Red on launch
+    /// made a documented hardware requirement look like a crash to App Review.
+    /// Amber = "set something up", green = "ready".
     private var dotColor: Color {
         switch status {
-        case .live:                                  return .green
-        case .waitingForData:                        return .yellow
-        case .waitingForAirPods, .unknown:           return .orange
-        case .permissionDenied, .unavailable:        return .red
+        case .live:                                                        return .green
+        case .waitingForData:                                              return .yellow
+        case .waitingForAirPods, .unknown,
+             .permissionDenied, .unavailable:                              return .orange
         }
     }
 
@@ -416,6 +441,73 @@ private struct ConnectionChip: View {
         } else {
             chip
         }
+    }
+}
+
+/// Self-explanatory hardware-setup state, shown wherever the fight is gated on
+/// head tracking. Deliberately reads as onboarding, not as an error: headline,
+/// why the hardware is needed, the concrete next step, and what to expect once
+/// it's connected. Never mentions a brand — the 5.2.1 resubmit scrubbed those.
+struct MotionRequirementCard: View {
+    let status: MotionManager.Status
+    var compact: Bool = false
+
+    var body: some View {
+        VStack(spacing: compact ? 8 : 12) {
+            HStack(spacing: 10) {
+                Image(systemName: "airpods.gen3")
+                    .font(.system(size: compact ? 20 : 26, weight: .medium))
+                    .foregroundStyle(
+                        LinearGradient(colors: [.yellow, .orange],
+                                       startPoint: .top, endPoint: .bottom)
+                    )
+                VStack(alignment: .leading, spacing: 2) {
+                    // Deliberately not the same string as the locked button —
+                    // repeating it verbatim twice on one screen read as a bug.
+                    Text("MOTION EARBUDS REQUIRED")
+                        .font(.system(size: compact ? 11 : 12, weight: .heavy, design: .rounded))
+                        .tracking(1.2)
+                        .foregroundStyle(.yellow)
+                    Text("This is a motion game — there are no touch controls.")
+                        .font(.system(size: compact ? 11 : 12, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.85))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+            }
+
+            if !compact {
+                Divider().overlay(Color.white.opacity(0.12))
+
+                Text("You dodge punches by physically moving your head. AirBoxer reads that movement from earbuds that stream head-motion data to iPhone, so a pair must be connected and worn before a fight can start.")
+                    .font(.system(size: 13, weight: .regular))
+                    .foregroundStyle(.white.opacity(0.88))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
+            // The one thing to do next, driven by the live motion status.
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: "arrow.forward.circle.fill")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.orange)
+                Text(status.nextStep)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.92))
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+            }
+            .padding(.top, compact ? 0 : 2)
+        }
+        .padding(compact ? 14 : 18)
+        .frame(maxWidth: .infinity)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(Color.orange.opacity(0.45), lineWidth: 1)
+        )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Head tracking required. \(status.label). \(status.nextStep)")
     }
 }
 
@@ -524,24 +616,36 @@ private struct FightButton: View {
 
     var body: some View {
         Button(action: action) {
+            // When gated, the button states its own reason instead of being a
+            // mute grey slab — black-on-grey "FIGHT" both failed contrast and
+            // told the player nothing.
             HStack(spacing: 10) {
-                Text("🥊")
-                Text("FIGHT")
-                    .tracking(2)
+                if isEnabled {
+                    Text("🥊")
+                    Text("FIGHT")
+                        .tracking(2)
+                        .font(.system(size: 22, weight: .black, design: .rounded))
+                } else {
+                    Image(systemName: "lock.fill")
+                        .font(.system(size: 15, weight: .bold))
+                    Text("HEAD TRACKING REQUIRED")
+                        .tracking(1)
+                        .font(.system(size: 14, weight: .heavy, design: .rounded))
+                }
             }
-            .font(.system(size: 22, weight: .black, design: .rounded))
-            .foregroundStyle(isEnabled ? .black : Color.black.opacity(0.55))
-            .frame(width: 220, height: 62)
+            .foregroundStyle(isEnabled ? .black : Color.white.opacity(0.85))
+            .frame(width: 260, height: 62)
             .background(
                 Group {
                     if isEnabled {
                         LinearGradient(colors: [.yellow, .orange, Color(red: 1, green: 0.35, blue: 0.2)],
                                        startPoint: .leading, endPoint: .trailing)
                     } else {
-                        // Desaturated grey when AirPods aren't live
-                        LinearGradient(colors: [Color.gray.opacity(0.55),
-                                                 Color.gray.opacity(0.45),
-                                                 Color.gray.opacity(0.55)],
+                        // Muted, but dark enough that the white lock + label
+                        // clear AA contrast. Reads "locked", not "broken".
+                        LinearGradient(colors: [Color.white.opacity(0.10),
+                                                 Color.white.opacity(0.06),
+                                                 Color.white.opacity(0.10)],
                                        startPoint: .leading, endPoint: .trailing)
                     }
                 }
@@ -615,6 +719,7 @@ struct GameOverView: View {
     let score: Int
     let highScore: Int
     let canRestart: Bool
+    let motionStatus: MotionManager.Status
     let onRestart: () -> Void
     let onMenu: () -> Void
 
@@ -698,26 +803,33 @@ struct GameOverView: View {
             Spacer()
 
             VStack(spacing: 14) {
+                // Same Guideline 2.1 reasoning as the menu: never strand the
+                // user behind a grey button with no explanation. Compact
+                // variant so the score card still owns the screen.
+                if !canRestart {
+                    MotionRequirementCard(status: motionStatus, compact: true)
+                        .padding(.horizontal, 24)
+                        .padding(.bottom, 4)
+                }
+
                 FightAgainButton(isEnabled: canRestart, action: {
                     Haptics.impact(.medium)
                     onRestart()
                 })
 
-                if !canRestart {
-                    Text("Reconnect motion earbuds to fight again")
-                        .font(.system(size: 12, weight: .semibold, design: .rounded))
-                        .tracking(0.5)
-                        .foregroundStyle(.white.opacity(0.4))
-                        .transition(.opacity)
-                }
-
+                // Always-live escape hatch — styled as a real button so the
+                // screen is never a dead end, even when FIGHT AGAIN is gated.
                 Button(action: {
                     Haptics.impact(.light)
                     onMenu()
                 }) {
-                    Text("Main Menu")
-                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.55))
+                    Text("MAIN MENU")
+                        .tracking(1.5)
+                        .font(.system(size: 15, weight: .heavy, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.9))
+                        .frame(width: 220, height: 48)
+                        .background(.ultraThinMaterial, in: Capsule())
+                        .overlay(Capsule().stroke(.white.opacity(0.22), lineWidth: 1))
                 }
             }
             .padding(.bottom, 32)
@@ -752,19 +864,29 @@ private struct FightAgainButton: View {
     @State private var pressed = false
     var body: some View {
         Button(action: action) {
-            Text("FIGHT AGAIN")
-                .tracking(2)
-                .font(.system(size: 18, weight: .black, design: .rounded))
-                .foregroundStyle(isEnabled ? .black : Color.black.opacity(0.55))
-                .frame(width: 220, height: 56)
+            Group {
+                if isEnabled {
+                    Text("FIGHT AGAIN").tracking(2)
+                        .font(.system(size: 18, weight: .black, design: .rounded))
+                } else {
+                    HStack(spacing: 8) {
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 13, weight: .bold))
+                        Text("HEAD TRACKING REQUIRED").tracking(1)
+                            .font(.system(size: 13, weight: .heavy, design: .rounded))
+                    }
+                }
+            }
+                .foregroundStyle(isEnabled ? .black : Color.white.opacity(0.85))
+                .frame(width: 260, height: 56)
                 .background(
                     Group {
                         if isEnabled {
                             LinearGradient(colors: [.yellow, .orange],
                                            startPoint: .leading, endPoint: .trailing)
                         } else {
-                            LinearGradient(colors: [Color.gray.opacity(0.55),
-                                                     Color.gray.opacity(0.45)],
+                            LinearGradient(colors: [Color.white.opacity(0.10),
+                                                     Color.white.opacity(0.06)],
                                            startPoint: .leading, endPoint: .trailing)
                         }
                     }

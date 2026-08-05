@@ -37,14 +37,37 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
         case waitingForData               // pods connected; no motion frames yet (likely not in ears)
         case live                         // motion data flowing
 
+        /// Short chip copy. Deliberately phrased as a *setup step*, never as an
+        /// error — a reviewer opening the app on a bare device must read this as
+        /// "here's what to connect", not "this app crashed". See the requirement
+        /// card in ContentView for the full explanation.
         var label: String {
             switch self {
             case .unknown:            return "Looking for motion earbuds…"
-            case .unavailable:        return "Headphone motion not available"
-            case .permissionDenied:   return "Tap to grant Motion & Fitness in Settings"
-            case .waitingForAirPods:  return "Motion earbuds not detected — pair compatible motion earbuds"
+            case .unavailable:        return "No motion hardware detected"
+            case .permissionDenied:   return "Tap to allow Motion & Fitness"
+            case .waitingForAirPods:  return "No motion earbuds connected"
             case .waitingForData:     return "Earbuds paired — put them in your ears"
             case .live:               return "Motion earbuds connected"
+            }
+        }
+
+        /// The single next action the player should take, shown on the setup
+        /// card. Always actionable — never a dead end.
+        var nextStep: String {
+            switch self {
+            case .unknown:
+                return "Searching for motion earbuds. This takes a moment after launch."
+            case .unavailable:
+                return "This device can't report head motion. AirBoxer needs an iPhone paired with earbuds that stream head-motion data."
+            case .permissionDenied:
+                return "Motion & Fitness access is off, so head motion can't reach the game. Tap the status chip above to open Settings and turn it on."
+            case .waitingForAirPods:
+                return "Connect earbuds that support head-motion tracking to this iPhone, then tap the status chip to retry."
+            case .waitingForData:
+                return "Your earbuds are connected. Put them in your ears — head motion only streams while they're worn."
+            case .live:
+                return "You're ready. Tap FIGHT."
             }
         }
 
