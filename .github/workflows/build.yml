@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: AirDodge build
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select the current stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - name: Pick an iPhone simulator
+        id: sim
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devs = json.load(sys.stdin)["devices"]
+          ids = [d["udid"] for rt, ds in devs.items() if "iOS" in rt for d in ds if d["name"].startswith("iPhone")]
+          print(ids[0] if ids else "")')
+          [ -n "$UDID" ] || { echo "No iPhone simulator available" >&2; exit 1; }
+          echo "destination=id=$UDID" >> "$GITHUB_OUTPUT"
+      - name: AirDodge build
+        run: |
+          set -o pipefail
+          xcodebuild build -project AirpodsGame.xcodeproj -scheme AirpodsGame \
+            -destination "${{ steps.sim.outputs.destination }}" \
+            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
