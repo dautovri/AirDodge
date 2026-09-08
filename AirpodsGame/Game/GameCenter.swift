@@ -15,14 +15,14 @@ private let log = Logger(subsystem: "com.airdodge.AirpodsGame", category: "AirBo
 // If GKLocalPlayer isn't authenticated (offline / declined), submission is a
 // silent no-op — never block gameplay on Game Center availability.
 
-// NOTE: ObservableObject + @Published rather than @Observable — deployment
-// target is iOS 16 (@Observable requires iOS 17+). See MotionManager note.
-final class GameCenter: ObservableObject {
+@MainActor
+@Observable
+final class GameCenter {
 
     static let shared = GameCenter()
 
-    @Published private(set) var isAuthenticated = false
-    @Published private(set) var displayName: String = ""
+    private(set) var isAuthenticated = false
+    private(set) var displayName: String = ""
 
     enum LeaderboardID {
         static let streak    = "com.airdodge.AirpodsGame.leaderboard.streak"
@@ -37,6 +37,9 @@ final class GameCenter: ObservableObject {
         // GameKit invokes the handler on an arbitrary queue — hop to the main
         // actor before touching observable state.
         player.authenticateHandler = { viewController, error in
+            // Only Sendable values cross into the main-actor hop: the
+            // UIViewController and GKLocalPlayer stay on the caller's side.
+            let needsAuthUI = viewController != nil
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 if let error {
@@ -44,12 +47,13 @@ final class GameCenter: ObservableObject {
                     self.isAuthenticated = false
                     return
                 }
-                if viewController != nil {
+                if needsAuthUI {
                     // Auth UI required. We don't auto-present — leaving it to the
                     // user to sign in via Settings → "Sign in to Game Center".
                     self.isAuthenticated = false
                     return
                 }
+                let player = GKLocalPlayer.local
                 self.isAuthenticated = player.isAuthenticated
                 self.displayName = player.alias
             }

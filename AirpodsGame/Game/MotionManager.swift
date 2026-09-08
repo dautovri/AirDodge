@@ -1,5 +1,5 @@
 import CoreMotion
-import Combine
+import Observation
 import os
 
 /// Subsystem visible via `idevicesyslog | grep AirBoxer.motion`
@@ -24,10 +24,12 @@ private let log = Logger(subsystem: "com.airdodge.AirpodsGame", category: "AirBo
 // We expose both a status enum (what level of trouble we're in) and a
 // human-readable hint so the UI can give the user actionable feedback.
 
-// NOTE: Uses ObservableObject + @Published rather than @Observable because the
-// deployment target is iOS 16 (the app advertises "iOS 16+" in store metadata);
-// @Observable requires iOS 17+. Migrate only if the iOS floor is raised.
-final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerDelegate {
+// Main-actor isolated: all observable state is mutated on the main actor.
+// CoreMotion delivers its delegate callbacks on an arbitrary queue, so those
+// hop over with `Task { @MainActor in … }` before touching state.
+@MainActor
+@Observable
+final class MotionManager: NSObject, CMHeadphoneMotionManagerDelegate {
 
     enum Status {
         case unknown                      // not started yet
@@ -77,23 +79,23 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
     private let manager = CMHeadphoneMotionManager()
     private let smoothing: Double = 0.85
 
-    @Published var pitch: Double = 0  // nod up/down, degrees
-    @Published var roll: Double = 0   // tilt left/right, degrees
-    @Published var yaw: Double = 0    // turn left/right, degrees
-    @Published var status: Status = .unknown
+    var pitch: Double = 0  // nod up/down, degrees
+    var roll: Double = 0   // tilt left/right, degrees
+    var yaw: Double = 0    // turn left/right, degrees
+    var status: Status = .unknown
 
     /// Backwards-compat: the old chip in ContentView reads this. True only when motion frames are arriving.
     var isConnected: Bool { status.isLive }
 
-    private var smoothedPitch: Double = 0
-    private var smoothedRoll: Double = 0
-    private var lastDataAt: Date?
-    private var watchdog: Timer?
+    @ObservationIgnored private var smoothedPitch: Double = 0
+    @ObservationIgnored private var smoothedRoll: Double = 0
+    @ObservationIgnored private var lastDataAt: Date?
+    @ObservationIgnored private var watchdog: Timer?
     /// True between a successful `startDeviceMotionUpdates` call and the
     /// next `stop()`/`restart()`. Used to make `start()` idempotent so
     /// SwiftUI lifecycle re-firing (`.onAppear` triggered by view recycling
     /// or state changes) doesn't kill the in-flight motion stream.
-    private var isStreaming = false
+    @ObservationIgnored private var isStreaming = false
 
     static let shared = MotionManager()
 
@@ -137,7 +139,6 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
         }
 
         manager.startDeviceMotionUpdates(to: .main) { [weak self] motion, error in
-            guard let self else { return }
             if let error {
                 log.notice("data error: \(error.localizedDescription)")
                 // CMHeadphoneMotionManager logs its own errors; we keep the
@@ -149,19 +150,13 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
                 log.notice("data callback fired with nil motion")
                 return
             }
-            let firstFrame = self.lastDataAt == nil
-            self.lastDataAt = Date()
-            if !self.status.isLive {
-                log.notice("data flowing -> .live (firstFrame=\(firstFrame))")
-                self.status = .live
-            }
+            // Extract plain Doubles before hopping — CMDeviceMotion isn't Sendable.
             let rawPitch = motion.attitude.pitch * 180 / .pi
             let rawRoll  = motion.attitude.roll  * 180 / .pi
-            self.smoothedPitch = self.smoothing * self.smoothedPitch + (1 - self.smoothing) * rawPitch
-            self.smoothedRoll  = self.smoothing * self.smoothedRoll  + (1 - self.smoothing) * rawRoll
-            self.pitch = self.smoothedPitch
-            self.roll  = self.smoothedRoll
-            self.yaw   = motion.attitude.yaw * 180 / .pi
+            let rawYaw   = motion.attitude.yaw   * 180 / .pi
+            Task { @MainActor [weak self] in
+                self?.ingest(rawPitch: rawPitch, rawRoll: rawRoll, rawYaw: rawYaw)
+            }
         }
         isStreaming = true
         log.notice("startDeviceMotionUpdates dispatched")
@@ -170,15 +165,32 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
         // for 2s, downgrade to waitingForData (covers "pods on desk").
         watchdog?.invalidate()
         watchdog = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            // If pods are connected (delegate fired) but data is stale,
-            // user likely doesn't have them in their ears.
-            if case .live = self.status,
-               let last = self.lastDataAt,
-               Date().timeIntervalSince(last) > 2.0 {
-                self.status = .waitingForData
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                // If pods are connected (delegate fired) but data is stale,
+                // user likely doesn't have them in their ears.
+                if case .live = self.status,
+                   let last = self.lastDataAt,
+                   Date().timeIntervalSince(last) > 2.0 {
+                    self.status = .waitingForData
+                }
             }
         }
+    }
+
+    /// Applies one motion frame on the main actor.
+    private func ingest(rawPitch: Double, rawRoll: Double, rawYaw: Double) {
+        let firstFrame = lastDataAt == nil
+        lastDataAt = Date()
+        if !status.isLive {
+            log.notice("data flowing -> .live (firstFrame=\(firstFrame))")
+            status = .live
+        }
+        smoothedPitch = smoothing * smoothedPitch + (1 - smoothing) * rawPitch
+        smoothedRoll  = smoothing * smoothedRoll  + (1 - smoothing) * rawRoll
+        pitch = smoothedPitch
+        roll  = smoothedRoll
+        yaw   = rawYaw
     }
 
     func stop() {
@@ -208,16 +220,23 @@ final class MotionManager: NSObject, ObservableObject, CMHeadphoneMotionManagerD
 
     // MARK: - CMHeadphoneMotionManagerDelegate
 
-    func headphoneMotionManagerDidConnect(_ manager: CMHeadphoneMotionManager) {
+    // CoreMotion calls these on its own queue — hop to the main actor.
+
+    nonisolated func headphoneMotionManagerDidConnect(_ manager: CMHeadphoneMotionManager) {
         // Pods are now routed to this iPhone. Data may not be flowing yet
         // (need them in the ears). Mark as waitingForData; the data callback
         // upgrades to .live as soon as a frame arrives.
         log.notice("delegate: didConnect -> .waitingForData")
-        if !status.isLive { status = .waitingForData }
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            if !self.status.isLive { self.status = .waitingForData }
+        }
     }
 
-    func headphoneMotionManagerDidDisconnect(_ manager: CMHeadphoneMotionManager) {
+    nonisolated func headphoneMotionManagerDidDisconnect(_ manager: CMHeadphoneMotionManager) {
         log.notice("delegate: didDisconnect -> .waitingForAirPods")
-        status = .waitingForAirPods
+        Task { @MainActor [weak self] in
+            self?.status = .waitingForAirPods
+        }
     }
 }

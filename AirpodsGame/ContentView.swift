@@ -3,8 +3,8 @@ import SpriteKit
 import UIKit
 
 struct ContentView: View {
-    @StateObject private var motion = MotionManager.shared
-    @StateObject private var gameCenter = GameCenter.shared
+    @State private var motion = MotionManager.shared
+    @State private var gameCenter = GameCenter.shared
     @State private var gameState: GameState = .menu
     @State private var finalScore: Int = 0
     @State private var highScore: Int = UserDefaults.standard.integer(forKey: "boxerHighScore")
@@ -848,7 +848,8 @@ struct GameOverView: View {
         guard score > 0 else { return }
         for i in 0...steps {
             let delay = duration * Double(i) / Double(steps)
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            Task {
+                try? await Task.sleep(for: .seconds(delay))
                 let progress = Double(i) / Double(steps)
                 let eased = 1 - pow(1 - progress, 3) // easeOutCubic
                 displayedScore = Int(Double(score) * eased)

@@ -721,6 +721,26 @@ class GameScene: SKScene {
 
     // MARK: Phase transitions
 
+    // Synchronous phase-advance helpers. Kept out of the async Task bodies
+    // above so `SKNode.run(_:)` resolves to its synchronous overload (in an
+    // async context Swift prefers the `async` completion-handler import).
+
+    private func finishIntro() {
+        guard case .intro = phase else { return }   // skip if already advanced
+        introCard.run(.fadeOut(withDuration: 0.25))
+        phase = .fighting
+    }
+
+    private func finishRoundBreak(nextRound: Int) {
+        guard case .roundBreak = phase else { return }
+        roundBreakCard.run(.fadeOut(withDuration: 0.25))
+        round = nextRound
+        roundLabel.text = "\(nextRound)"
+        telegraphDuration = max(0.65, telegraphDuration - 0.12)
+        restDuration      = max(0.55, restDuration  - 0.08)
+        phase = .fighting
+    }
+
     private func updatePhase() {
         introCard.isHidden      = true
         roundBreakCard.isHidden = true
@@ -739,19 +759,18 @@ class GameScene: SKScene {
             ]))
             audio.play(.drumRoll)
 
-            // Use wall-clock dispatch for phase transitions instead of
+            // Use wall-clock sleeps for phase transitions instead of
             // SKAction.run(.wait...) — SpriteKit's action time can fast-forward
             // when a freshly-created scene attaches to its view, causing the
-            // intro to "skip" entirely. asyncAfter ticks at the system timer
+            // intro to "skip" entirely. Task.sleep ticks at the system timer
             // regardless of scene state.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) { [weak self] in
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(for: .seconds(1.6))
                 self?.audio.play(.bell)
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-                guard let self else { return }
-                guard case .intro = self.phase else { return }   // skip if already advanced
-                self.introCard.run(.fadeOut(withDuration: 0.25))
-                self.phase = .fighting
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(for: .seconds(2.0))
+                self?.finishIntro()
             }
 
         case .fighting:
@@ -768,18 +787,13 @@ class GameScene: SKScene {
             roundBreakCard.run(.fadeIn(withDuration: 0.25))
 
             // Auto-advance back to fighting after a 2.5s read time + bell.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) { [weak self] in
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(for: .seconds(2.2))
                 self?.audio.play(.bell)
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [weak self] in
-                guard let self else { return }
-                guard case .roundBreak = self.phase else { return }
-                self.roundBreakCard.run(.fadeOut(withDuration: 0.25))
-                self.round = nextRound
-                self.roundLabel.text = "\(nextRound)"
-                self.telegraphDuration = max(0.65, self.telegraphDuration - 0.12)
-                self.restDuration      = max(0.55, self.restDuration  - 0.08)
-                self.phase = .fighting
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(for: .seconds(2.5))
+                self?.finishRoundBreak(nextRound: nextRound)
             }
 
         case .ko:
@@ -1191,7 +1205,8 @@ class GameScene: SKScene {
 
         // Hold the KO card for ~1.6s so the player can read the score, then
         // hand off to the SwiftUI game-over view.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) { [weak self] in
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(1.6))
             guard let self else { return }
             self.onGameOver?(self.score)
         }

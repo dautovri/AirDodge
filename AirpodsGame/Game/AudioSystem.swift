@@ -198,8 +198,9 @@ final class AudioSystem {
         let steps = 10
         let stepDuration = duration / Double(steps)
         let startVolume = m.volume
-        for i in 1...steps {
-            DispatchQueue.main.asyncAfter(deadline: .now() + stepDuration * Double(i)) { [weak self, weak m] in
+        Task { [weak self, weak m] in
+            for i in 1...steps {
+                try? await Task.sleep(for: .seconds(stepDuration))
                 guard let self, let player = m,
                       self.musicGeneration == generation,
                       self.music === player else { return }
