@@ -23,10 +23,16 @@ jobs:
       - name: Pick an iPhone simulator
         id: sim
         run: |
+          # Runners keep simulators from older Xcodes around; only the newest iOS
+          # runtime is guaranteed to be usable by the selected Xcode.
           UDID=$(xcrun simctl list devices available -j | python3 -c '
-          import json, sys
+          import json, re, sys
           devs = json.load(sys.stdin)["devices"]
-          ids = [d["udid"] for rt, ds in devs.items() if "iOS" in rt for d in ds if d["name"].startswith("iPhone")]
+          def ver(rt):
+              m = re.search(r"iOS-(\d+)-(\d+)", rt)
+              return (int(m.group(1)), int(m.group(2))) if m else (0, 0)
+          runtimes = sorted((rt for rt in devs if ".iOS-" in rt), key=ver, reverse=True)
+          ids = [d["udid"] for rt in runtimes for d in devs[rt] if d["name"].startswith("iPhone")]
           print(ids[0] if ids else "")')
           [ -n "$UDID" ] || { echo "No iPhone simulator available" >&2; exit 1; }
           echo "destination=id=$UDID" >> "$GITHUB_OUTPUT"
