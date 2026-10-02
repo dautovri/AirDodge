@@ -528,7 +528,7 @@ struct MotionRequirementCard: View {
     var body: some View {
         VStack(spacing: compact ? 8 : 12) {
             HStack(spacing: 10) {
-                Image(systemName: "airpods.gen3")
+                Image(systemName: "headphones")
                     .font(.system(size: compact ? 20 : 26, weight: .medium))
                     .foregroundStyle(
                         LinearGradient(colors: [.yellow, .orange],
@@ -537,7 +537,7 @@ struct MotionRequirementCard: View {
                 VStack(alignment: .leading, spacing: 2) {
                     // Deliberately not the same string as the locked button —
                     // repeating it verbatim twice on one screen read as a bug.
-                    Text("AIRPODS OR BEATS REQUIRED")
+                    Text("HEAD-TRACKING HEADPHONES REQUIRED")
                         .font(.system(size: compact ? 11 : 12, weight: .heavy, design: .rounded))
                         .tracking(1.2)
                         .foregroundStyle(.yellow)

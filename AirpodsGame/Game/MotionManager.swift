@@ -45,7 +45,7 @@ final class MotionManager: NSObject, CMHeadphoneMotionManagerDelegate {
         /// card in ContentView for the full explanation.
         /// Headphones whose head tracking iOS exposes to apps
         /// (CMHeadphoneMotionManager).
-        static let supportedHeadphones = String(localized: "AirPods Pro, AirPods Max, AirPods (3rd generation), AirPods 4 or Beats Fit Pro")
+        static let supportedHeadphones = String(localized: "headphones that support head tracking")
 
         var label: String {
             switch self {
