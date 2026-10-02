@@ -9,6 +9,10 @@ import StoreKit
 final class UnlockStore {
     static let shared = UnlockStore()
 
+    /// Off for now: every opponent is free. Flip to bring the Full Fight
+    /// Card paywall back (the IAP exists in App Store Connect).
+    static let isPaywallEnabled = false
+
     static let productID = "com.airdodge.AirpodsGame.fullcard"
     static let termsURL = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
     static let privacyURL = URL(string: "https://dautovri.com/airboxer-privacy")!
@@ -40,7 +44,7 @@ final class UnlockStore {
     }
 
     func isLocked(_ opponent: OpponentDefinition) -> Bool {
-        opponent.requiresUnlock && !isUnlocked
+        Self.isPaywallEnabled && opponent.requiresUnlock && !isUnlocked
     }
 
     func load() async {

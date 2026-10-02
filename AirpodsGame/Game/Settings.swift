@@ -103,12 +103,14 @@ struct SettingsView: View {
                     Text("Feedback")
                 }
 
-                Section {
-                    Button("Restore Purchases") {
-                        Task { await UnlockStore.shared.restore() }
+                if UnlockStore.isPaywallEnabled {
+                    Section {
+                        Button("Restore Purchases") {
+                            Task { await UnlockStore.shared.restore() }
+                        }
+                    } header: {
+                        Text("Full Fight Card")
                     }
-                } header: {
-                    Text("Full Fight Card")
                 }
 
                 Section {

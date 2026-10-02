@@ -32,7 +32,7 @@ SH=[
  ("03","crowd","perfect",[("SLIP. COMBO. REPEAT.",84,Y,F),("Tilt left or right to slip hooks",54,WH,R)],False),
  ("04","warden","intro",[("FACE THE WARDEN",88,OR,F),("A 47-1 boss with lightning tells",54,WH,R)],False),
  ("05","win","youwin",[("COUNTER TO THE K.O.",84,Y,F),("Every slip lands a punch back",54,WH,R)],False),
- ("06","arena","menu",[("THREE FIGHTERS",92,Y,F),("Two free. Unlock the full card once.",52,WH,R)],False),
+ ("06","arena","menu",[("THREE FIGHTERS",92,Y,F),("Pick your opponent. All free.",54,WH,R)],False),
  ("07","airpods","howto",[("LEARN IN SECONDS",88,Y,F),("Built-in How to Play video",54,WH,R)],True),
  ("08","crowd","results",[("CHASE THE RECORD",88,Y,F),("Game Center leaderboards",54,WH,R)],False),
 ]
