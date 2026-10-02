@@ -644,9 +644,9 @@ private struct OpponentCard: View {
     private var difficulty: String {
         // Telegraph speed encodes difficulty: 2.2s = easy, 1.6s = medium, 1.0s = hard
         switch opponent.telegraphSec {
-        case 1.8...:  return "TRAINING"
-        case 1.3...:  return "REGULAR"
-        default:      return "BOSS"
+        case 1.8...:  return String(localized: "TRAINING")
+        case 1.3...:  return String(localized: "REGULAR")
+        default:      return String(localized: "BOSS")
         }
     }
 
@@ -821,11 +821,11 @@ struct GameOverView: View {
 
     var rank: (label: String, icon: String, color: Color) {
         switch score {
-        case 0..<50:    return ("Rookie",     "figure.boxing", .gray)
-        case 50..<150:  return ("Contender",  "bolt.fill",     .orange)
-        case 150..<300: return ("Slugger",    "flame.fill",    Color(red: 1, green: 0.5, blue: 0.2))
-        case 300..<500: return ("Champion",   "rosette",       .yellow)
-        default:        return ("Legend",     "crown.fill",    Color(red: 1, green: 0.85, blue: 0.2))
+        case 0..<50:    return (String(localized: "Rookie"),     "figure.boxing", .gray)
+        case 50..<150:  return (String(localized: "Contender"),  "bolt.fill",     .orange)
+        case 150..<300: return (String(localized: "Slugger"),    "flame.fill",    Color(red: 1, green: 0.5, blue: 0.2))
+        case 300..<500: return (String(localized: "Champion"),   "rosette",       .yellow)
+        default:        return (String(localized: "Legend"),     "crown.fill",    Color(red: 1, green: 0.85, blue: 0.2))
         }
     }
 
@@ -835,13 +835,13 @@ struct GameOverView: View {
 
             // KO splash
             VStack(spacing: 6) {
-                Text(won ? "🏆  YOU WIN  🏆" : "🥊  K.O.  🥊")
+                Text(won ? String(localized: "🏆  YOU WIN  🏆") : "🥊  K.O.  🥊")
                     .font(.system(size: 36, weight: .black, design: .rounded))
                     .foregroundStyle(won ? Color(red: 0.3, green: 1, blue: 0.55) : Color(red: 1, green: 0.3, blue: 0.3))
                     .scaleEffect(bannerVisible ? 1 : 0.6)
                     .opacity(bannerVisible ? 1 : 0)
 
-                Text(isNewRecord ? "NEW RECORD!" : (won ? "\(opponentName) is down" : "Down for the Count"))
+                Text(isNewRecord ? String(localized: "NEW RECORD!") : (won ? String(localized: "\(opponentName) is down") : "Down for the Count"))
                     .font(.system(size: 22, weight: .heavy, design: .rounded))
                     .tracking(1)
                     .foregroundStyle(isNewRecord ? .yellow : .white.opacity(0.85))

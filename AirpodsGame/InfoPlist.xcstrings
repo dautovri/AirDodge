@@ -1,0 +1,222 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Bundle display name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "AirBoxer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirpodsGame"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "AirpodsGame"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirpodsGame"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirpodsGame"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirpodsGame"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirpodsGame"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirpodsGame"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirpodsGame"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirpodsGame"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirpodsGame"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirpodsGame"
+          }
+        }
+      }
+    },
+    "NSMotionUsageDescription" : {
+      "comment" : "Privacy - Motion Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer nutzt die Bewegungssensoren deiner Kopfhörer, um Kopfbewegungen beim Ausweichen zu erkennen. Bewegungsdaten werden in Echtzeit auf dem Gerät verarbeitet und verlassen nie dein Telefon."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "AirBoxer uses your motion earbuds' sensors to detect when you tilt your head to dodge punches. Motion data is processed in real time on-device and never leaves your phone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer usa los sensores de tus auriculares con detección de movimiento para detectar cuándo inclinas la cabeza para esquivar golpes. Los datos de movimiento se procesan en tiempo real en el dispositivo y nunca salen de tu teléfono."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer utilise les capteurs de vos écouteurs pour détecter les mouvements de tête vous permettant d’esquiver les coups. Les données de mouvement sont traitées en temps réel sur l’appareil et ne quittent jamais votre téléphone."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer usa i sensori di movimento degli auricolari per rilevare i movimenti della testa e schivare i pugni. I dati di movimento vengono elaborati in tempo reale sul dispositivo e non lasciano mai il tuo telefono."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxerは、パンチを避けるための頭の傾きをモーション対応イヤフォンのセンサーで検出します。モーションデータはデバイス上でリアルタイムに処理され、外部に送信されることはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer는 머리를 기울여 펀치를 피하는 동작을 감지하기 위해 이어폰의 모션 센서를 사용합니다. 모션 데이터는 기기 내에서 실시간으로 처리되며 외부로 전송되지 않습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer gebruikt de bewegingssensoren van je oordopjes om te detecteren wanneer je je hoofd beweegt om stoten te ontwijken. Bewegingsgegevens worden lokaal in realtime verwerkt en verlaten je telefoon nooit."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O AirBoxer usa os sensores de movimento dos fones de ouvido para detectar quando você inclina a cabeça para desviar de socos. Os dados de movimento são processados em tempo real no aparelho e nunca saem do seu iPhone."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer использует датчики наушников, чтобы определять наклоны головы для уклонения от ударов. Данные о движениях обрабатываются на устройстве в реальном времени и никогда не покидают ваш телефон."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AirBoxer使用运动耳机的传感器来检测你何时偏头闪避拳击。运动数据均在设备端实时处理，绝不离开你的手机。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.3"
+}

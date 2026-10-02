@@ -8,9 +8,9 @@ struct UnlockView: View {
     @Environment(\.dismiss) private var dismiss
 
     private let features: [(String, String)] = [
-        ("figure.boxing", "The Warden — the 47-1 boss with near-reflex-limit tells"),
-        ("plus.circle.fill", "Every opponent added in future updates, included"),
-        ("hand.thumbsup.fill", "One payment. No ads, no subscription, no tracking"),
+        ("figure.boxing", String(localized: "The Warden — the 47-1 boss with near-reflex-limit tells")),
+        ("plus.circle.fill", String(localized: "Every opponent added in future updates, included")),
+        ("hand.thumbsup.fill", String(localized: "One payment. No ads, no subscription, no tracking")),
     ]
 
     var body: some View {

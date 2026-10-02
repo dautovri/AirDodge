@@ -42,11 +42,11 @@ enum MotionSensitivityLevel: Int, CaseIterable {
 
     var label: String {
         switch self {
-        case .verylenient: return "Very Lenient"
-        case .lenient:     return "Lenient"
-        case .standard:    return "Standard"
-        case .strict:      return "Strict"
-        case .verystrict:  return "Esports"
+        case .verylenient: return String(localized: "Very Lenient")
+        case .lenient:     return String(localized: "Lenient")
+        case .standard:    return String(localized: "Standard")
+        case .strict:      return String(localized: "Strict")
+        case .verystrict:  return String(localized: "Esports")
         }
     }
 }

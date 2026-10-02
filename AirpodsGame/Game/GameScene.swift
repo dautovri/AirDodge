@@ -8,10 +8,10 @@ enum DodgeZone: Equatable {
 
     var label: String {
         switch self {
-        case .center: return "CENTER"
-        case .left:   return "LEFT"
-        case .right:  return "RIGHT"
-        case .duck:   return "DUCK"
+        case .center: return String(localized: "CENTER")
+        case .left:   return String(localized: "LEFT")
+        case .right:  return String(localized: "RIGHT")
+        case .duck:   return String(localized: "DUCK")
         }
     }
 }
@@ -33,10 +33,10 @@ enum PunchType: CaseIterable {
 
     var warningText: String {
         switch self {
-        case .leftHook:  return "DODGE RIGHT  →"
-        case .rightHook: return "←  DODGE LEFT"
-        case .jab:       return "SLIP ASIDE!"
-        case .uppercut:  return "↓  DUCK!"
+        case .leftHook:  return String(localized: "DODGE RIGHT  →")
+        case .rightHook: return String(localized: "←  DODGE LEFT")
+        case .jab:       return String(localized: "SLIP ASIDE!")
+        case .uppercut:  return String(localized: "↓  DUCK!")
         }
     }
 
@@ -363,7 +363,7 @@ class GameScene: SKScene {
         addChild(scoreChip)
 
         let scoreCaption = SKLabelNode(fontNamed: "AvenirNext-Heavy")
-        scoreCaption.text = "SCORE"
+        scoreCaption.text = String(localized: "SCORE")
         scoreCaption.fontSize  = 9
         scoreCaption.fontColor = SKColor(white: 1, alpha: 0.45)
         scoreCaption.position  = CGPoint(x: 0, y: 11)
@@ -385,7 +385,7 @@ class GameScene: SKScene {
         addChild(roundChip)
 
         let roundCaption = SKLabelNode(fontNamed: "AvenirNext-Heavy")
-        roundCaption.text = "ROUND"
+        roundCaption.text = String(localized: "ROUND")
         roundCaption.fontSize  = 9
         roundCaption.fontColor = SKColor(white: 1, alpha: 0.45)
         roundCaption.position  = CGPoint(x: 0, y: 11)
@@ -424,7 +424,7 @@ class GameScene: SKScene {
         hpBarFill.xScale = 1.0
 
         hpLabel = SKLabelNode(fontNamed: "AvenirNext-Heavy")
-        hpLabel.text = "HP"
+        hpLabel.text = String(localized: "HP")
         hpLabel.fontSize  = 9
         hpLabel.fontColor = SKColor(white: 1, alpha: 0.5)
         hpLabel.position  = CGPoint(x: 30 + 10, y: barY + 14)
@@ -534,7 +534,7 @@ class GameScene: SKScene {
 
     private func updateCombo() {
         if combo >= 2 {
-            comboLabel.text = "🔥  \(combo)x  COMBO"
+            comboLabel.text = String(localized: "🔥  \(combo)x  COMBO")
             comboLabel.alpha = 1
             comboLabel.run(.sequence([
                 .scale(to: 1.18, duration: 0.1),
@@ -554,11 +554,11 @@ class GameScene: SKScene {
         let ringRadius: CGFloat = 32
 
         leftZoneRing  = makeZoneRing(at: CGPoint(x: size.width * 0.22, y: baseY),
-                                     radius: ringRadius, label: "← LEFT")
+                                     radius: ringRadius, label: String(localized: "← LEFT"))
         rightZoneRing = makeZoneRing(at: CGPoint(x: size.width * 0.78, y: baseY),
-                                     radius: ringRadius, label: "RIGHT →")
+                                     radius: ringRadius, label: String(localized: "RIGHT →"))
         duckZoneRing  = makeZoneRing(at: CGPoint(x: size.width * 0.50, y: baseY - 50),
-                                     radius: ringRadius, label: "↓ DUCK")
+                                     radius: ringRadius, label: String(localized: "↓ DUCK"))
 
         // Player's head dot
         headDot = SKShapeNode(circleOfRadius: 14)
@@ -635,7 +635,7 @@ class GameScene: SKScene {
         group.addChild(backdrop)
 
         let vs = SKLabelNode(fontNamed: "AvenirNext-Heavy")
-        vs.text      = "—  VS  —"
+        vs.text      = String(localized: "—  VS  —")
         vs.fontSize  = 16
         vs.fontColor = SKColor(red: 1.0, green: 0.85, blue: 0.30, alpha: 1)
         vs.position  = CGPoint(x: 0, y: 90)
@@ -659,7 +659,7 @@ class GameScene: SKScene {
         group.addChild(country)
 
         let record = SKLabelNode(fontNamed: "Menlo-Bold")
-        record.text      = "RECORD  \(opponent.record)"
+        record.text      = String(localized: "RECORD  \(opponent.record)")
         record.fontSize  = 14
         record.fontColor = SKColor(red: 1.0, green: 0.65, blue: 0.10, alpha: 1)
         record.position  = CGPoint(x: 0, y: -38)
@@ -668,8 +668,8 @@ class GameScene: SKScene {
 
         let hint = SKLabelNode(fontNamed: "AvenirNext-Medium")
         hint.text      = opponent.isTutorial
-            ? "Take your time. You can't lose."
-            : "Slip the hooks. Duck the uppercut."
+            ? String(localized: "Take your time. You can't lose.")
+            : String(localized: "Slip the hooks. Duck the uppercut.")
         hint.fontSize  = 12
         hint.fontColor = SKColor(white: 1, alpha: 0.55)
         hint.position  = CGPoint(x: 0, y: -68)
@@ -692,7 +692,7 @@ class GameScene: SKScene {
         group.addChild(backdrop)
 
         let header = SKLabelNode(fontNamed: "AvenirNext-Heavy")
-        header.text      = "BREAK"
+        header.text      = String(localized: "BREAK")
         header.fontSize  = 28
         header.fontColor = SKColor(red: 1.0, green: 0.85, blue: 0.30, alpha: 1)
         header.position  = CGPoint(x: 0, y: 60)
@@ -711,7 +711,7 @@ class GameScene: SKScene {
         group.addChild(roundBreakText)
 
         let hint = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        hint.text      = "BELL IN 3…"
+        hint.text      = String(localized: "BELL IN 3…")
         hint.fontSize  = 12
         hint.fontColor = SKColor(white: 1, alpha: 0.55)
         hint.position  = CGPoint(x: 0, y: -56)
@@ -736,7 +736,7 @@ class GameScene: SKScene {
 
         let ko = SKLabelNode(fontNamed: "AvenirNext-Heavy")
         koTitle = ko
-        ko.text      = "K.O."
+        ko.text      = String(localized: "K.O.")
         ko.fontSize  = 96
         ko.fontColor = SKColor(red: 1.0, green: 0.20, blue: 0.20, alpha: 1)
         ko.position  = CGPoint(x: 0, y: 60)
@@ -745,7 +745,7 @@ class GameScene: SKScene {
 
         let dlc = SKLabelNode(fontNamed: "AvenirNext-Heavy")
         koSubtitle = dlc
-        dlc.text      = "DOWN FOR THE COUNT"
+        dlc.text      = String(localized: "DOWN FOR THE COUNT")
         dlc.fontSize  = 14
         dlc.fontColor = SKColor(white: 1, alpha: 0.65)
         dlc.position  = CGPoint(x: 0, y: -10)
@@ -753,7 +753,7 @@ class GameScene: SKScene {
         group.addChild(dlc)
 
         koScoreText = SKLabelNode(fontNamed: "Menlo-Bold")
-        koScoreText.text      = "FINAL  0"
+        koScoreText.text      = String(localized: "FINAL  0")
         koScoreText.fontSize  = 18
         koScoreText.fontColor = SKColor(red: 1.0, green: 0.85, blue: 0.30, alpha: 1)
         koScoreText.position  = CGPoint(x: 0, y: -42)
@@ -841,12 +841,12 @@ class GameScene: SKScene {
             }
 
         case .ko(let won):
-            koScoreText.text  = "FINAL  \(score)"
+            koScoreText.text  = String(localized: "FINAL  \(score)")
             if won {
-                koTitle.text = "YOU WIN"
+                koTitle.text = String(localized: "YOU WIN")
                 koTitle.fontSize = 72
                 koTitle.fontColor = SKColor(red: 0.30, green: 1.0, blue: 0.55, alpha: 1)
-                koSubtitle.text = "\(opponent.name.uppercased()) IS DOWN"
+                koSubtitle.text = String(localized: "\(opponent.name.uppercased()) IS DOWN")
                 koBackdrop.fillColor = SKColor(red: 0.02, green: 0.10, blue: 0.04, alpha: 0.86)
             }
             koCard.isHidden   = false
@@ -1105,7 +1105,7 @@ class GameScene: SKScene {
         // consistency with hit text. Stays green since "SLIPPED!" doesn't
         // collide with a red flash, but the outline reads better against
         // the spotlight glow than flat green-on-grey did.
-        let dodgeText = combo >= 3 ? "PERFECT SLIP! 🥊" : "SLIPPED!"
+        let dodgeText = combo >= 3 ? String(localized: "PERFECT SLIP! 🥊") : String(localized: "SLIPPED!")
         let dodgePosition = CGPoint(x: size.width / 2, y: size.height * 0.78)
         let dodgeGroup = SKNode()
         dodgeGroup.position = dodgePosition
@@ -1185,7 +1185,7 @@ class GameScene: SKScene {
         // with a thick black outline (black SKLabelNode behind, white in
         // front with a 4px offset for the outline) — readable against the
         // red hit-flash that the previous red text drowned in.
-        let hitText = ["OUCH!", "TOOK A HIT!", "MOVE FASTER!"].randomElement()!
+        let hitText = [String(localized: "OUCH!"), String(localized: "TOOK A HIT!"), String(localized: "MOVE FASTER!")].randomElement()!
         let hitPosition = CGPoint(x: size.width / 2, y: size.height * 0.78)
         let hitGroup = SKNode()
         hitGroup.position = hitPosition

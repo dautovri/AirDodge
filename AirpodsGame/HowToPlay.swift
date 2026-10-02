@@ -42,10 +42,10 @@ struct HowToPlayView: View {
     @Environment(\.dismiss) private var dismiss
 
     private let rules: [(String, String, String)] = [
-        ("arrow.left.and.right", "Tilt left or right", "Slip hooks. The banner tells you which way."),
-        ("arrow.down", "Duck", "Nod your head down to get under uppercuts."),
-        ("bolt.fill", "Jabs", "Slip to either side."),
-        ("trophy.fill", "Counter-punch", "Every slip lands a counter. Empty their bar to win; take five hits and you're down."),
+        ("arrow.left.and.right", String(localized: "Tilt left or right"), String(localized: "Slip hooks. The banner tells you which way.")),
+        ("arrow.down", String(localized: "Duck"), String(localized: "Nod your head down to get under uppercuts.")),
+        ("bolt.fill", String(localized: "Jabs"), String(localized: "Slip to either side.")),
+        ("trophy.fill", String(localized: "Counter-punch"), String(localized: "Every slip lands a counter. Empty their bar to win; take five hits and you're down.")),
     ]
 
     var body: some View {

@@ -45,16 +45,16 @@ final class MotionManager: NSObject, CMHeadphoneMotionManagerDelegate {
         /// card in ContentView for the full explanation.
         /// Headphones whose head tracking iOS exposes to apps
         /// (CMHeadphoneMotionManager).
-        static let supportedHeadphones = "AirPods Pro, AirPods Max, AirPods (3rd generation), AirPods 4 or Beats Fit Pro"
+        static let supportedHeadphones = String(localized: "AirPods Pro, AirPods Max, AirPods (3rd generation), AirPods 4 or Beats Fit Pro")
 
         var label: String {
             switch self {
-            case .unknown:            return "Looking for motion earbuds…"
-            case .unavailable:        return "No motion hardware detected"
-            case .permissionDenied:   return "Tap to allow Motion & Fitness"
-            case .waitingForAirPods:  return "No motion earbuds connected"
-            case .waitingForData:     return "Earbuds paired — put them in your ears"
-            case .live:               return "Motion earbuds connected"
+            case .unknown:            return String(localized: "Looking for motion earbuds…")
+            case .unavailable:        return String(localized: "No motion hardware detected")
+            case .permissionDenied:   return String(localized: "Tap to allow Motion & Fitness")
+            case .waitingForAirPods:  return String(localized: "No motion earbuds connected")
+            case .waitingForData:     return String(localized: "Earbuds paired — put them in your ears")
+            case .live:               return String(localized: "Motion earbuds connected")
             }
         }
 
@@ -63,17 +63,17 @@ final class MotionManager: NSObject, CMHeadphoneMotionManagerDelegate {
         var nextStep: String {
             switch self {
             case .unknown:
-                return "Searching for motion earbuds. This takes a moment after launch."
+                return String(localized: "Searching for motion earbuds. This takes a moment after launch.")
             case .unavailable:
-                return "This device can't report head motion. AirBoxer needs an iPhone paired with \(Self.supportedHeadphones)."
+                return String(localized: "This device can't report head motion. AirBoxer needs an iPhone paired with \(Self.supportedHeadphones).")
             case .permissionDenied:
-                return "Motion & Fitness access is off, so head motion can't reach the game. Tap the status chip above to open Settings and turn it on."
+                return String(localized: "Motion & Fitness access is off, so head motion can't reach the game. Tap the status chip above to open Settings and turn it on.")
             case .waitingForAirPods:
-                return "Connect \(Self.supportedHeadphones) to this iPhone, then tap the status chip to retry."
+                return String(localized: "Connect \(Self.supportedHeadphones) to this iPhone, then tap the status chip to retry.")
             case .waitingForData:
-                return "Your earbuds are connected. Put them in your ears — head motion only streams while they're worn."
+                return String(localized: "Your earbuds are connected. Put them in your ears — head motion only streams while they're worn.")
             case .live:
-                return "You're ready. Tap FIGHT."
+                return String(localized: "You're ready. Tap FIGHT.")
             }
         }
 
