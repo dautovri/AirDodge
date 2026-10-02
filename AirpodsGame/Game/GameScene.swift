@@ -104,7 +104,7 @@ class GameScene: SKScene {
         case intro                  // opponent name card, drumroll → bell → fighting
         case fighting               // active dodge gameplay
         case roundBreak(round: Int) // pep talk card between rounds
-        case ko                     // KO sequence, then onGameOver callback
+        case ko(won: Bool)          // KO sequence (either corner), then onGameOver callback
     }
 
     private var phase: FightPhase = .intro { didSet { updatePhase() } }
@@ -115,6 +115,9 @@ class GameScene: SKScene {
     private var koCard:         SKNode!
     private var roundBreakText: SKLabelNode!  // updated per round break
     private var koScoreText:    SKLabelNode!  // updated on KO with final score
+    private var koBackdrop:     SKShapeNode!
+    private var koTitle:        SKLabelNode!
+    private var koSubtitle:     SKLabelNode!
 
     // Timing (seconds) — initialized from the opponent in didMove(to:).
     private var telegraphDuration: TimeInterval = 1.6
@@ -134,6 +137,7 @@ class GameScene: SKScene {
     private var hpBarBg:            SKShapeNode!
     private var hpBarFill:          SKShapeNode!
     private var hpLabel:            SKLabelNode!
+    private var opponentBarFill:    SKShapeNode!
     private var warningLabel:       SKLabelNode!
     private var warningBanner:      SKShapeNode!
     private var comboLabel:         SKLabelNode!
@@ -148,7 +152,10 @@ class GameScene: SKScene {
     private var leftGloveRest  = CGPoint.zero
     private var rightGloveRest = CGPoint.zero
 
-    var onGameOver: ((Int) -> Void)?
+    var onGameOver: ((FightResult) -> Void)?
+
+    /// Every slip lands a counter-punch; emptying this wins the fight.
+    private(set) var opponentHP = 0 { didSet { updateOpponentBar() } }
 
     // Haptic generators (kept alive for low-latency)
     private let lightImpact  = UIImpactFeedbackGenerator(style: .light)
@@ -184,6 +191,7 @@ class GameScene: SKScene {
         // Now that the HUD nodes exist, assign HP — didSet → updateHpBar()
         // will paint the bar green for the full-HP frac.
         hp = min(opponent.initialHP, maxHp)
+        opponentHP = opponent.opponentHP
         // updateHpBar() also runs explicitly here in case `hp` happens to
         // already equal the default 5 (no didSet fires on no-change).
         updateHpBar()
@@ -424,6 +432,33 @@ class GameScene: SKScene {
         hpLabel.zPosition = 16
         addChild(hpLabel)
 
+        // Opponent HP — thinner red bar under the player's, named so it's
+        // obvious which bar is whose.
+        let oppY = barY - 30
+        let oppBg = SKShapeNode(rectOf: CGSize(width: barWidth, height: 8), cornerRadius: 4)
+        oppBg.fillColor   = SKColor(white: 1, alpha: 0.08)
+        oppBg.strokeColor = SKColor(white: 1, alpha: 0.18)
+        oppBg.lineWidth   = 1
+        oppBg.position    = CGPoint(x: size.width / 2, y: oppY)
+        oppBg.zPosition   = 14
+        addChild(oppBg)
+
+        opponentBarFill = SKShapeNode(rectOf: CGSize(width: barWidth - 4, height: 4), cornerRadius: 2)
+        opponentBarFill.fillColor   = SKColor(red: 1.0, green: 0.35, blue: 0.30, alpha: 1)
+        opponentBarFill.strokeColor = .clear
+        opponentBarFill.position    = CGPoint(x: size.width / 2, y: oppY)
+        opponentBarFill.zPosition   = 15
+        addChild(opponentBarFill)
+
+        let oppLabel = SKLabelNode(fontNamed: "AvenirNext-Heavy")
+        oppLabel.text = opponent.name.uppercased()
+        oppLabel.fontSize  = 9
+        oppLabel.fontColor = SKColor(white: 1, alpha: 0.5)
+        oppLabel.position  = CGPoint(x: 30 + 10, y: oppY + 9)
+        oppLabel.horizontalAlignmentMode = .left
+        oppLabel.zPosition = 16
+        addChild(oppLabel)
+
         // Warning banner (full-width)
         warningBanner = SKShapeNode(rectOf: CGSize(width: size.width, height: 56))
         warningBanner.fillColor   = SKColor(white: 0, alpha: 0.55)
@@ -489,6 +524,12 @@ class GameScene: SKScene {
             .fadeAlpha(to: 0.4, duration: 0.05),
             .fadeAlpha(to: 1.0, duration: 0.15)
         ]))
+    }
+
+    private func updateOpponentBar() {
+        guard let opponentBarFill else { return }
+        let frac = CGFloat(max(opponentHP, 0)) / CGFloat(max(opponent.opponentHP, 1))
+        opponentBarFill.run(.scaleX(to: frac, y: 1.0, duration: 0.25))
     }
 
     private func updateCombo() {
@@ -686,6 +727,7 @@ class GameScene: SKScene {
         group.zPosition = 110
 
         let backdrop = SKShapeNode(rectOf: CGSize(width: size.width, height: size.height))
+        koBackdrop = backdrop
         backdrop.fillColor   = SKColor(red: 0.12, green: 0.02, blue: 0.02, alpha: 0.86)
         backdrop.strokeColor = .clear
         backdrop.position    = CGPoint(x: 0, y: -(size.height * 0.05))
@@ -693,6 +735,7 @@ class GameScene: SKScene {
         group.addChild(backdrop)
 
         let ko = SKLabelNode(fontNamed: "AvenirNext-Heavy")
+        koTitle = ko
         ko.text      = "K.O."
         ko.fontSize  = 96
         ko.fontColor = SKColor(red: 1.0, green: 0.20, blue: 0.20, alpha: 1)
@@ -701,6 +744,7 @@ class GameScene: SKScene {
         group.addChild(ko)
 
         let dlc = SKLabelNode(fontNamed: "AvenirNext-Heavy")
+        koSubtitle = dlc
         dlc.text      = "DOWN FOR THE COUNT"
         dlc.fontSize  = 14
         dlc.fontColor = SKColor(white: 1, alpha: 0.65)
@@ -796,8 +840,15 @@ class GameScene: SKScene {
                 self?.finishRoundBreak(nextRound: nextRound)
             }
 
-        case .ko:
+        case .ko(let won):
             koScoreText.text  = "FINAL  \(score)"
+            if won {
+                koTitle.text = "YOU WIN"
+                koTitle.fontSize = 72
+                koTitle.fontColor = SKColor(red: 0.30, green: 1.0, blue: 0.55, alpha: 1)
+                koSubtitle.text = "\(opponent.name.uppercased()) IS DOWN"
+                koBackdrop.fillColor = SKColor(red: 0.02, green: 0.10, blue: 0.04, alpha: 0.86)
+            }
             koCard.isHidden   = false
             koCard.alpha      = 0
             koCard.setScale(0.7)
@@ -1057,12 +1108,18 @@ class GameScene: SKScene {
             .removeFromParent()
         ]))
 
+        // Counter-punch lands: the opponent's head snaps back.
         opponentHead.run(.sequence([
-            .moveBy(x: 0, y: -8, duration: 0.1),
-            .moveBy(x: 0, y: 8, duration: 0.1)
+            .moveBy(x: 0, y: 12, duration: 0.08),
+            .moveBy(x: 0, y: -12, duration: 0.14)
         ]))
+        opponentHP -= 1
 
-        resetGlovesAndContinue()
+        if opponentHP <= 0 {
+            endFight(won: true)
+        } else {
+            resetGlovesAndContinue()
+        }
     }
 
     private func onHit(_ punch: PunchType) {
@@ -1137,7 +1194,7 @@ class GameScene: SKScene {
         warningBanner.run(.fadeOut(withDuration: 0.2))
 
         if hp <= 0 {
-            triggerKO()
+            endFight(won: false)
         } else {
             resetGlovesAndContinue()
         }
@@ -1179,10 +1236,10 @@ class GameScene: SKScene {
 
     // MARK: - KO
 
-    private func triggerKO() {
+    private func endFight(won: Bool) {
         gameOver = true
 
-        if hapticsEnabled { notify.notificationOccurred(.error) }
+        if hapticsEnabled { notify.notificationOccurred(won ? .success : .error) }
         // Submit best dodge streak from this fight to GameKit (silent if not authed)
         GameCenter.shared.submitStreak(maxStreak)
 
@@ -1201,19 +1258,25 @@ class GameScene: SKScene {
         rightGlove.run(.scale(to: 0.8, duration: 0.4))
 
         // updatePhase() handles the K.O. card animation + audio sting.
-        phase = .ko
+        phase = .ko(won: won)
 
         // Hold the KO card for ~1.6s so the player can read the score, then
         // hand off to the SwiftUI game-over view.
         Task { @MainActor [weak self] in
             try? await Task.sleep(for: .seconds(1.6))
             guard let self else { return }
-            self.onGameOver?(self.score)
+            self.onGameOver?(FightResult(score: self.score, won: won, opponentID: self.opponent.id))
         }
     }
 }
 
 // MARK: - Helpers
+
+struct FightResult: Equatable {
+    let score: Int
+    let won: Bool
+    let opponentID: String
+}
 
 extension Comparable {
     func clamped(to range: ClosedRange<Self>) -> Self {

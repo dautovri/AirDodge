@@ -7,6 +7,7 @@ struct ContentView: View {
     @State private var gameCenter = GameCenter.shared
     @State private var gameState: GameState = .menu
     @State private var finalScore: Int = 0
+    @State private var lastFightWon = false
     @State private var highScore: Int = UserDefaults.standard.integer(forKey: "boxerHighScore")
     @State private var settingsPresented = false
     @State private var isPaused = false
@@ -53,6 +54,8 @@ struct ContentView: View {
 
             case .gameOver:
                 GameOverView(score: finalScore, highScore: highScore,
+                             won: lastFightWon,
+                             opponentName: selectedOpponent.name,
                              canRestart: canStart,
                              motionStatus: motion.status,
                              onRestart: { startFight() },
@@ -74,7 +77,7 @@ struct ContentView: View {
             gameCenter.authenticate()
         }
         .onDisappear { motion.stop() }
-        .onChange(of: scenePhase) { phase in
+        .onChange(of: scenePhase) { _, phase in
             // Pause whenever the app is no longer the active foreground app.
             // Don't auto-resume on .active — show "Tap to resume" so the player
             // is ready (AirPods reseated, eyes back on screen).
@@ -120,14 +123,18 @@ struct ContentView: View {
         }
     }
 
-    private func handleGameOver(_ score: Int) {
+    private func handleGameOver(_ result: FightResult) {
+        let score = result.score
         finalScore = score
+        lastFightWon = result.won
         if score > highScore {
             highScore = score
             UserDefaults.standard.set(score, forKey: "boxerHighScore")
         }
-        gameCenter.submitKnockout()
-        Haptics.notify(.warning)
+        // The knockouts leaderboard counts knockouts the player lands, not
+        // the ones they take.
+        if result.won { gameCenter.submitKnockout() }
+        Haptics.notify(result.won ? .success : .warning)
         withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) { gameState = .gameOver }
     }
 }
@@ -407,7 +414,7 @@ private struct ConnectionChip: View {
         .overlay(
             Capsule().stroke(dotColor.opacity(0.4), lineWidth: 1)
         )
-        .onChange(of: status.isLive) { newValue in
+        .onChange(of: status.isLive) { _, newValue in
             if newValue {
                 withAnimation(.easeOut(duration: 1.4).repeatForever(autoreverses: false)) {
                     pulse = true
@@ -672,7 +679,7 @@ private struct PressActionStyle: ButtonStyle {
     @Binding var pressed: Bool
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .onChange(of: configuration.isPressed) { newValue in
+            .onChange(of: configuration.isPressed) { _, newValue in
                 withAnimation(.easeOut(duration: 0.12)) { pressed = newValue }
             }
     }
@@ -683,7 +690,7 @@ private struct PressActionStyle: ButtonStyle {
 struct GameView: View {
     let isPaused: Bool
     let opponent: OpponentDefinition
-    let onGameOver: (Int) -> Void
+    let onGameOver: (FightResult) -> Void
     @State private var scene: GameScene?
 
     var body: some View {
@@ -706,7 +713,7 @@ struct GameView: View {
                     scene = s
                 }
             }
-            .onChange(of: isPaused) { newValue in
+            .onChange(of: isPaused) { _, newValue in
                 scene?.isPaused = newValue
             }
         }
@@ -718,6 +725,8 @@ struct GameView: View {
 struct GameOverView: View {
     let score: Int
     let highScore: Int
+    var won = false
+    var opponentName = ""
     let canRestart: Bool
     let motionStatus: MotionManager.Status
     let onRestart: () -> Void
@@ -744,13 +753,13 @@ struct GameOverView: View {
 
             // KO splash
             VStack(spacing: 6) {
-                Text("🥊  K.O.  🥊")
+                Text(won ? "🏆  YOU WIN  🏆" : "🥊  K.O.  🥊")
                     .font(.system(size: 36, weight: .black, design: .rounded))
-                    .foregroundStyle(Color(red: 1, green: 0.3, blue: 0.3))
+                    .foregroundStyle(won ? Color(red: 0.3, green: 1, blue: 0.55) : Color(red: 1, green: 0.3, blue: 0.3))
                     .scaleEffect(bannerVisible ? 1 : 0.6)
                     .opacity(bannerVisible ? 1 : 0)
 
-                Text(isNewRecord ? "NEW RECORD!" : "Down for the Count")
+                Text(isNewRecord ? "NEW RECORD!" : (won ? "\(opponentName) is down" : "Down for the Count"))
                     .font(.system(size: 22, weight: .heavy, design: .rounded))
                     .tracking(1)
                     .foregroundStyle(isNewRecord ? .yellow : .white.opacity(0.85))
