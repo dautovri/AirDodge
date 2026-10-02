@@ -5,6 +5,8 @@ import UIKit
 struct ContentView: View {
     @State private var motion = MotionManager.shared
     @State private var gameCenter = GameCenter.shared
+    /// Menu / results theme. The fight scene owns its own AudioSystem.
+    @State private var menuAudio = AudioSystem()
     @State private var gameState: GameState = .menu
     @State private var finalScore: Int = 0
     @State private var lastFightWon = false
@@ -75,6 +77,14 @@ struct ContentView: View {
         .onAppear {
             motion.start()
             gameCenter.authenticate()
+            menuAudio.startMusic(named: "menu_loop", volume: 0.45)
+        }
+        .onChange(of: gameState) { old, new in
+            if new == .playing {
+                menuAudio.stopMusic(fadeOver: 0.4)
+            } else if old == .playing {
+                menuAudio.startMusic(named: "menu_loop", volume: 0.45)
+            }
         }
         .onDisappear { motion.stop() }
         .onChange(of: scenePhase) { _, phase in
@@ -105,7 +115,14 @@ struct ContentView: View {
                 wasBackgrounded = false
             }
         }
-        .sheet(isPresented: $settingsPresented) {
+        .sheet(isPresented: $settingsPresented, onDismiss: {
+            // Apply the Sound toggle to the theme that's already playing.
+            if UserDefaults.standard.bool(forKey: SettingsKey.soundEnabled) {
+                if gameState != .playing { menuAudio.startMusic(named: "menu_loop", volume: 0.45) }
+            } else {
+                menuAudio.stopMusic(fadeOver: 0)
+            }
+        }) {
             SettingsView()
         }
     }

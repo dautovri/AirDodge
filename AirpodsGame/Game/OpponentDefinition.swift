@@ -47,7 +47,7 @@ extension OpponentDefinition {
         restSec: 1.6,             // breathing room between punches
         initialHP: 999,           // can't lose
         opponentHP: 5,            // 5 successful dodges to win the tutorial
-        musicTrack: nil,          // tutorial silent (or use the menu loop)
+        musicTrack: "sandbag_loop",
         isTutorial: true,
         bossRank: 0
     )

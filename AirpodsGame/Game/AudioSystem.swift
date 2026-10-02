@@ -169,6 +169,8 @@ final class AudioSystem {
                   bundle.url(forResource: name, withExtension: "mp3") ??
                   bundle.url(forResource: name, withExtension: "wav")
         guard let url else { return }
+        if let music, music.isPlaying, music.url == url { return }
+        music?.stop()
         do {
             let player = try AVAudioPlayer(contentsOf: url)
             player.numberOfLoops = -1
