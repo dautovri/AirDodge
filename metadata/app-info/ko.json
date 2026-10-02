@@ -1,0 +1,6 @@
+{
+  "name": "AirBoxer: 모션 복싱",
+  "subtitle": "머리 움직임으로 피하는 복싱 게임",
+  "privacyPolicyUrl": "https://dautovri.com/airboxer-privacy",
+  "privacyPolicyText": "AirBoxer는 어떠한 정보도 수집하지 않습니다. 헤드폰에서 감지된 머리 움직임 데이터는 iPhone에서 실시간으로만 사용된 후 즉시 삭제됩니다. 분석 도구, 광고, 사용자 추적, 서드파티 SDK를 일절 사용하지 않습니다. Game Center 점수 등록은 선택 사항이며 Apple에서 관리합니다."
+}

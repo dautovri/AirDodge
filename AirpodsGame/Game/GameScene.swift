@@ -849,6 +849,13 @@ class GameScene: SKScene {
                 koSubtitle.text = String(localized: "\(opponent.name.uppercased()) IS DOWN")
                 koBackdrop.fillColor = SKColor(red: 0.02, green: 0.10, blue: 0.04, alpha: 0.86)
             }
+            // Translations run longer than "YOU WIN" / "K.O."; shrink to fit.
+            for label in [koTitle, koSubtitle] {
+                guard let label else { continue }
+                while label.frame.width > size.width - 48, label.fontSize > 18 {
+                    label.fontSize -= 2
+                }
+            }
             koCard.isHidden   = false
             koCard.alpha      = 0
             koCard.setScale(0.7)
