@@ -24,6 +24,10 @@ struct OpponentDefinition {
     let musicTrack: String?            // bundle filename (no ext); nil = no music
     let isTutorial: Bool               // signals every tell verbally; can't lose
     let bossRank: Int                  // ordering: 0=tutorial, 1=mid, 99=final boss
+
+    /// Sandbag and Vitrine Bloom are free; everyone above them needs the
+    /// Full Fight Card unlock.
+    var requiresUnlock: Bool { bossRank > 1 }
 }
 
 extension OpponentDefinition {

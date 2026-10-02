@@ -104,10 +104,16 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Button("Restore Purchases") {
+                        Task { await UnlockStore.shared.restore() }
+                    }
+                } header: {
+                    Text("Full Fight Card")
+                }
+
+                Section {
                     Button {
-                        if let url = URL(string: "https://airboxer.pages.dev/privacy/") {
-                            UIApplication.shared.open(url)
-                        }
+                        UIApplication.shared.open(UnlockStore.privacyURL)
                     } label: {
                         HStack {
                             Text("Privacy Policy")

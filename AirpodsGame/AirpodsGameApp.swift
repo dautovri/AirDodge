@@ -12,6 +12,9 @@ struct AirpodsGameApp: App {
             SettingsKey.hapticsEnabled:    true,
             SettingsKey.scanlineEnabled:   true,
         ])
+        // Start listening for transactions at launch so Ask to Buy approvals
+        // and refunds are always finished and applied.
+        _ = UnlockStore.shared
     }
 
     var body: some Scene {

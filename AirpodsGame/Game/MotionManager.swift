@@ -105,6 +105,13 @@ final class MotionManager: NSObject, CMHeadphoneMotionManagerDelegate {
     }
 
     func start() {
+        #if DEBUG
+        // Screenshot fixture: pretend earbuds are streaming so the roster shows.
+        if ProcessInfo.processInfo.arguments.contains("-ABFakeMotion") {
+            status = .live
+            return
+        }
+        #endif
         let available = manager.isDeviceMotionAvailable
         let auth = CMMotionActivityManager.authorizationStatus()
         let isActive = manager.isDeviceMotionActive

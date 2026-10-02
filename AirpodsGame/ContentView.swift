@@ -12,6 +12,8 @@ struct ContentView: View {
     @State private var lastFightWon = false
     @State private var highScore: Int = UserDefaults.standard.integer(forKey: "boxerHighScore")
     @State private var settingsPresented = false
+    @State private var unlockPresented = false
+    @State private var store = UnlockStore.shared
     @State private var isPaused = false
     /// Tracks whether we just came back from background — triggers motion.restart()
     /// to recover from CoreMotion suspension. See scenePhase handler below.
@@ -44,6 +46,8 @@ struct ContentView: View {
                          highScore: highScore,
                          canStart: canStart,
                          selectedOpponent: $selectedOpponent,
+                         isLocked: { store.isLocked($0) },
+                         onLockedTap: { unlockPresented = true },
                          onStart: { startFight() },
                          onSettings: { settingsPresented = true })
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
@@ -115,6 +119,9 @@ struct ContentView: View {
                 wasBackgrounded = false
             }
         }
+        .sheet(isPresented: $unlockPresented) {
+            UnlockView()
+        }
         .sheet(isPresented: $settingsPresented, onDismiss: {
             // Apply the Sound toggle to the theme that's already playing.
             if UserDefaults.standard.bool(forKey: SettingsKey.soundEnabled) {
@@ -133,6 +140,10 @@ struct ContentView: View {
     private func startFight() {
         guard canStart else {
             Haptics.notify(.warning)
+            return
+        }
+        guard !store.isLocked(selectedOpponent) else {
+            unlockPresented = true
             return
         }
         withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) {
@@ -239,6 +250,8 @@ struct MenuView: View {
     let highScore: Int
     let canStart: Bool
     @Binding var selectedOpponent: OpponentDefinition
+    let isLocked: (OpponentDefinition) -> Bool
+    let onLockedTap: () -> Void
     let onStart: () -> Void
     let onSettings: () -> Void
 
@@ -315,7 +328,7 @@ struct MenuView: View {
                 // 'HOW TO DODGE' guide that was redundant after the tutorial.
                 // Required by Apple Guideline 4.2 (minimum functionality) — the
                 // game ships with 3 opponents and the user must be able to pick.
-                OpponentPicker(selected: $selectedOpponent)
+                OpponentPicker(selected: $selectedOpponent, isLocked: isLocked, onLockedTap: onLockedTap)
                     .padding(.horizontal, 24)
                     .padding(.top, 8)
             } else {
@@ -537,6 +550,8 @@ struct MotionRequirementCard: View {
 
 struct OpponentPicker: View {
     @Binding var selected: OpponentDefinition
+    var isLocked: (OpponentDefinition) -> Bool = { _ in false }
+    var onLockedTap: () -> Void = {}
 
     var body: some View {
         VStack(spacing: 10) {
@@ -550,9 +565,14 @@ struct OpponentPicker: View {
                     OpponentCard(
                         opponent: opponent,
                         isSelected: opponent.id == selected.id,
+                        isLocked: isLocked(opponent),
                         onTap: {
                             Haptics.impact(.light)
-                            selected = opponent
+                            if isLocked(opponent) {
+                                onLockedTap()
+                            } else {
+                                selected = opponent
+                            }
                         }
                     )
                 }
@@ -571,6 +591,7 @@ struct OpponentPicker: View {
 private struct OpponentCard: View {
     let opponent: OpponentDefinition
     let isSelected: Bool
+    var isLocked = false
     let onTap: () -> Void
 
     /// Difficulty badge color matched to opponent identity from the data model.
@@ -608,10 +629,17 @@ private struct OpponentCard: View {
                 Text(opponent.country)
                     .font(.system(size: 9, weight: .medium, design: .rounded))
                     .foregroundStyle(.white.opacity(0.4))
-                Text(opponent.record)
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(.white.opacity(0.55))
-                    .padding(.top, 2)
+                if isLocked {
+                    Label("UNLOCK", systemImage: "lock.fill")
+                        .font(.system(size: 9, weight: .heavy, design: .rounded))
+                        .foregroundStyle(.orange)
+                        .padding(.top, 2)
+                } else {
+                    Text(opponent.record)
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(.white.opacity(0.55))
+                        .padding(.top, 2)
+                }
             }
             .padding(.vertical, 12).padding(.horizontal, 6)
             .frame(maxWidth: .infinity, minHeight: 100)
