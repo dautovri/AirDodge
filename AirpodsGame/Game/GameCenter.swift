@@ -73,16 +73,22 @@ final class GameCenter {
         }
     }
 
-    // Submit a knockout (delta — Game Center handles cumulative on the dashboard).
+    /// Records a knockout and submits the player's running total. The
+    /// leaderboard keeps each player's best score, so it must be sent the
+    /// total, not a delta of 1.
     func submitKnockout() {
+        let total = UserDefaults.standard.integer(forKey: Self.totalKnockoutsKey) + 1
+        UserDefaults.standard.set(total, forKey: Self.totalKnockoutsKey)
         guard isAuthenticated else { return }
         Task {
             try? await GKLeaderboard.submitScore(
-                1,
+                total,
                 context: 0,
                 player: GKLocalPlayer.local,
                 leaderboardIDs: [LeaderboardID.totalKOs]
             )
         }
     }
+
+    private static let totalKnockoutsKey = "boxerTotalKnockouts"
 }
