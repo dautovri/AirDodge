@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var highScore: Int = UserDefaults.standard.integer(forKey: "boxerHighScore")
     @State private var settingsPresented = false
     @State private var unlockPresented = false
+    @State private var howToPresented = false
     @State private var store = UnlockStore.shared
     @State private var isPaused = false
     /// Tracks whether we just came back from background — triggers motion.restart()
@@ -49,6 +50,7 @@ struct ContentView: View {
                          isLocked: { store.isLocked($0) },
                          onLockedTap: { unlockPresented = true },
                          onStart: { startFight() },
+                         onHowTo: { howToPresented = true },
                          onSettings: { settingsPresented = true })
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
 
@@ -121,6 +123,9 @@ struct ContentView: View {
         }
         .sheet(isPresented: $unlockPresented) {
             UnlockView()
+        }
+        .sheet(isPresented: $howToPresented) {
+            HowToPlayView()
         }
         .sheet(isPresented: $settingsPresented, onDismiss: {
             // Apply the Sound toggle to the theme that's already playing.
@@ -253,6 +258,7 @@ struct MenuView: View {
     let isLocked: (OpponentDefinition) -> Bool
     let onLockedTap: () -> Void
     let onStart: () -> Void
+    let onHowTo: () -> Void
     let onSettings: () -> Void
 
     @State private var titlePulse = false
@@ -266,6 +272,15 @@ struct MenuView: View {
                     BestBadge(score: highScore)
                 }
                 Spacer()
+                Button(action: { Haptics.impact(.light); onHowTo() }) {
+                    Image(systemName: "questionmark")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.65))
+                        .frame(width: 36, height: 36)
+                        .background(.ultraThinMaterial, in: Circle())
+                        .overlay(Circle().stroke(.white.opacity(0.12), lineWidth: 1))
+                }
+                .accessibilityLabel("How to Play")
                 Button(action: { Haptics.impact(.light); onSettings() }) {
                     Image(systemName: "gearshape.fill")
                         .font(.system(size: 16, weight: .semibold))
@@ -514,13 +529,14 @@ struct MotionRequirementCard: View {
             }
 
             if !compact {
-                Divider().overlay(Color.white.opacity(0.12))
-
-                Text("You dodge punches by physically moving your head. AirBoxer reads that movement from earbuds that stream head-motion data to iPhone, so a pair must be connected and worn before a fight can start.")
-                    .font(.system(size: 13, weight: .regular))
-                    .foregroundStyle(.white.opacity(0.88))
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                // Shows the mechanic instead of describing it: you dodge by
+                // physically moving your head, read from earbuds that stream
+                // head-motion data to iPhone.
+                HowToPlayVideo()
+                    .aspectRatio(16 / 9, contentMode: .fit)
+                    .frame(minHeight: 150)
+                    .clipShape(.rect(cornerRadius: 12))
+                    .accessibilityHidden(true)
             }
 
             // The one thing to do next, driven by the live motion status.

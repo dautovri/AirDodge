@@ -21,12 +21,14 @@
 		7EBBD63EFFC78F7EA0F0BC7E /* vitrine_bloom_loop.caf in Resources */ = {isa = PBXBuildFile; fileRef = 1EDF524810D0B0A2A4784492 /* vitrine_bloom_loop.caf */; };
 		8BF1079A8420C5791A84F9C9 /* dodgeCheer.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4ED381BA5225C0BCB71628F2 /* dodgeCheer.wav */; };
 		9320EF59076D061D6D059546 /* GameCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D5010E6D0157B92DC3E5A3 /* GameCenter.swift */; };
+		9E2DD9972855EAAEADCD9DF3 /* how_to_play.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8995A05F95D6EBBE171ED512 /* how_to_play.mp4 */; };
 		9FD31DCD1675FD84DA3726EB /* menu_loop.caf in Resources */ = {isa = PBXBuildFile; fileRef = C25D7ED11174B5762785E3D8 /* menu_loop.caf */; };
 		A41F94995C410E9C6F0BCF08 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = EE837F894D0D4E2B7235448F /* AppIcon.icon */; };
 		A4FA9B529BA99552E4BDBAA4 /* UnlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755ED55DD4CBD4174ED25B85 /* UnlockView.swift */; };
 		A665EFFF33A40A996ADD3A4C /* the_warden_loop.caf in Resources */ = {isa = PBXBuildFile; fileRef = 02F80A17E6A6A2EE3FE25A50 /* the_warden_loop.caf */; };
 		AFDD821EE4BBB68BA7D5DEAF /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796F6D35E3D9E420671C89DB /* GameScene.swift */; };
 		C4EA2C91DBD8982980EBFD98 /* buzzBuzz.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6D0C9C96A09BFFA01E921A2A /* buzzBuzz.wav */; };
+		CA0E333DCF9EA2B2F8D414FC /* HowToPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED27415895C640DB5174457 /* HowToPlay.swift */; };
 		E5C5FD8ED9368A90B522C700 /* roundUp.wav in Resources */ = {isa = PBXBuildFile; fileRef = E9C4E215F2C7F187245E7C5E /* roundUp.wav */; };
 		FD5940D3658D0BFAB4BB519E /* hitImpact.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9C5CE548887FF6C32B657D75 /* hitImpact.wav */; };
 /* End PBXBuildFile section */
@@ -48,9 +50,11 @@
 		796F6D35E3D9E420671C89DB /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		7E2644A992E2BD7BE4EE380B /* UnlockStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UnlockStore.swift; sourceTree = "<group>"; };
 		85F0F8DE85BCE19E1907733C /* sandbag_loop.caf */ = {isa = PBXFileReference; includeInIndex = 1; path = sandbag_loop.caf; sourceTree = "<group>"; };
+		8995A05F95D6EBBE171ED512 /* how_to_play.mp4 */ = {isa = PBXFileReference; includeInIndex = 1; path = how_to_play.mp4; sourceTree = "<group>"; };
 		953E641886343623A73FBD20 /* AirpodsGame.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AirpodsGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C5CE548887FF6C32B657D75 /* hitImpact.wav */ = {isa = PBXFileReference; includeInIndex = 1; path = hitImpact.wav; sourceTree = "<group>"; };
 		A687D70EEB1BB1438956CF88 /* bell.wav */ = {isa = PBXFileReference; includeInIndex = 1; path = bell.wav; sourceTree = "<group>"; };
+		BED27415895C640DB5174457 /* HowToPlay.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HowToPlay.swift; sourceTree = "<group>"; };
 		C25D7ED11174B5762785E3D8 /* menu_loop.caf */ = {isa = PBXFileReference; includeInIndex = 1; path = menu_loop.caf; sourceTree = "<group>"; };
 		D1488A734437963C60FE8BDD /* knockoutSting.wav */ = {isa = PBXFileReference; includeInIndex = 1; path = knockoutSting.wav; sourceTree = "<group>"; };
 		DB2CBE345A2D03399104647E /* AirpodsGame.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirpodsGame.entitlements; sourceTree = "<group>"; };
@@ -109,6 +113,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		B11523E1DD5FB3A50E54AB2C /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				8995A05F95D6EBBE171ED512 /* how_to_play.mp4 */,
+			);
+			name = Video;
+			path = Video;
+			sourceTree = "<group>";
+		};
 		B3E2CBBE3F4ABBD9A4551CB9 /* AirpodsGame */ = {
 			isa = PBXGroup;
 			children = (
@@ -120,6 +133,8 @@
 				1C41182CDCFD8BA136D9FF4F /* Game */,
 				072CC7E2A11DAD3D36DFCC67 /* Audio */,
 				755ED55DD4CBD4174ED25B85 /* UnlockView.swift */,
+				BED27415895C640DB5174457 /* HowToPlay.swift */,
+				B11523E1DD5FB3A50E54AB2C /* Video */,
 			);
 			path = AirpodsGame;
 			sourceTree = "<group>";
@@ -194,6 +209,7 @@
 				49594A857511749EB8B422BD /* sandbag_loop.caf in Resources */,
 				A665EFFF33A40A996ADD3A4C /* the_warden_loop.caf in Resources */,
 				7EBBD63EFFC78F7EA0F0BC7E /* vitrine_bloom_loop.caf in Resources */,
+				9E2DD9972855EAAEADCD9DF3 /* how_to_play.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,6 +230,7 @@
 				4CBBE8BE9CA1F44D589C52DB /* Settings.swift in Sources */,
 				A4FA9B529BA99552E4BDBAA4 /* UnlockView.swift in Sources */,
 				6FD9ECC86AD68F29696AB7DA /* UnlockStore.swift in Sources */,
+				CA0E333DCF9EA2B2F8D414FC /* HowToPlay.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

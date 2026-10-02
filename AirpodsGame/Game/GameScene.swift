@@ -865,8 +865,32 @@ class GameScene: SKScene {
 
     override func update(_ currentTime: TimeInterval) {
         guard !gameOver else { return }
+        #if DEBUG
+        autoDodgeStep()
+        #endif
         updatePlayerZoneIndicator()
     }
+
+    #if DEBUG
+    /// Trailer / screenshot fixture (`-ABAutoDodge`, with `-ABFakeMotion`):
+    /// steers the fake head into the right zone during each telegraph so the
+    /// simulator records real gameplay.
+    private func autoDodgeStep() {
+        guard ProcessInfo.processInfo.arguments.contains("-ABAutoDodge") else { return }
+        let motion = MotionManager.shared
+        var roll = 0.0, pitch = 0.0
+        if let punch = currentPunch {
+            switch punch {
+            case .leftHook:  roll = 26
+            case .rightHook: roll = -26
+            case .jab:       roll = round % 2 == 0 ? 26 : -26
+            case .uppercut:  pitch = -32
+            }
+        }
+        motion.roll  += (roll  - motion.roll)  * 0.14
+        motion.pitch += (pitch - motion.pitch) * 0.14
+    }
+    #endif
 
     private func updatePlayerZoneIndicator() {
         let motion = MotionManager.shared
@@ -1037,6 +1061,7 @@ class GameScene: SKScene {
     }
 
     private func resolvePunch(_ punch: PunchType) {
+        currentPunch = nil
         let zone = currentHeadZone()
         let dodged: Bool
 
