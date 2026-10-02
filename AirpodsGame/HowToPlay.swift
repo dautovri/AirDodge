@@ -70,7 +70,7 @@ struct HowToPlayView: View {
                         }
                     }
 
-                    Text("Wear earbuds that stream head motion to iPhone. Your head is the controller — there are no touch controls.")
+                    Text("Works with \(MotionManager.Status.supportedHeadphones). Your head is the controller — there are no touch controls.")
                         .font(.footnote)
                         .foregroundStyle(.white.opacity(0.55))
                 }

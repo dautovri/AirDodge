@@ -43,6 +43,10 @@ final class MotionManager: NSObject, CMHeadphoneMotionManagerDelegate {
         /// error — a reviewer opening the app on a bare device must read this as
         /// "here's what to connect", not "this app crashed". See the requirement
         /// card in ContentView for the full explanation.
+        /// Headphones whose head tracking iOS exposes to apps
+        /// (CMHeadphoneMotionManager).
+        static let supportedHeadphones = "AirPods Pro, AirPods Max, AirPods (3rd generation), AirPods 4 or Beats Fit Pro"
+
         var label: String {
             switch self {
             case .unknown:            return "Looking for motion earbuds…"
@@ -61,11 +65,11 @@ final class MotionManager: NSObject, CMHeadphoneMotionManagerDelegate {
             case .unknown:
                 return "Searching for motion earbuds. This takes a moment after launch."
             case .unavailable:
-                return "This device can't report head motion. AirBoxer needs an iPhone paired with earbuds that stream head-motion data."
+                return "This device can't report head motion. AirBoxer needs an iPhone paired with \(Self.supportedHeadphones)."
             case .permissionDenied:
                 return "Motion & Fitness access is off, so head motion can't reach the game. Tap the status chip above to open Settings and turn it on."
             case .waitingForAirPods:
-                return "Connect earbuds that support head-motion tracking to this iPhone, then tap the status chip to retry."
+                return "Connect \(Self.supportedHeadphones) to this iPhone, then tap the status chip to retry."
             case .waitingForData:
                 return "Your earbuds are connected. Put them in your ears — head motion only streams while they're worn."
             case .live:
