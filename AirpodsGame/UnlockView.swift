@@ -78,6 +78,25 @@ struct UnlockView: View {
 
     @ViewBuilder
     private var purchaseButton: some View {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-ABFixturePrice") {
+            // Review-screenshot fixture: the App Store price, for a simulator without StoreKit.
+            Text("Unlock for $2.99")
+                .font(.system(.title3, design: .rounded, weight: .heavy))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(.orange, in: .capsule)
+                .foregroundStyle(.black)
+        } else {
+            livePurchaseButton
+        }
+        #else
+        livePurchaseButton
+        #endif
+    }
+
+    @ViewBuilder
+    private var livePurchaseButton: some View {
         if let product = store.product {
             Button {
                 Task { await store.purchase() }

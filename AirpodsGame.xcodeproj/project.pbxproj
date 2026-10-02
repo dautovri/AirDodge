@@ -363,7 +363,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirpodsGame/AirpodsGame.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 27EZNUVV57;
 				INFOPLIST_FILE = AirpodsGame/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -385,7 +385,7 @@
 				CODE_SIGN_ENTITLEMENTS = AirpodsGame/AirpodsGame.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 27EZNUVV57;
 				INFOPLIST_FILE = AirpodsGame/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
