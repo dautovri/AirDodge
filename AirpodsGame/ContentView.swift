@@ -84,6 +84,27 @@ struct ContentView: View {
             motion.start()
             gameCenter.authenticate()
             menuAudio.startMusic(named: "menu_loop", volume: 0.45)
+            #if DEBUG
+            // Screenshot fixtures: -ABFight <opponent id> / -ABScreen howto|unlock
+            let args = ProcessInfo.processInfo.arguments
+            if let i = args.firstIndex(of: "-ABFight"), i + 1 < args.count,
+               let opponent = OpponentDefinition.allOpponents.first(where: { $0.id == args[i + 1] }) {
+                selectedOpponent = opponent
+                Task {
+                    await store.refreshEntitlement()
+                    try? await Task.sleep(for: .seconds(1))
+                    startFight()
+                }
+            }
+            if let i = args.firstIndex(of: "-ABScreen"), i + 1 < args.count {
+                switch args[i + 1] {
+                case "howto": howToPresented = true
+                case "unlock": unlockPresented = true
+                case "settings": settingsPresented = true
+                default: break
+                }
+            }
+            #endif
         }
         .onChange(of: gameState) { old, new in
             if new == .playing {
