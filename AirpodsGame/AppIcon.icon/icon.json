@@ -3,8 +3,36 @@
     {
       "layers": [
         {
-          "image-name": "foreground.png",
+          "image-name": "foreground.svg",
           "name": "glyph",
+          "glass": true,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "image-name": "glove.svg",
+          "name": "glove",
+          "opacity": 1,
+          "blend-mode": "normal",
+          "glass": true,
+          "position": {
+            "scale": 1,
+            "translation-in-points": [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "image-name": "cuff.svg",
+          "name": "cuff",
+          "opacity": 1,
+          "blend-mode": "normal",
           "glass": true,
           "position": {
             "scale": 1,
@@ -19,31 +47,40 @@
       "specular": true,
       "shadow": {
         "kind": "neutral",
-        "opacity": 0.25
-      },
-      "translucency": {
-        "enabled": true,
-        "value": 0
+        "opacity": 0.5
       }
     }
   ],
   "supported-platforms": {
-    "squares": "shared",
-    "circles": [
-      "watchOS"
-    ]
+    "squares": "shared"
   },
   "fill-specializations": [
     {
       "value": {
-        "solid": "srgb:1.00000,0.41961,0.20784,1.00000"
+        "solid": "srgb:0.10588,0.07843,0.27451,1.00000"
       }
     },
     {
       "appearance": "dark",
       "value": {
-        "solid": "srgb:0.70196,0.20784,0.00000,1.00000"
+        "solid": "srgb:0.04314,0.03137,0.12549,1.00000"
       }
     }
-  ]
+  ],
+  "fill": {
+    "linear-gradient": [
+      "srgb:0.10588,0.07843,0.27451,1.00000",
+      "srgb:0.35686,0.11765,0.54902,1.00000"
+    ],
+    "orientation": {
+      "start": {
+        "x": 0,
+        "y": 0.5
+      },
+      "stop": {
+        "x": 1,
+        "y": 0.49999999999999994
+      }
+    }
+  }
 }
