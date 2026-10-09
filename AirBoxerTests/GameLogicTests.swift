@@ -165,8 +165,11 @@ import Testing
         #expect(!store.registerFightAndCheck(realWin, now: now, appVersion: "1.1"))  // fight 1
         #expect(!store.registerFightAndCheck(realWin, now: now, appVersion: "1.1"))  // fight 2
         #expect(store.registerFightAndCheck(realWin, now: now, appVersion: "1.1"))   // fight 3 → ask
+        // Not shown (player left the results screen): the chance is kept.
+        #expect(store.registerFightAndCheck(realWin, now: now, appVersion: "1.1"))
+        store.recordPromptShown(now: now, appVersion: "1.1")
         #expect(!store.registerFightAndCheck(realWin, now: now, appVersion: "1.1"))  // same version
         #expect(store.state.lastPromptVersion == "1.1")
-        #expect(store.state.completedFights == 4)
+        #expect(store.state.completedFights == 5)
     }
 }

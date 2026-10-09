@@ -226,10 +226,14 @@ struct ContentView: View {
         let opponent = OpponentDefinition.allOpponents.first { $0.id == result.opponentID }
         let moment = ReviewPromptPolicy.Moment.fightEnded(
             won: result.won, againstTutorial: opponent?.isTutorial ?? false, newBestScore: isNewBest)
-        if ReviewPromptStore().registerFightAndCheck(moment) {
+        let reviewStore = ReviewPromptStore()
+        if reviewStore.registerFightAndCheck(moment) {
             Task { @MainActor in
                 try? await Task.sleep(for: .seconds(1.8))
-                if gameState == .gameOver { requestReview() }
+                // Skip (and keep the chance) if the player already moved on.
+                guard gameState == .gameOver else { return }
+                reviewStore.recordPromptShown()
+                requestReview()
             }
         }
     }

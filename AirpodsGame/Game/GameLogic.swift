@@ -186,18 +186,19 @@ struct ReviewPromptStore {
         defaults.set(defaults.integer(forKey: Key.sessions) + 1, forKey: Key.sessions)
     }
 
-    /// Counts the fight, then decides. Records the prompt when it returns true.
+    /// Counts the fight, then decides. Call `recordPromptShown` only once
+    /// the prompt was actually requested, so a skipped prompt isn't burned.
     func registerFightAndCheck(_ moment: ReviewPromptPolicy.Moment,
                                now: Date = Date(),
                                appVersion: String = Bundle.main.shortVersion) -> Bool {
         defaults.set(defaults.integer(forKey: Key.fights) + 1, forKey: Key.fights)
-        let ask = ReviewPromptPolicy.shouldPrompt(state: state, moment: moment,
-                                                  now: now, appVersion: appVersion)
-        if ask {
-            defaults.set(now, forKey: Key.lastDate)
-            defaults.set(appVersion, forKey: Key.lastVersion)
-        }
-        return ask
+        return ReviewPromptPolicy.shouldPrompt(state: state, moment: moment,
+                                               now: now, appVersion: appVersion)
+    }
+
+    func recordPromptShown(now: Date = Date(), appVersion: String = Bundle.main.shortVersion) {
+        defaults.set(now, forKey: Key.lastDate)
+        defaults.set(appVersion, forKey: Key.lastVersion)
     }
 }
 

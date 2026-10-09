@@ -98,6 +98,10 @@ class GameScene: SKScene {
     /// is held.
     private var touchZone: DodgeZone = .center
 
+    #if DEBUG
+    private var scriptedIndex = 0
+    #endif
+
     /// Owned audio playback. Silent no-op when files are missing.
     private lazy var audio = AudioSystem()
 
@@ -1045,8 +1049,16 @@ class GameScene: SKScene {
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard controlMode == .touch, let touch = activeTouch, touches.contains(touch) else { return }
-        activeTouch = nil
-        touchZone = .center
+        // Another finger still down (overlapping thumbs) takes over.
+        if let remaining = event?.allTouches?.first(where: {
+            $0 !== touch && !touches.contains($0) && $0.phase != .ended && $0.phase != .cancelled
+        }) {
+            activeTouch = remaining
+            updateTouchZone(remaining)
+        } else {
+            activeTouch = nil
+            touchZone = .center
+        }
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -1071,7 +1083,16 @@ class GameScene: SKScene {
 
         // Pick from the opponent's allowed punch set. Sandbag throws all 4;
         // Vitrine skips uppercut early on; The Warden throws everything fast.
-        let punch = opponent.punches.randomElement() ?? .jab
+        var punch = opponent.punches.randomElement() ?? .jab
+        #if DEBUG
+        // Screenshot fixture: a fixed, repeatable punch order so store
+        // captures line up across all locales.
+        if ProcessInfo.processInfo.arguments.contains("-ABScripted") {
+            let script: [PunchType] = [.rightHook, .leftHook, .uppercut, .jab]
+            punch = script[scriptedIndex % script.count]
+            scriptedIndex += 1
+        }
+        #endif
         currentPunch    = punch
         punchLanded     = false
         waitingForDodge = true
