@@ -90,6 +90,14 @@ class GameScene: SKScene {
     /// before `didMove(to:)` to use a different opponent.
     var opponent: OpponentDefinition = .vitrineBloom
 
+    /// Head tracking (the real game) or the touch fallback for players
+    /// without compatible headphones. Set before `didMove(to:)`.
+    var controlMode: ControlMode = .headTracking
+
+    /// Zone held by the player's thumb in touch mode; `.center` when no pad
+    /// is held.
+    private var touchZone: DodgeZone = .center
+
     /// Owned audio playback. Silent no-op when files are missing.
     private lazy var audio = AudioSystem()
 
@@ -569,6 +577,21 @@ class GameScene: SKScene {
         headDot.zPosition   = 25
         headDot.position    = CGPoint(x: size.width / 2, y: baseY)
         addChild(headDot)
+
+        if controlMode == .touch {
+            // Make the fallback obvious: the pads are the controls.
+            let modeLabel = SKLabelNode(fontNamed: "AvenirNext-Heavy")
+            modeLabel.text = String(localized: "TOUCH MODE · HOLD A PAD TO DODGE")
+            modeLabel.fontSize = 11
+            modeLabel.fontColor = SKColor(red: 1.0, green: 0.85, blue: 0.30, alpha: 0.85)
+            modeLabel.position = CGPoint(x: size.width / 2, y: baseY + ringRadius + 26)
+            modeLabel.zPosition = 22
+            modeLabel.verticalAlignmentMode = .center
+            addChild(modeLabel)
+            for ring in [leftZoneRing, rightZoneRing, duckZoneRing] {
+                ring?.setScale(1.35)
+            }
+        }
     }
 
     private func makeZoneRing(at pos: CGPoint, radius: CGFloat, label: String) -> SKShapeNode {
@@ -667,9 +690,13 @@ class GameScene: SKScene {
         group.addChild(record)
 
         let hint = SKLabelNode(fontNamed: "AvenirNext-Medium")
-        hint.text      = opponent.isTutorial
-            ? String(localized: "Take your time. You can't lose.")
-            : String(localized: "Slip the hooks. Duck the uppercut.")
+        if controlMode == .touch {
+            hint.text = String(localized: "Touch mode: hold a side to slip, the middle to duck.")
+        } else {
+            hint.text = opponent.isTutorial
+                ? String(localized: "Take your time. You can't lose.")
+                : String(localized: "Slip the hooks. Duck the uppercut.")
+        }
         hint.fontSize  = 12
         hint.fontColor = SKColor(white: 1, alpha: 0.55)
         hint.position  = CGPoint(x: 0, y: -68)
@@ -822,12 +849,15 @@ class GameScene: SKScene {
             // .fighting (from intro or roundBreak); subsequent punches are
             // scheduled by resetGlovesAndContinue() which calls nextPunch via
             // run(.wait...).
+            // Whatever head pose the player holds while reading the card is
+            // their neutral — fixes drift and "already half-ducked" posture.
+            if controlMode == .headTracking { MotionManager.shared.recenter() }
             nextPunch()
 
         case .roundBreak(let nextRound):
             roundBreakCard.isHidden = false
             roundBreakCard.alpha    = 0
-            roundBreakText.text     = opponent.pepTalks.randomElement() ?? ""
+            roundBreakText.text     = pepTalk()
             roundBreakCard.run(.fadeIn(withDuration: 0.25))
 
             // Auto-advance back to fighting after a 2.5s read time + bell.
@@ -894,6 +924,13 @@ class GameScene: SKScene {
             case .uppercut:  pitch = -32
             }
         }
+        if controlMode == .touch {
+            // Simulate a thumb holding the right pad during each telegraph.
+            touchZone = currentPunch.map { punch in
+                punch == .jab ? (round % 2 == 0 ? .right : .left) : punch.requiredZone
+            } ?? .center
+            return
+        }
         motion.roll  += (roll  - motion.roll)  * 0.14
         motion.pitch += (pitch - motion.pitch) * 0.14
     }
@@ -921,8 +958,17 @@ class GameScene: SKScene {
         let dx = CGFloat(roll / 30.0) * maxH
         let dy = CGFloat(pitch / 40.0) * maxV
 
-        let targetX = (cx + dx).clamped(to: cx - maxH ... cx + maxH)
-        let targetY = (baseY + dy).clamped(to: baseY - maxV * 1.6 ... baseY + maxV * 0.5)
+        var targetX = (cx + dx).clamped(to: cx - maxH ... cx + maxH)
+        var targetY = (baseY + dy).clamped(to: baseY - maxV * 1.6 ... baseY + maxV * 0.5)
+        if controlMode == .touch {
+            // The dot jumps to the held pad.
+            switch touchZone {
+            case .left:   targetX = leftZoneRing.position.x;  targetY = leftZoneRing.position.y
+            case .right:  targetX = rightZoneRing.position.x; targetY = rightZoneRing.position.y
+            case .duck:   targetX = duckZoneRing.position.x;  targetY = duckZoneRing.position.y
+            case .center: targetX = cx;                       targetY = baseY
+            }
+        }
 
         let cur = headDot.position
         headDot.position = CGPoint(
@@ -961,17 +1007,57 @@ class GameScene: SKScene {
         }
     }
 
+    /// Between-round tip. Sandbag's first tip is about head movement, so in
+    /// touch mode it's swapped for a touch tip.
+    private func pepTalk() -> String {
+        var talks = opponent.pepTalks
+        if controlMode == .touch && opponent.isTutorial {
+            talks = Array(talks.dropFirst())
+                + [String(localized: "Tip: keep your thumb on the pad until the punch lands.")]
+        }
+        return talks.randomElement() ?? ""
+    }
+
     private func currentHeadZone() -> DodgeZone {
+        if controlMode == .touch { return touchZone }
         let motion = MotionManager.shared
         guard motion.isConnected else { return .center }
+        return DodgeResolver.zone(roll: motion.roll, pitch: motion.pitch,
+                                  rollThreshold: rollThreshold, duckThreshold: duckThreshold)
+    }
 
-        let roll  = motion.roll
-        let pitch = motion.pitch
+    // MARK: - Touch controls (fallback without head tracking)
 
-        if pitch < -duckThreshold { return .duck }
-        if roll < -rollThreshold  { return .left }
-        if roll >  rollThreshold  { return .right }
-        return .center
+    /// The most recent finger down decides the zone; lifting it returns to
+    /// center. The whole screen is the pad: thirds = left / duck / right.
+    private var activeTouch: UITouch?
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard controlMode == .touch, let touch = touches.first else { return }
+        activeTouch = touch
+        updateTouchZone(touch)
+    }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard controlMode == .touch, let touch = activeTouch, touches.contains(touch) else { return }
+        updateTouchZone(touch)
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard controlMode == .touch, let touch = activeTouch, touches.contains(touch) else { return }
+        activeTouch = nil
+        touchZone = .center
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        touchesEnded(touches, with: event)
+    }
+
+    private func updateTouchZone(_ touch: UITouch) {
+        let x = touch.location(in: self).x
+        let zone = DodgeResolver.touchZone(x: Double(x), width: Double(size.width))
+        if zone != touchZone, hapticsEnabled { lightImpact.impactOccurred(intensity: 0.4) }
+        touchZone = zone
     }
 
     // MARK: - Punch Sequence
@@ -1069,13 +1155,7 @@ class GameScene: SKScene {
 
     private func resolvePunch(_ punch: PunchType) {
         currentPunch = nil
-        let zone = currentHeadZone()
-        let dodged: Bool
-
-        switch punch {
-        case .jab: dodged = (zone == .left || zone == .right)
-        default:   dodged = (zone == punch.requiredZone)
-        }
+        let dodged = DodgeResolver.isDodged(punch, in: currentHeadZone())
 
         if dodged { onDodgeSuccess(punch) } else { onHit(punch) }
     }
@@ -1273,7 +1353,9 @@ class GameScene: SKScene {
 
         if hapticsEnabled { notify.notificationOccurred(won ? .success : .error) }
         // Submit best dodge streak from this fight to GameKit (silent if not authed)
-        GameCenter.shared.submitStreak(maxStreak)
+        if controlMode.postsToLeaderboards {
+            GameCenter.shared.submitStreak(maxStreak)
+        }
 
         // Strong shake under the KO card
         run(.sequence([
@@ -1297,7 +1379,8 @@ class GameScene: SKScene {
         Task { @MainActor [weak self] in
             try? await Task.sleep(for: .seconds(1.6))
             guard let self else { return }
-            self.onGameOver?(FightResult(score: self.score, won: won, opponentID: self.opponent.id))
+            self.onGameOver?(FightResult(score: self.score, won: won, opponentID: self.opponent.id,
+                                          controlMode: self.controlMode))
         }
     }
 }
@@ -1308,6 +1391,7 @@ struct FightResult: Equatable {
     let score: Int
     let won: Bool
     let opponentID: String
+    var controlMode: ControlMode = .headTracking
 }
 
 extension Comparable {

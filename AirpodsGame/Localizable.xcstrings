@@ -3521,76 +3521,6 @@
         }
       }
     },
-    "Head tracking required. %@. %@": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Head-Tracking erforderlich. %1$@. %2$@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": "Head tracking required. %1$@. %2$@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se requiere seguimiento de cabeza. %1$@. %2$@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Suivi de tête requis. %1$@. %2$@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rilevamento testa richiesto. %1$@. %2$@"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ヘッドトラッキングが必要です。%1$@。%2$@"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "헤드 트래킹이 필요합니다. %1$@. %2$@"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hoofdtracking vereist. %1$@. %2$@"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rastreamento de cabeça obrigatório. %1$@. %2$@"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Требуется отслеживание головы. %1$@. %2$@"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "需要头部追踪。%1$@。%2$@"
-          }
-        }
-      }
-    },
     "How to play": {
       "localizations": {
         "de": {
@@ -5319,70 +5249,6 @@
         }
       }
     },
-    "Pair compatible motion earbuds and put them on. Tilt your head LEFT or RIGHT to slip hooks. NOD DOWN to duck uppercuts. Don't move into a punch — the opponent telegraphs every swing.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kopple kompatible Bewegungskopfhörer und setze sie auf. Neige deinen Kopf nach LINKS oder RECHTS, um Haken auszuweichen. NICKE NACH UNTEN, um Aufwärtshaken wegzuducken. Bewege dich nicht in Schläge hinein – der Gegner kündigt jeden Schlag an."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enlaza unos auriculares con sensor de movimiento compatibles y póntelos. Inclina la cabeza a la IZQUIERDA o DERECHA para esquivar ganchos. ASIENTE HACIA ABAJO para esquivar uppercuts. No te lances hacia el golpe: el rival telegrafía cada ataque."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jumelez des écouteurs compatibles et mettez-les. Penchez la tête à GAUCHE ou à DROITE pour esquiver les crochets. BAISSEZ LA TÊTE pour esquiver les uppercuts. N'allez pas vers le coup : l'adversaire annonce chaque frappe."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abbina e indossa auricolari con sensori di movimento compatibili. Inclina la testa a SINISTRA o DESTRA per schivare i ganci. ABBASSA LA TESTA per evitare i montanti. Non andare incontro ai pugni: l'avversario preannuncia ogni colpo."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "互換性のあるモーション対応イヤホンをペアリングして装着してください。頭を左右に傾けてフックをスリップ。頭を下げてアッパーをダック。相手は必ず大振りの予備動作を見せるので、パンチの方向に動かないようにしましょう。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "호환되는 모션 이어폰을 페어링하고 착용하세요. 머리를 좌우로 기울여 훅을 피하고, 아래로 숙여 어퍼컷을 피하세요. 펀치 쪽으로 움직이지 마세요. 상대의 동작에 힌트가 있습니다."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Koppel compatibele bewegingsoordopjes en doe ze in. Kantel je hoofd naar LINKS of RECHTS om hoeken te ontwijken. KNIK OMLAAG om te duiken voor opstoten. Beweeg niet naar een stoot toe — de tegenstander verraadt elke slag."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Emparelhe fones com sensor de movimento compatíveis e coloque-os. Incline a cabeça para a ESQUERDA ou DIREITA para esquivar de cruzados. ABAIXE A CABEÇA para desviar de uppercuts. Não vá em direção ao golpe — o oponente telegrafa cada ataque."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Подключите совместимые наушники с отслеживанием движений и наденьте их. Наклоняйте голову ВЛЕВО или ВПРАВО, чтобы уклоняться от хуков. КИВАЙТЕ ВНИЗ для нырка под апперкот. Не двигайтесь навстречу удару — соперник выдает каждый замах."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "配对并佩戴兼容的动态感应耳机。向左或向右歪头闪避摆拳，向下低头下潜躲避上勾拳。切勿迎着拳头偏头——对手每次出拳都有动作预兆。"
-          }
-        }
-      }
-    },
     "PARIS": {
       "localizations": {
         "de": {
@@ -6407,70 +6273,6 @@
         }
       }
     },
-    "SIMULATOR PREVIEW — head tracking is inactive": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SIMULATOR-VORSCHAU — Kopferfassung ist inaktiv"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "VISTA PREVIA DEL SIMULADOR — seguimiento de cabeza inactivo"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "APERÇU SIMULATEUR — suivi de tête inactif"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ANTEPRIMA SIMULATORE — rilevamento testa non attivo"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "シミュレータプレビュー — ヘッドトラッキングは無効です"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "시뮬레이터 미리보기 — 머리 추적 비활성화됨"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SIMULATORVOORVERTONING — hoofddetectie is inactief"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "PRÉVIA DO SIMULADOR — rastreamento de cabeça inativo"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ПРЕДПРОСМОТР В СИМУЛЯТОРЕ — трекинг головы отключен"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "模拟器预览 — 头部追踪未启用"
-          }
-        }
-      }
-    },
     "SLIP ASIDE!": {
       "localizations": {
         "de": {
@@ -7239,70 +7041,6 @@
         }
       }
     },
-    "SwiftUI · SpriteKit · CoreMotion · GameKit · Apple's Icon Composer": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit · Apple's Icon Composer"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit · Icon Composer de Apple"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit · Apple's Icon Composer"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit · Icon Composer di Apple"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit · Apple's Icon Composer"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit · Apple's Icon Composer"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit · Apple's Icon Composer"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit · Apple's Icon Composer"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit · Apple's Icon Composer"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit · Apple's Icon Composer"
-          }
-        }
-      }
-    },
     "Take your time. You can't lose.": {
       "localizations": {
         "de": {
@@ -7943,70 +7681,6 @@
         }
       }
     },
-    "This is a motion game — there are no touch controls.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dies ist ein Bewegungsspiel – es gibt keine Touch-Steuerung."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Es un juego por movimiento: no hay controles táctiles."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "C'est un jeu de mouvement — aucune commande tactile."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Questo è un gioco di movimento: non ci sono comandi touch."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "これはモーションゲームです。タッチ操作はありません。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "모션 인식 게임입니다. 터치 컨트롤은 없습니다."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dit is een bewegingsgame — er is geen aanraakbediening."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Este é um jogo de movimento — não há controles de toque."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Это игра с управлением движениями — здесь нет сенсорного управления."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "这是一款体感游戏——不提供触控操作。"
-          }
-        }
-      }
-    },
     "Tilt left or right": {
       "localizations": {
         "de": {
@@ -8519,70 +8193,6 @@
         }
       }
     },
-    "Video: a player tilts and ducks their head to dodge punches": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Video: Ein Spieler neigt und duckt den Kopf, um Schlägen auszuweichen"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vídeo: un jugador inclina y agacha la cabeza para esquivar golpes"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vidéo : un joueur penche et baisse la tête pour esquiver les coups"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Video: il giocatore inclina e abbassa la testa per schivare i colpi"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "動画：プレイヤーが頭を傾けたり下げたりしてパンチをよける様子"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "동영상: 플레이어가 머리를 기울이고 숙여 펀치를 피하는 모습"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Video: een speler kantelt en duikt met het hoofd om stoten te ontwijken"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vídeo: jogador inclina e abaixa a cabeça para desviar de socos"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Видео: игрок наклоняет и пригибает голову, уклоняясь от ударов"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "视频：玩家通过歪头和低头来躲避拳击"
-          }
-        }
-      }
-    },
     "Waiting for approval. The card unlocks as soon as it goes through.": {
       "localizations": {
         "de": {
@@ -8707,70 +8317,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "注意观察他的肩膀——肩膀动作会透露摆拳的攻击方向。"
-          }
-        }
-      }
-    },
-    "Works with %@. Your head is the controller — there are no touch controls.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Funktioniert mit %@. Dein Kopf ist der Controller – es gibt keine Touch-Steuerung."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Funciona con %@. Tu cabeza es el mando: no hay controles táctiles."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fonctionne avec %@. Votre tête est la manette — aucune commande tactile."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Funziona con %@. La tua testa è il controller: non ci sono comandi touch."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@に対応。頭がコントローラーになります（タッチ操作はありません）。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@와 호환됩니다. 머리가 컨트롤러이며, 터치 조작은 없습니다."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Werkt met %@. Je hoofd is de controller — er is geen aanraakbediening."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Funciona com %@. Sua cabeça é o controle — não há controles de toque."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Работает с %@. Контроллер — ваша голова, сенсорного управления нет."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "支持 %@。你的头部就是控制器——没有触控操作。"
           }
         }
       }
@@ -9091,6 +8637,1350 @@
           "stringUnit": {
             "state": "translated",
             "value": "支持头部追踪的耳机"
+          }
+        }
+      }
+    },
+    "Animation: tilt your head left or right to slip punches, nod down to duck.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animation: Neige den Kopf nach links oder rechts, um Schlägen auszuweichen, nicke nach unten, um dich zu ducken."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animación: inclina la cabeza a la izquierda o a la derecha para esquivar golpes y baja la cabeza para agacharte."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animation : penche la tête à gauche ou à droite pour esquiver, baisse-la pour te baisser."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animazione: inclina la testa a sinistra o a destra per schivare i pugni, abbassala per abbassarti."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アニメーション：頭を左右に傾けてパンチをかわし、下に頷いてしゃがみます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "애니메이션: 머리를 왼쪽이나 오른쪽으로 기울여 펀치를 피하고, 아래로 숙여 몸을 낮춥니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animatie: kantel je hoofd naar links of rechts om stoten te ontwijken, knik omlaag om te bukken."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animação: incline a cabeça para a esquerda ou direita para desviar dos socos, abaixe a cabeça para se esquivar por baixo."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Анимация: наклоняйте голову влево или вправо, чтобы уклоняться от ударов, кивайте вниз, чтобы нырнуть."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "动画：向左或向右歪头躲闪拳头，向下点头下潜。"
+          }
+        }
+      }
+    },
+    "BEAT %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BESIEGE %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VENCE A %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BATS %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BATTI %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@に勝つ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 격파"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VERSLA %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VENÇA %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ПОБЕДИ %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "击败 %@"
+          }
+        }
+      }
+    },
+    "Connect headphones that support head tracking for the full motion game.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbinde Kopfhörer, die Head-Tracking unterstützen, für das volle Bewegungsspiel."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conecta auriculares compatibles con seguimiento de cabeza para el juego de movimiento completo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Connecte des écouteurs prenant en charge le suivi de la tête pour le vrai jeu de mouvement."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collega cuffie che supportano il rilevamento della testa per il gioco di movimento completo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本来のモーションゲームを遊ぶには、ヘッドトラッキングに対応したヘッドフォンを接続してください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "완전한 모션 게임을 하려면 헤드 트래킹을 지원하는 헤드폰을 연결하세요."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbind een koptelefoon die hoofdtracking ondersteunt voor het volledige bewegingsspel."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conecte fones de ouvido compatíveis com rastreamento de cabeça para o jogo de movimento completo."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подключите наушники с поддержкой отслеживания движений головы, чтобы играть движениями."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "连接支持头部追踪的耳机，体验完整的体感玩法。"
+          }
+        }
+      }
+    },
+    "Controls": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steuerung"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controles"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Commandes"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlli"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "操作"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조작"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Besturing"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controles"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Управление"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "操作"
+          }
+        }
+      }
+    },
+    "For playing without headphones that support head tracking: hold the left or right side of the screen to slip, the middle to duck. Head tracking always takes over when it's available. Touch fights don't post to Game Center.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zum Spielen ohne Kopfhörer mit Head-Tracking: Halte die linke oder rechte Bildschirmseite zum Ausweichen, die Mitte zum Ducken. Head-Tracking übernimmt immer, sobald es verfügbar ist. Touch-Kämpfe werden nicht an Game Center gesendet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para jugar sin auriculares con seguimiento de cabeza: mantén pulsado el lado izquierdo o derecho de la pantalla para esquivar y el centro para agacharte. El seguimiento de cabeza siempre tiene prioridad cuando está disponible. Los combates táctiles no se publican en Game Center."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pour jouer sans écouteurs avec suivi de la tête : maintiens le côté gauche ou droit de l'écran pour esquiver, le centre pour te baisser. Le suivi de la tête reprend la main dès qu'il est disponible. Les combats tactiles ne sont pas publiés sur Game Center."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per giocare senza cuffie con rilevamento della testa: tieni premuto il lato sinistro o destro dello schermo per schivare, il centro per abbassarti. Il rilevamento della testa ha sempre la precedenza quando è disponibile. Gli incontri touch non vengono pubblicati su Game Center."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ヘッドトラッキング対応ヘッドフォンなしで遊ぶ場合：画面の左右を長押しでスリップ、中央でしゃがみます。ヘッドトラッキングが使えるときは常にそちらが優先されます。タッチでの試合はGame Centerに送信されません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "헤드 트래킹 헤드폰 없이 플레이하기: 화면 왼쪽이나 오른쪽을 누르고 있으면 피하고, 가운데를 누르면 숙입니다. 헤드 트래킹을 사용할 수 있으면 항상 그쪽이 우선합니다. 터치 경기는 Game Center에 기록되지 않습니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Om te spelen zonder koptelefoon met hoofdtracking: houd de linker- of rechterkant van het scherm vast om te ontwijken, het midden om te bukken. Hoofdtracking neemt het altijd over zodra het beschikbaar is. Aanraakgevechten worden niet naar Game Center gestuurd."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para jogar sem fones com rastreamento de cabeça: segure o lado esquerdo ou direito da tela para desviar e o centro para abaixar. O rastreamento de cabeça sempre assume quando está disponível. Lutas por toque não são enviadas ao Game Center."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Для игры без наушников с отслеживанием головы: удерживайте левую или правую часть экрана, чтобы уклониться, середину — чтобы нырнуть. Когда отслеживание головы доступно, оно всегда включается. Бои в сенсорном режиме не отправляются в Game Center."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "适用于没有支持头部追踪耳机的情况：按住屏幕左侧或右侧躲闪，按住中间下潜。头部追踪可用时总会自动接管。触控模式的比赛不会提交到 Game Center。"
+          }
+        }
+      }
+    },
+    "Hold the left or right side of the screen to slip, the middle to duck.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halte die linke oder rechte Bildschirmseite zum Ausweichen, die Mitte zum Ducken."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantén pulsado el lado izquierdo o derecho de la pantalla para esquivar y el centro para agacharte."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maintiens le côté gauche ou droit de l'écran pour esquiver, le centre pour te baisser."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tieni premuto il lato sinistro o destro dello schermo per schivare, il centro per abbassarti."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "画面の左右を長押しでスリップ、中央でしゃがみます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "화면 왼쪽이나 오른쪽을 누르고 있으면 피하고, 가운데를 누르면 숙입니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Houd de linker- of rechterkant van het scherm vast om te ontwijken, het midden om te bukken."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Segure o lado esquerdo ou direito da tela para desviar e o centro para abaixar."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удерживайте левую или правую часть экрана, чтобы уклониться, середину — чтобы нырнуть."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按住屏幕左侧或右侧躲闪，按住中间下潜。"
+          }
+        }
+      }
+    },
+    "Nod down to duck": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicken zum Ducken"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baja la cabeza para agacharte"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baisse la tête pour esquiver"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbassa la testa per schivare"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下に頷いてしゃがむ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아래로 숙여 피하기"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knik omlaag om te bukken"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abaixe a cabeça para esquivar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Кивните вниз — нырок"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "向下点头下潜"
+          }
+        }
+      }
+    },
+    "PLAY WITH TOUCH": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MIT TOUCH SPIELEN"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "JUGAR CON TOQUES"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "JOUER EN TACTILE"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GIOCA CON IL TOUCH"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "タッチで遊ぶ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "터치로 플레이"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SPELEN MET AANRAKEN"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "JOGAR COM TOQUE"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ИГРАТЬ КАСАНИЯМИ"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用触控游玩"
+          }
+        }
+      }
+    },
+    "Put on headphones that support head tracking. Tilt your head LEFT or RIGHT to slip hooks. NOD DOWN to duck uppercuts. Don't move into a punch — the opponent telegraphs every swing.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Setz Kopfhörer auf, die Head-Tracking unterstützen. Neige den Kopf nach LINKS oder RECHTS, um Haken auszuweichen. NICKE NACH UNTEN, um Aufwärtshaken zu unterlaufen. Beweg dich nicht in einen Schlag – der Gegner kündigt jeden Schwinger an."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponte auriculares compatibles con seguimiento de cabeza. Inclina la cabeza a la IZQUIERDA o DERECHA para esquivar ganchos. BAJA LA CABEZA para evitar uppercuts. No te metas en un golpe: el rival anuncia cada puñetazo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mets des écouteurs prenant en charge le suivi de la tête. Penche la tête à GAUCHE ou à DROITE pour esquiver les crochets. BAISSE LA TÊTE pour éviter les uppercuts. Ne va pas au-devant d'un coup : l'adversaire annonce chaque frappe."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indossa cuffie che supportano il rilevamento della testa. Inclina la testa a SINISTRA o a DESTRA per schivare i ganci. ABBASSA LA TESTA per evitare i montanti. Non andare incontro al pugno: l'avversario annuncia ogni colpo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ヘッドトラッキング対応のヘッドフォンを着けよう。頭を左か右に傾けてフックをかわす。下に頷いてアッパーをくぐる。パンチに自分から飛び込まないで——相手はすべてのパンチを予告します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "헤드 트래킹을 지원하는 헤드폰을 착용하세요. 머리를 왼쪽이나 오른쪽으로 기울여 훅을 피하세요. 아래로 숙여 어퍼컷을 피하세요. 펀치 쪽으로 움직이지 마세요 — 상대는 모든 펀치를 예고합니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zet een koptelefoon op die hoofdtracking ondersteunt. Kantel je hoofd naar LINKS of RECHTS om hoeken te ontwijken. KNIK OMLAAG om uppercuts te ontduiken. Beweeg niet in een stoot — de tegenstander kondigt elke slag aan."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coloque fones compatíveis com rastreamento de cabeça. Incline a cabeça para a ESQUERDA ou DIREITA para desviar dos ganchos. ABAIXE A CABEÇA para escapar dos uppercuts. Não vá na direção do soco — o adversário anuncia cada golpe."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наденьте наушники с поддержкой отслеживания движений головы. Наклоняйте голову ВЛЕВО или ВПРАВО, чтобы уходить от хуков. КИВАЙТЕ ВНИЗ, чтобы нырять под апперкоты. Не двигайтесь навстречу удару — соперник предупреждает о каждом."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "戴上支持头部追踪的耳机。向左或向右歪头躲开勾拳。向下点头躲过上勾拳。别迎着拳头动——对手每一拳都有预兆。"
+          }
+        }
+      }
+    },
+    "SwiftUI · SpriteKit · CoreMotion · GameKit": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SwiftUI · SpriteKit · CoreMotion · GameKit"
+          }
+        }
+      }
+    },
+    "TOUCH MODE": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TOUCH-MODUS"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MODO TÁCTIL"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MODE TACTILE"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MODALITÀ TOUCH"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "タッチモード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "터치 모드"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AANRAAKMODUS"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MODO TOQUE"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "СЕНСОРНЫЙ РЕЖИМ"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "触控模式"
+          }
+        }
+      }
+    },
+    "TOUCH MODE · HOLD A PAD TO DODGE": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TOUCH-MODUS · FELD HALTEN ZUM AUSWEICHEN"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MODO TÁCTIL · MANTÉN UNA ZONA PARA ESQUIVAR"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MODE TACTILE · MAINTIENS UNE ZONE"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TOUCH · TIENI PREMUTA UNA ZONA"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "タッチモード・パッドを長押しで回避"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "터치 모드 · 패드를 눌러 회피"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AANRAAKMODUS · HOUD EEN VAK VAST"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MODO TOQUE · SEGURE UMA ÁREA"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "СЕНСОРНЫЙ РЕЖИМ · УДЕРЖИВАЙТЕ ЗОНУ"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "触控模式 · 按住区域躲闪"
+          }
+        }
+      }
+    },
+    "Tilt left to slip": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Links neigen zum Ausweichen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inclina a la izquierda"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Penche à gauche"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inclina a sinistra"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "左に傾けてかわす"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "왼쪽으로 기울여 피하기"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kantel links om te ontwijken"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incline para a esquerda"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наклон влево — уклон"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "向左歪头躲闪"
+          }
+        }
+      }
+    },
+    "Tilt right to slip": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechts neigen zum Ausweichen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inclina a la derecha"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Penche à droite"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inclina a destra"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "右に傾けてかわす"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오른쪽으로 기울여 피하기"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kantel rechts om te ontwijken"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incline para a direita"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Наклон вправо — уклон"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "向右歪头躲闪"
+          }
+        }
+      }
+    },
+    "Tip: keep your thumb on the pad until the punch lands.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tipp: Lass den Daumen auf dem Feld, bis der Schlag ankommt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consejo: mantén el pulgar en la zona hasta que llegue el golpe."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Astuce : garde le pouce sur la zone jusqu'à l'impact."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consiglio: tieni il pollice sulla zona finché il pugno non arriva."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ヒント：パンチが届くまで親指をパッドから離さないで。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "팁: 펀치가 닿을 때까지 엄지를 패드에서 떼지 마세요."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tip: houd je duim op het vak tot de stoot aankomt."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dica: mantenha o polegar na área até o soco chegar."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Совет: держите палец на зоне, пока не прилетит удар."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提示：拇指一直按住区域，直到拳头打过来。"
+          }
+        }
+      }
+    },
+    "Touch controls": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touch-Steuerung"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controles táctiles"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Commandes tactiles"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlli touch"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "タッチ操作"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "터치 조작"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aanraakbesturing"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controles por toque"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сенсорное управление"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "触控操作"
+          }
+        }
+      }
+    },
+    "Touch fight · not posted to Game Center": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touch-Kampf · nicht an Game Center gesendet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Combate táctil · no se publica en Game Center"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Combat tactile · non publié sur Game Center"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incontro touch · non pubblicato su Game Center"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "タッチの試合・Game Centerには送信されません"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "터치 경기 · Game Center에 기록되지 않음"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aanraakgevecht · niet naar Game Center gestuurd"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luta por toque · não enviada ao Game Center"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сенсорный бой · не отправлен в Game Center"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "触控比赛 · 不提交到 Game Center"
+          }
+        }
+      }
+    },
+    "Touch mode: hold a side to slip, the middle to duck.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touch: Seite halten zum Ausweichen, Mitte zum Ducken."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Táctil: mantén un lado para esquivar, el centro para agacharte."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tactile : un côté pour esquiver, le centre pour te baisser."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touch: tieni un lato per schivare, il centro per abbassarti."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "タッチ：左右を長押しでかわし、中央でしゃがむ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "터치: 옆을 눌러 피하고, 가운데를 눌러 숙이기."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aanraken: houd een kant vast om te ontwijken, midden om te bukken."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque: segure um lado para desviar, o centro para abaixar."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Касание: сбоку — уклон, в центре — нырок."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "触控：按住两侧躲闪，按住中间下潜。"
+          }
+        }
+      }
+    },
+    "Turn off": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desactivar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Désactiver"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disattiva"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オフ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "끄기"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uit"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desativar"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выкл."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关闭"
+          }
+        }
+      }
+    },
+    "Works with %@. No compatible headphones? Turn on Touch controls in Settings: hold the left or right side of the screen to slip, the middle to duck.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Funktioniert mit %@. Keine passenden Kopfhörer? Aktiviere die Touch-Steuerung in den Einstellungen: Halte die linke oder rechte Bildschirmseite zum Ausweichen, die Mitte zum Ducken."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Funciona con %@. ¿No tienes auriculares compatibles? Activa los controles táctiles en Ajustes: mantén pulsado el lado izquierdo o derecho de la pantalla para esquivar y el centro para agacharte."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fonctionne avec des %@. Pas d'écouteurs compatibles ? Active les commandes tactiles dans Réglages : maintiens le côté gauche ou droit de l'écran pour esquiver, le centre pour te baisser."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Funziona con %@. Niente cuffie compatibili? Attiva i controlli touch in Impostazioni: tieni premuto il lato sinistro o destro dello schermo per schivare, il centro per abbassarti."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@で遊べます。対応ヘッドフォンがない場合は、設定でタッチ操作をオンに：画面の左右を長押しでスリップ、中央でしゃがみます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@과(와) 함께 작동합니다. 호환 헤드폰이 없나요? 설정에서 터치 조작을 켜세요: 화면 왼쪽이나 오른쪽을 누르고 있으면 피하고, 가운데를 누르면 숙입니다."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Werkt met %@. Geen geschikte koptelefoon? Zet aanraakbesturing aan in Instellingen: houd de linker- of rechterkant van het scherm vast om te ontwijken, het midden om te bukken."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Funciona com %@. Sem fones compatíveis? Ative os controles por toque em Ajustes: segure o lado esquerdo ou direito da tela para desviar e o centro para abaixar."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Работает с: %@. Нет подходящих наушников? Включите сенсорное управление в настройках: удерживайте левую или правую часть экрана, чтобы уклониться, середину — чтобы нырнуть."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "适用于%@。没有兼容耳机？在设置中开启触控操作：按住屏幕左侧或右侧躲闪，按住中间下潜。"
+          }
+        }
+      }
+    },
+    "Your head is the controller. No compatible headphones? Play with touch.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Kopf ist der Controller. Keine passenden Kopfhörer? Spiel mit Touch."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu cabeza es el mando. ¿Sin auriculares compatibles? Juega con toques."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ta tête est la manette. Pas d'écouteurs compatibles ? Joue en tactile."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tua testa è il controller. Niente cuffie compatibili? Gioca con il touch."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "頭がコントローラー。対応ヘッドフォンがなければタッチで遊べます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "머리가 컨트롤러입니다. 호환 헤드폰이 없나요? 터치로 플레이하세요."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je hoofd is de controller. Geen geschikte koptelefoon? Speel met aanraken."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sua cabeça é o controle. Sem fones compatíveis? Jogue com toque."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ваша голова — это контроллер. Нет подходящих наушников? Играйте касаниями."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的头就是手柄。没有兼容耳机？用触控来玩。"
           }
         }
       }

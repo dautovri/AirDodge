@@ -91,6 +91,8 @@ final class MotionManager: NSObject, CMHeadphoneMotionManagerDelegate {
     /// Backwards-compat: the old chip in ContentView reads this. True only when motion frames are arriving.
     var isConnected: Bool { status.isLive }
 
+    /// Head pose treated as "straight ahead", captured by `recenter()`.
+    @ObservationIgnored private var neutral = HeadCalibration.Pose(pitch: 0, roll: 0)
     @ObservationIgnored private var smoothedPitch: Double = 0
     @ObservationIgnored private var smoothedRoll: Double = 0
     @ObservationIgnored private var lastDataAt: Date?
@@ -199,9 +201,22 @@ final class MotionManager: NSObject, CMHeadphoneMotionManagerDelegate {
         }
         smoothedPitch = smoothing * smoothedPitch + (1 - smoothing) * rawPitch
         smoothedRoll  = smoothing * smoothedRoll  + (1 - smoothing) * rawRoll
-        pitch = smoothedPitch
-        roll  = smoothedRoll
+        pitch = smoothedPitch - neutral.pitch
+        roll  = smoothedRoll  - neutral.roll
         yaw   = rawYaw
+    }
+
+    /// Treats the current head pose as neutral (called as each round starts,
+    /// while the player is reading the card). Ignored unless data is live,
+    /// and a pose far off-center is rejected so a held dodge can't become
+    /// the new "center".
+    func recenter() {
+        guard status.isLive, lastDataAt != nil else { return }
+        neutral = HeadCalibration.neutral(
+            current: .init(pitch: smoothedPitch, roll: smoothedRoll), previous: neutral)
+        pitch = smoothedPitch - neutral.pitch
+        roll  = smoothedRoll  - neutral.roll
+        log.notice("recenter: neutral pitch=\(self.neutral.pitch) roll=\(self.neutral.roll)")
     }
 
     func stop() {

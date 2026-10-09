@@ -22,25 +22,40 @@
 		7EBBD63EFFC78F7EA0F0BC7E /* vitrine_bloom_loop.caf in Resources */ = {isa = PBXBuildFile; fileRef = 1EDF524810D0B0A2A4784492 /* vitrine_bloom_loop.caf */; };
 		8BF1079A8420C5791A84F9C9 /* dodgeCheer.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4ED381BA5225C0BCB71628F2 /* dodgeCheer.wav */; };
 		9320EF59076D061D6D059546 /* GameCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46D5010E6D0157B92DC3E5A3 /* GameCenter.swift */; };
-		9E2DD9972855EAAEADCD9DF3 /* how_to_play.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 8995A05F95D6EBBE171ED512 /* how_to_play.mp4 */; };
 		9FD31DCD1675FD84DA3726EB /* menu_loop.caf in Resources */ = {isa = PBXBuildFile; fileRef = C25D7ED11174B5762785E3D8 /* menu_loop.caf */; };
 		A41F94995C410E9C6F0BCF08 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = EE837F894D0D4E2B7235448F /* AppIcon.icon */; };
 		A4FA9B529BA99552E4BDBAA4 /* UnlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 755ED55DD4CBD4174ED25B85 /* UnlockView.swift */; };
 		A665EFFF33A40A996ADD3A4C /* the_warden_loop.caf in Resources */ = {isa = PBXBuildFile; fileRef = 02F80A17E6A6A2EE3FE25A50 /* the_warden_loop.caf */; };
 		AFDD821EE4BBB68BA7D5DEAF /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796F6D35E3D9E420671C89DB /* GameScene.swift */; };
+		B65B3396638C357BD73DDDB0 /* DodgeDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3B7A62C3ADC95BBCA1B85C5 /* DodgeDemoView.swift */; };
 		C4EA2C91DBD8982980EBFD98 /* buzzBuzz.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6D0C9C96A09BFFA01E921A2A /* buzzBuzz.wav */; };
 		CA0E333DCF9EA2B2F8D414FC /* HowToPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED27415895C640DB5174457 /* HowToPlay.swift */; };
 		E173F8126958F3D87EF44499 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6B92B9629B733A6D8AF57DFD /* Localizable.xcstrings */; };
 		E5C5FD8ED9368A90B522C700 /* roundUp.wav in Resources */ = {isa = PBXBuildFile; fileRef = E9C4E215F2C7F187245E7C5E /* roundUp.wav */; };
+		EE5DDC4994133F161D291DDF /* GameLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1062371C5FF84761FEF696C4 /* GameLogicTests.swift */; };
+		F0DE214883E620F6EAE939CB /* GameLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C78980729ECCEFAD3B35BC5 /* GameLogic.swift */; };
+		F6BE489C81626FEFFED47601 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A6C788081DCDF890E181AD93 /* Foundation.framework */; };
 		FD5940D3658D0BFAB4BB519E /* hitImpact.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9C5CE548887FF6C32B657D75 /* hitImpact.wav */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D599E1F97B96D1C6DAFD1BAF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C68DEF4885E49A27ABAF09DB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 11E5FFBC53CEF737A7FBE18B;
+			remoteInfo = AirpodsGame;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		02F80A17E6A6A2EE3FE25A50 /* the_warden_loop.caf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = the_warden_loop.caf; sourceTree = "<group>"; };
 		03447D4C5DF4775B6AE76F4D /* OpponentDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpponentDefinition.swift; sourceTree = "<group>"; };
+		1062371C5FF84761FEF696C4 /* GameLogicTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GameLogicTests.swift; sourceTree = "<group>"; };
 		1EDF524810D0B0A2A4784492 /* vitrine_bloom_loop.caf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = vitrine_bloom_loop.caf; sourceTree = "<group>"; };
 		26832D38B43B0B13E2F57862 /* AirpodsGameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirpodsGameApp.swift; sourceTree = "<group>"; };
 		3957EC368B978154BC7B6DF9 /* drumRoll.wav */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.wav; path = drumRoll.wav; sourceTree = "<group>"; };
+		418D6FF2E76ECADDE1C3A9E1 /* AirBoxerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirBoxerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		46D5010E6D0157B92DC3E5A3 /* GameCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenter.swift; sourceTree = "<group>"; };
 		4ED381BA5225C0BCB71628F2 /* dodgeCheer.wav */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.wav; path = dodgeCheer.wav; sourceTree = "<group>"; };
 		5DB2E7D565BE85E405EE14CD /* AudioSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSystem.swift; sourceTree = "<group>"; };
@@ -48,24 +63,37 @@
 		6768DFA7EE4404B4709BA3ED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		67801A9167296B004DE20ECB /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		6B92B9629B733A6D8AF57DFD /* Localizable.xcstrings */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		6C78980729ECCEFAD3B35BC5 /* GameLogic.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = GameLogic.swift; sourceTree = "<group>"; };
 		6D0C9C96A09BFFA01E921A2A /* buzzBuzz.wav */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.wav; path = buzzBuzz.wav; sourceTree = "<group>"; };
 		7172777A306FC56B0069C66A /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		755ED55DD4CBD4174ED25B85 /* UnlockView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UnlockView.swift; sourceTree = "<group>"; };
 		796F6D35E3D9E420671C89DB /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		7E2644A992E2BD7BE4EE380B /* UnlockStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UnlockStore.swift; sourceTree = "<group>"; };
 		85F0F8DE85BCE19E1907733C /* sandbag_loop.caf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = sandbag_loop.caf; sourceTree = "<group>"; };
-		8995A05F95D6EBBE171ED512 /* how_to_play.mp4 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = how_to_play.mp4; sourceTree = "<group>"; };
 		953E641886343623A73FBD20 /* AirpodsGame.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AirpodsGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C5CE548887FF6C32B657D75 /* hitImpact.wav */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.wav; path = hitImpact.wav; sourceTree = "<group>"; };
 		A687D70EEB1BB1438956CF88 /* bell.wav */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.wav; path = bell.wav; sourceTree = "<group>"; };
+		A6C788081DCDF890E181AD93 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		BED27415895C640DB5174457 /* HowToPlay.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HowToPlay.swift; sourceTree = "<group>"; };
 		C25D7ED11174B5762785E3D8 /* menu_loop.caf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = menu_loop.caf; sourceTree = "<group>"; };
 		D1488A734437963C60FE8BDD /* knockoutSting.wav */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.wav; path = knockoutSting.wav; sourceTree = "<group>"; };
 		DB2CBE345A2D03399104647E /* AirpodsGame.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AirpodsGame.entitlements; sourceTree = "<group>"; };
+		E3B7A62C3ADC95BBCA1B85C5 /* DodgeDemoView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DodgeDemoView.swift; sourceTree = "<group>"; };
 		E9C4E215F2C7F187245E7C5E /* roundUp.wav */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = audio.wav; path = roundUp.wav; sourceTree = "<group>"; };
 		EE837F894D0D4E2B7235448F /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		FB0DDF50D1011695CB81164D /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9334AF925E3AB6EF0561943F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6BE489C81626FEFFED47601 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		072CC7E2A11DAD3D36DFCC67 /* Audio */ = {
@@ -91,6 +119,8 @@
 			children = (
 				B3E2CBBE3F4ABBD9A4551CB9 /* AirpodsGame */,
 				9D5C617FC17B65B49F45379A /* Products */,
+				F130F5E6B382FE0A71619136 /* Frameworks */,
+				69C425FCB899AC2BC627A7B7 /* AirBoxerTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -104,24 +134,35 @@
 				03447D4C5DF4775B6AE76F4D /* OpponentDefinition.swift */,
 				67801A9167296B004DE20ECB /* Settings.swift */,
 				7E2644A992E2BD7BE4EE380B /* UnlockStore.swift */,
+				6C78980729ECCEFAD3B35BC5 /* GameLogic.swift */,
 			);
 			path = Game;
+			sourceTree = "<group>";
+		};
+		69C425FCB899AC2BC627A7B7 /* AirBoxerTests */ = {
+			isa = PBXGroup;
+			children = (
+				1062371C5FF84761FEF696C4 /* GameLogicTests.swift */,
+			);
+			name = AirBoxerTests;
+			path = AirBoxerTests;
+			sourceTree = "<group>";
+		};
+		9833193A8620F157F9F0F177 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				A6C788081DCDF890E181AD93 /* Foundation.framework */,
+			);
+			name = iOS;
 			sourceTree = "<group>";
 		};
 		9D5C617FC17B65B49F45379A /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				953E641886343623A73FBD20 /* AirpodsGame.app */,
+				418D6FF2E76ECADDE1C3A9E1 /* AirBoxerTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		B11523E1DD5FB3A50E54AB2C /* Video */ = {
-			isa = PBXGroup;
-			children = (
-				8995A05F95D6EBBE171ED512 /* how_to_play.mp4 */,
-			);
-			path = Video;
 			sourceTree = "<group>";
 		};
 		B3E2CBBE3F4ABBD9A4551CB9 /* AirpodsGame */ = {
@@ -136,11 +177,19 @@
 				072CC7E2A11DAD3D36DFCC67 /* Audio */,
 				755ED55DD4CBD4174ED25B85 /* UnlockView.swift */,
 				BED27415895C640DB5174457 /* HowToPlay.swift */,
-				B11523E1DD5FB3A50E54AB2C /* Video */,
 				6B92B9629B733A6D8AF57DFD /* Localizable.xcstrings */,
 				7172777A306FC56B0069C66A /* InfoPlist.xcstrings */,
+				E3B7A62C3ADC95BBCA1B85C5 /* DodgeDemoView.swift */,
 			);
 			path = AirpodsGame;
+			sourceTree = "<group>";
+		};
+		F130F5E6B382FE0A71619136 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9833193A8620F157F9F0F177 /* iOS */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -161,6 +210,24 @@
 			productName = AirpodsGame;
 			productReference = 953E641886343623A73FBD20 /* AirpodsGame.app */;
 			productType = "com.apple.product-type.application";
+		};
+		E5DE5B8FBF66ABEA1E41DDC0 /* AirBoxerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 829F983102030F1CDF1370F7 /* Build configuration list for PBXNativeTarget "AirBoxerTests" */;
+			buildPhases = (
+				654F6A6BE04CBFF5437D3BE5 /* Sources */,
+				9334AF925E3AB6EF0561943F /* Frameworks */,
+				3BC6A2A0FF26A765B2682668 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C854A860EB4AF8988C2000C9 /* PBXTargetDependency */,
+			);
+			name = AirBoxerTests;
+			productName = AirBoxerTests;
+			productReference = 418D6FF2E76ECADDE1C3A9E1 /* AirBoxerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -202,6 +269,7 @@
 			projectRoot = "";
 			targets = (
 				11E5FFBC53CEF737A7FBE18B /* AirpodsGame */,
+				E5DE5B8FBF66ABEA1E41DDC0 /* AirBoxerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -224,8 +292,14 @@
 				49594A857511749EB8B422BD /* sandbag_loop.caf in Resources */,
 				A665EFFF33A40A996ADD3A4C /* the_warden_loop.caf in Resources */,
 				7EBBD63EFFC78F7EA0F0BC7E /* vitrine_bloom_loop.caf in Resources */,
-				9E2DD9972855EAAEADCD9DF3 /* how_to_play.mp4 in Resources */,
 				E173F8126958F3D87EF44499 /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3BC6A2A0FF26A765B2682668 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,10 +321,29 @@
 				A4FA9B529BA99552E4BDBAA4 /* UnlockView.swift in Sources */,
 				6FD9ECC86AD68F29696AB7DA /* UnlockStore.swift in Sources */,
 				CA0E333DCF9EA2B2F8D414FC /* HowToPlay.swift in Sources */,
+				F0DE214883E620F6EAE939CB /* GameLogic.swift in Sources */,
+				B65B3396638C357BD73DDDB0 /* DodgeDemoView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		654F6A6BE04CBFF5437D3BE5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE5DDC4994133F161D291DDF /* GameLogicTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C854A860EB4AF8988C2000C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AirpodsGame;
+			target = 11E5FFBC53CEF737A7FBE18B /* AirpodsGame */;
+			targetProxy = D599E1F97B96D1C6DAFD1BAF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1EE87F5149BA855EBFBB4585 /* Debug */ = {
@@ -376,6 +469,23 @@
 			};
 			name = Release;
 		};
+		861B970C068BA0692B4DAF3F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 27EZNUVV57;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.airdodge.AirpodsGameTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AirpodsGame.app/AirpodsGame";
+			};
+			name = Debug;
+		};
 		9BB52D3F939B97A289E9F626 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -399,6 +509,24 @@
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
+		};
+		B3318B7372E0D46B11A5B581 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 27EZNUVV57;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.airdodge.AirpodsGameTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AirpodsGame.app/AirpodsGame";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
 		};
 		E5D2643C4F25AB0C0C4752EF /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -435,6 +563,15 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
+		};
+		829F983102030F1CDF1370F7 /* Build configuration list for PBXNativeTarget "AirBoxerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3318B7372E0D46B11A5B581 /* Release */,
+				861B970C068BA0692B4DAF3F /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		DDB5BF469EF9F34E90655F74 /* Build configuration list for PBXProject "AirpodsGame" */ = {
 			isa = XCConfigurationList;

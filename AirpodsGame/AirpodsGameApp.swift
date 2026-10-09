@@ -15,6 +15,8 @@ struct AirpodsGameApp: App {
         // Start listening for transactions at launch so Ask to Buy approvals
         // and refunds are always finished and applied.
         _ = UnlockStore.shared
+        // Counts launches for the rating-prompt gate (never on the first).
+        ReviewPromptStore().recordSession()
     }
 
     var body: some Scene {

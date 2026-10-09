@@ -11,6 +11,7 @@ enum SettingsKey {
     static let soundEnabled      = "settings.soundEnabled"
     static let hapticsEnabled    = "settings.hapticsEnabled"
     static let scanlineEnabled   = "settings.scanlineEnabled"
+    static let touchControls     = "settings.touchControls"
 }
 
 enum MotionSensitivityLevel: Int, CaseIterable {
@@ -58,6 +59,7 @@ struct SettingsView: View {
     @AppStorage(SettingsKey.soundEnabled)      private var soundEnabled: Bool   = true
     @AppStorage(SettingsKey.hapticsEnabled)    private var hapticsEnabled: Bool = true
     @AppStorage(SettingsKey.scanlineEnabled)   private var scanlineEnabled: Bool = true
+    @AppStorage(SettingsKey.touchControls)     private var touchControls: Bool = false
 
     @Environment(\.dismiss) private var dismiss
 
@@ -93,6 +95,14 @@ struct SettingsView: View {
                     .padding(.vertical, 4)
                 } header: {
                     Text("Earbud Motion")
+                }
+
+                Section {
+                    Toggle("Touch controls", isOn: $touchControls)
+                } header: {
+                    Text("Controls")
+                } footer: {
+                    Text("For playing without headphones that support head tracking: hold the left or right side of the screen to slip, the middle to duck. Head tracking always takes over when it's available. Touch fights don't post to Game Center.")
                 }
 
                 Section {
@@ -168,7 +178,7 @@ private struct CreditsView: View {
 
                 Text("How to play")
                     .font(.headline)
-                Text("Pair compatible motion earbuds and put them on. Tilt your head LEFT or RIGHT to slip hooks. NOD DOWN to duck uppercuts. Don't move into a punch — the opponent telegraphs every swing.")
+                Text("Put on headphones that support head tracking. Tilt your head LEFT or RIGHT to slip hooks. NOD DOWN to duck uppercuts. Don't move into a punch — the opponent telegraphs every swing.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
 
@@ -184,7 +194,7 @@ private struct CreditsView: View {
 
                 Text("Built with")
                     .font(.headline)
-                Text("SwiftUI · SpriteKit · CoreMotion · GameKit · Apple's Icon Composer")
+                Text("SwiftUI · SpriteKit · CoreMotion · GameKit")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

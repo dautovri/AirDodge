@@ -1,3 +1,4 @@
+import StoreKit
 import SwiftUI
 import SpriteKit
 import UIKit
@@ -22,19 +23,30 @@ struct ContentView: View {
     /// Currently selected opponent. Defaults to Sandbag for first-time users —
     /// per the CEO plan, the tutorial is opponent #1 in the roster.
     @State private var selectedOpponent: OpponentDefinition = .sandbag
+    /// Players without head-tracking headphones can opt into touch controls.
+    @AppStorage(SettingsKey.touchControls) private var touchOptIn = false
+    /// Opponents knocked out at least once — drives the ladder locks.
+    @State private var beaten: Set<String> = LadderStore().beaten
+    /// Control mode locked in when the fight starts.
+    @State private var fightMode: ControlMode = .headTracking
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.requestReview) private var requestReview
 
     enum GameState { case menu, playing, gameOver }
 
-    /// Allow entering the fight without live AirPods data ONLY in the iOS
-    /// Simulator — head tracking can't deliver data there, but we still
-    /// want to inspect the UI. On real hardware the motion gate stands.
-    private var canStart: Bool {
-        #if targetEnvironment(simulator)
-        return true
-        #else
-        return motion.status.isLive
+    /// Head tracking when it's live, touch when the player opted in, or nil
+    /// (the fight is gated and the setup card explains why).
+    private var controlMode: ControlMode? {
+        ControlMode.resolve(headTrackingLive: motion.status.isLive, touchOptIn: touchOptIn)
+    }
+
+    private var canStart: Bool { controlMode != nil }
+
+    private func isLadderOpen(_ opponent: OpponentDefinition) -> Bool {
+        #if DEBUG
+        if UserDefaults.standard.bool(forKey: "ABUnlocked") { return true }
         #endif
+        return OpponentLadder.isOpen(opponent, beaten: beaten)
     }
 
     var body: some View {
@@ -45,10 +57,15 @@ struct ContentView: View {
             case .menu:
                 MenuView(motionStatus: motion.status,
                          highScore: highScore,
-                         canStart: canStart,
+                         controlMode: controlMode,
                          selectedOpponent: $selectedOpponent,
                          isLocked: { store.isLocked($0) },
+                         ladderGatekeeper: { opponent in
+                             isLadderOpen(opponent) ? nil
+                                 : OpponentLadder.gatekeeper(for: opponent, beaten: beaten)
+                         },
                          onLockedTap: { unlockPresented = true },
+                         onTouchMode: { setTouchMode($0) },
                          onStart: { startFight() },
                          onHowTo: { howToPresented = true },
                          onSettings: { settingsPresented = true })
@@ -57,6 +74,7 @@ struct ContentView: View {
             case .playing:
                 GameView(isPaused: isPaused,
                          opponent: selectedOpponent,
+                         controlMode: fightMode,
                          onGameOver: handleGameOver)
                     .transition(.opacity)
 
@@ -66,6 +84,8 @@ struct ContentView: View {
                              opponentName: selectedOpponent.name,
                              canRestart: canStart,
                              motionStatus: motion.status,
+                             wasTouchFight: fightMode == .touch,
+                             onTouchMode: { setTouchMode(true) },
                              onRestart: { startFight() },
                              onMenu:    { withAnimation(.spring) { gameState = .menu } })
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
@@ -172,6 +192,11 @@ struct ContentView: View {
             unlockPresented = true
             return
         }
+        guard isLadderOpen(selectedOpponent), let mode = controlMode else {
+            Haptics.notify(.warning)
+            return
+        }
+        fightMode = mode
         withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) {
             gameState = .playing
         }
@@ -181,15 +206,37 @@ struct ContentView: View {
         let score = result.score
         finalScore = score
         lastFightWon = result.won
+        let isNewBest = score > highScore && score > 0
         if score > highScore {
             highScore = score
             UserDefaults.standard.set(score, forKey: "boxerHighScore")
         }
-        // The knockouts leaderboard counts knockouts the player lands, not
-        // the ones they take.
-        if result.won { gameCenter.submitKnockout() }
+        if result.won {
+            LadderStore().recordWin(over: result.opponentID)
+            beaten = LadderStore().beaten
+            // The knockouts leaderboard counts knockouts the player lands,
+            // not the ones they take — and only head-tracking fights.
+            if result.controlMode.postsToLeaderboards { gameCenter.submitKnockout() }
+        }
         Haptics.notify(result.won ? .success : .warning)
         withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) { gameState = .gameOver }
+
+        // Ask for a rating only right after a satisfying moment, and let the
+        // results screen land first. Gating lives in ReviewPromptPolicy.
+        let opponent = OpponentDefinition.allOpponents.first { $0.id == result.opponentID }
+        let moment = ReviewPromptPolicy.Moment.fightEnded(
+            won: result.won, againstTutorial: opponent?.isTutorial ?? false, newBestScore: isNewBest)
+        if ReviewPromptStore().registerFightAndCheck(moment) {
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(1.8))
+                if gameState == .gameOver { requestReview() }
+            }
+        }
+    }
+
+    private func setTouchMode(_ on: Bool) {
+        Haptics.impact(.light)
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { touchOptIn = on }
     }
 }
 
@@ -274,16 +321,20 @@ private struct BackgroundGradient: View {
 struct MenuView: View {
     let motionStatus: MotionManager.Status
     let highScore: Int
-    let canStart: Bool
+    let controlMode: ControlMode?
     @Binding var selectedOpponent: OpponentDefinition
     let isLocked: (OpponentDefinition) -> Bool
+    var ladderGatekeeper: (OpponentDefinition) -> OpponentDefinition? = { _ in nil }
     let onLockedTap: () -> Void
+    var onTouchMode: (Bool) -> Void = { _ in }
     let onStart: () -> Void
     let onHowTo: () -> Void
     let onSettings: () -> Void
 
     @State private var titlePulse = false
     @State private var glovePulse = false
+
+    private var canStart: Bool { controlMode != nil }
 
     var body: some View {
         VStack(spacing: 24) {
@@ -359,12 +410,18 @@ struct MenuView: View {
             ConnectionChip(status: motionStatus)
                 .padding(.top, 6)
 
-            if motionStatus.isLive {
+            if controlMode == .touch {
+                TouchModeBanner(onTurnOff: { onTouchMode(false) })
+                    .padding(.horizontal, 24)
+            }
+
+            if canStart {
                 // Roster picker — 3 cards, one per opponent. Replaces the static
                 // 'HOW TO DODGE' guide that was redundant after the tutorial.
                 // Required by Apple Guideline 4.2 (minimum functionality) — the
                 // game ships with 3 opponents and the user must be able to pick.
-                OpponentPicker(selected: $selectedOpponent, isLocked: isLocked, onLockedTap: onLockedTap)
+                OpponentPicker(selected: $selectedOpponent, isLocked: isLocked,
+                               ladderGatekeeper: ladderGatekeeper, onLockedTap: onLockedTap)
                     .padding(.horizontal, 24)
                     .padding(.top, 8)
             } else {
@@ -373,8 +430,8 @@ struct MenuView: View {
                 // and one line of 12pt 40%-opacity grey text — indistinguishable
                 // from a broken build. This card takes the roster's slot and
                 // states the hardware requirement, the reason, and the next step
-                // outright. No touch-control fallback by design (see TODOS C4).
-                MotionRequirementCard(status: motionStatus)
+                // outright, and offers touch controls so nobody is stranded.
+                MotionRequirementCard(status: motionStatus, onTouchMode: { onTouchMode(true) })
                     .padding(.horizontal, 24)
                     .padding(.top, 8)
             }
@@ -389,15 +446,6 @@ struct MenuView: View {
                 onStart()
             })
 
-            if canStart && !motionStatus.isLive {
-                // Simulator-only bypass is active. Say so, otherwise an enabled
-                // FIGHT button sitting under a "no earbuds" chip reads as a bug.
-                Text("SIMULATOR PREVIEW — head tracking is inactive")
-                    .font(.system(size: 11, weight: .heavy, design: .rounded))
-                    .tracking(0.5)
-                    .foregroundStyle(.yellow.opacity(0.85))
-                    .padding(.top, -4)
-            }
             // No microcopy under the disabled button: the button now labels its
             // own gate and the card above carries the full explanation. Three
             // restatements of the same requirement read as unfinished.
@@ -524,6 +572,9 @@ private struct ConnectionChip: View {
 struct MotionRequirementCard: View {
     let status: MotionManager.Status
     var compact: Bool = false
+    /// Switches the game to touch controls. Shown for every state except
+    /// `.waitingForData` (headphones connected, just not worn yet).
+    var onTouchMode: (() -> Void)?
 
     var body: some View {
         VStack(spacing: compact ? 8 : 12) {
@@ -541,7 +592,7 @@ struct MotionRequirementCard: View {
                         .font(.system(size: compact ? 11 : 12, weight: .heavy, design: .rounded))
                         .tracking(1.2)
                         .foregroundStyle(.yellow)
-                    Text("This is a motion game — there are no touch controls.")
+                    Text("Your head is the controller. No compatible headphones? Play with touch.")
                         .font(.system(size: compact ? 11 : 12, weight: .medium))
                         .foregroundStyle(.white.opacity(0.85))
                         .fixedSize(horizontal: false, vertical: true)
@@ -553,11 +604,10 @@ struct MotionRequirementCard: View {
                 // Shows the mechanic instead of describing it: you dodge by
                 // physically moving your head, read from earbuds that stream
                 // head-motion data to iPhone.
-                HowToPlayVideo()
+                DodgeDemoView()
                     .aspectRatio(16 / 9, contentMode: .fit)
-                    .frame(minHeight: 150)
+                    .frame(minHeight: 130)
                     .clipShape(.rect(cornerRadius: 12))
-                    .accessibilityHidden(true)
             }
 
             // The one thing to do next, driven by the live motion status.
@@ -572,6 +622,19 @@ struct MotionRequirementCard: View {
                 Spacer(minLength: 0)
             }
             .padding(.top, compact ? 0 : 2)
+
+            if let onTouchMode, status != .waitingForData {
+                Button(action: onTouchMode) {
+                    Label("PLAY WITH TOUCH", systemImage: "hand.tap.fill")
+                        .font(.system(size: 14, weight: .heavy, design: .rounded))
+                        .tracking(1)
+                        .foregroundStyle(.black)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .background(Color.yellow, in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint(Text("Hold the left or right side of the screen to slip, the middle to duck."))
+            }
         }
         .padding(compact ? 14 : 18)
         .frame(maxWidth: .infinity)
@@ -580,14 +643,49 @@ struct MotionRequirementCard: View {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .stroke(Color.orange.opacity(0.45), lineWidth: 1)
         )
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Head tracking required. \(status.label). \(status.nextStep)")
+        .accessibilityElement(children: .contain)
+    }
+}
+
+/// Shown on the menu while the touch fallback is active. Head tracking takes
+/// over automatically as soon as compatible headphones stream motion.
+private struct TouchModeBanner: View {
+    let onTurnOff: () -> Void
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "hand.tap.fill")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(.yellow)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("TOUCH MODE")
+                    .font(.system(size: 11, weight: .heavy, design: .rounded))
+                    .tracking(1.2)
+                    .foregroundStyle(.yellow)
+                Text("Connect headphones that support head tracking for the full motion game.")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.8))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+            Button("Turn off", action: onTurnOff)
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .foregroundStyle(.white.opacity(0.85))
+                .padding(.horizontal, 10).frame(minHeight: 32)
+                .background(.white.opacity(0.12), in: Capsule())
+        }
+        .padding(12)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous)
+            .stroke(Color.yellow.opacity(0.35), lineWidth: 1))
     }
 }
 
 struct OpponentPicker: View {
     @Binding var selected: OpponentDefinition
     var isLocked: (OpponentDefinition) -> Bool = { _ in false }
+    /// Non-nil when the opponent is closed on the ladder: who to beat first.
+    var ladderGatekeeper: (OpponentDefinition) -> OpponentDefinition? = { _ in nil }
     var onLockedTap: () -> Void = {}
 
     var body: some View {
@@ -599,15 +697,20 @@ struct OpponentPicker: View {
 
             HStack(spacing: 10) {
                 ForEach(OpponentDefinition.allOpponents, id: \.id) { opponent in
+                    let gatekeeper = ladderGatekeeper(opponent)
                     OpponentCard(
                         opponent: opponent,
                         isSelected: opponent.id == selected.id,
                         isLocked: isLocked(opponent),
+                        gatekeeper: gatekeeper,
                         onTap: {
-                            Haptics.impact(.light)
-                            if isLocked(opponent) {
+                            if gatekeeper != nil {
+                                Haptics.notify(.warning)
+                            } else if isLocked(opponent) {
+                                Haptics.impact(.light)
                                 onLockedTap()
                             } else {
+                                Haptics.impact(.light)
                                 selected = opponent
                             }
                         }
@@ -629,6 +732,7 @@ private struct OpponentCard: View {
     let opponent: OpponentDefinition
     let isSelected: Bool
     var isLocked = false
+    var gatekeeper: OpponentDefinition?
     let onTap: () -> Void
 
     /// Difficulty badge color matched to opponent identity from the data model.
@@ -666,7 +770,19 @@ private struct OpponentCard: View {
                 Text(opponent.country)
                     .font(.system(size: 9, weight: .medium, design: .rounded))
                     .foregroundStyle(.white.opacity(0.4))
-                if isLocked {
+                if let gatekeeper {
+                    Label {
+                        Text("BEAT \(gatekeeper.name)")
+                    } icon: {
+                        Image(systemName: "lock.fill")
+                    }
+                    .font(.system(size: 9, weight: .heavy, design: .rounded))
+                    .foregroundStyle(.orange)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
+                    .padding(.top, 2)
+                } else if isLocked {
                     Label("UNLOCK", systemImage: "lock.fill")
                         .font(.system(size: 9, weight: .heavy, design: .rounded))
                         .foregroundStyle(.orange)
@@ -691,6 +807,7 @@ private struct OpponentCard: View {
             )
             .shadow(color: isSelected ? accent.opacity(0.45) : .clear,
                     radius: isSelected ? 10 : 0)
+            .opacity(gatekeeper == nil ? 1 : 0.8)
         }
         .buttonStyle(.plain)
         .animation(.easeOut(duration: 0.18), value: isSelected)
@@ -772,6 +889,7 @@ private struct PressActionStyle: ButtonStyle {
 struct GameView: View {
     let isPaused: Bool
     let opponent: OpponentDefinition
+    var controlMode: ControlMode = .headTracking
     let onGameOver: (FightResult) -> Void
     @State private var scene: GameScene?
 
@@ -791,6 +909,7 @@ struct GameView: View {
                     s.size = geo.size
                     s.scaleMode = .resizeFill
                     s.opponent = opponent     // drive timings/HP/punch set/music
+                    s.controlMode = controlMode
                     s.onGameOver = onGameOver
                     scene = s
                 }
@@ -811,6 +930,8 @@ struct GameOverView: View {
     var opponentName = ""
     let canRestart: Bool
     let motionStatus: MotionManager.Status
+    var wasTouchFight = false
+    var onTouchMode: () -> Void = {}
     let onRestart: () -> Void
     let onMenu: () -> Void
 
@@ -885,6 +1006,12 @@ struct GameOverView: View {
             .background(.ultraThinMaterial, in: Capsule())
             .overlay(Capsule().stroke(rank.color.opacity(0.4), lineWidth: 1))
 
+            if wasTouchFight {
+                Text("Touch fight · not posted to Game Center")
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.45))
+            }
+
             if !isNewRecord && highScore > 0 {
                 Text("Best  \(highScore)")
                     .font(.system(size: 14, weight: .semibold, design: .rounded))
@@ -898,7 +1025,7 @@ struct GameOverView: View {
                 // user behind a grey button with no explanation. Compact
                 // variant so the score card still owns the screen.
                 if !canRestart {
-                    MotionRequirementCard(status: motionStatus, compact: true)
+                    MotionRequirementCard(status: motionStatus, compact: true, onTouchMode: onTouchMode)
                         .padding(.horizontal, 24)
                         .padding(.bottom, 4)
                 }
