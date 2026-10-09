@@ -1,6 +1,1 @@
-{
-  "name": "AirBoxer: 体感拳击",
-  "subtitle": "头部追踪拳击闪避游戏",
-  "privacyPolicyUrl": "https://dautovri.com/airboxer-privacy",
-  "privacyPolicyText": "AirBoxer 不收集任何数据。耳机读取的头部动作仅在您的 iPhone 上实时处理并立即丢弃。无数据分析、无广告、无行为追踪、无第三方 SDK。Game Center 排行榜分数为选填项，并由 Apple 进行管理。"
-}
+{"name": "AirBoxer: 体感拳击", "subtitle": "用头部动作闪避出拳", "privacyPolicyUrl": "https://dautovri.com/airboxer-privacy", "privacyPolicyText": "AirBoxer 不收集任何数据。耳机读取的头部动作仅在您的 iPhone 上实时处理并立即丢弃。无数据分析、无广告、无行为追踪、无第三方 SDK。Game Center 排行榜分数为选填项，并由 Apple 进行管理。"}
