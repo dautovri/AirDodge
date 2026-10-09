@@ -227,7 +227,12 @@ struct ContentView: View {
         let moment = ReviewPromptPolicy.Moment.fightEnded(
             won: result.won, againstTutorial: opponent?.isTutorial ?? false, newBestScore: isNewBest)
         let reviewStore = ReviewPromptStore()
-        if reviewStore.registerFightAndCheck(moment) {
+        var promptAllowed = true
+        #if DEBUG
+        // Screenshot/trailer fixture runs must never show the system sheet.
+        promptAllowed = !ProcessInfo.processInfo.arguments.contains("-ABAutoDodge")
+        #endif
+        if reviewStore.registerFightAndCheck(moment), promptAllowed {
             Task { @MainActor in
                 try? await Task.sleep(for: .seconds(1.8))
                 // Skip (and keep the chance) if the player already moved on.

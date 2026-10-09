@@ -17,13 +17,17 @@ Y = (255, 214, 64); WH = (255, 255, 255); OR = (255, 140, 40)
 
 LATIN_HEAD = "/System/Library/Fonts/Supplemental/Arial Black.ttf"
 LATIN_SUB = "/System/Library/Fonts/SFNSRounded.ttf"
-CJK = "/System/Library/PrivateFrameworks/FontServices.framework/Versions/A/Resources/Reserved/PingFangUI.ttc"
+JA_HEAVY = "/System/Library/Fonts/ヒラギノ角ゴシック W8.ttc"
+JA_SUB = "/System/Library/Fonts/ヒラギノ角ゴシック W5.ttc"
+ZH = "/System/Library/Fonts/Hiragino Sans GB.ttc"
 KO = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
 
 
 def fonts(loc):
-    if loc in ("ja", "zh-Hans"):
-        return (CJK, 5), (CJK, 3)       # (path, ttc index): heavy, medium
+    if loc == "ja":
+        return (JA_HEAVY, 0), (JA_SUB, 0)   # (path, ttc index): heavy, medium
+    if loc == "zh-Hans":
+        return (ZH, 2), (ZH, 0)
     if loc == "ko":
         return (KO, 8), (KO, 6)
     return (LATIN_HEAD, 0), (LATIN_SUB, 0)
