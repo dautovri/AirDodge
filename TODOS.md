@@ -1,0 +1,224 @@
+# TODOS
+
+Captured during /plan-eng-review (2026-05-02) and /plan-ceo-review (2026-05-03)
+for the AirBoxer Polished Vertical Slice and App Store launch. All items are
+explicitly OUT of scope for v1.0 — recorded here so they don't get lost.
+
+---
+
+## ⬆️ PROMOTED INTO v1.0 by /autoplan (2026-05-14) — both Codex and Claude subagent agreed
+
+### 1. Daily Challenge mode
+
+**Why:** /autoplan dual-voice consensus: a single daily-seeded challenge mode does more for retention than opponent #3 does for content. Both reviewers flagged this as Medium urgency — replacing some localization polish or one opponent's polish budget with Daily Challenge is a better retention bet.
+
+**Minimum viable shape:**
+- A 4th menu entry "DAILY" alongside the 3 opponent cards
+- Uses Vitrine Bloom's sprite + audio (no new art)
+- Telegraph sequence is deterministic from `Date()` rounded to UTC midnight (so all players get the same fight that day)
+- Tracks current streak in `@AppStorage("dailyStreak")` — resets to 0 if a UTC day is missed
+- New GameKit leaderboard: `com.airdodge.AirpodsGame.leaderboard.daily_streak`
+
+**Effort:** 1-2 days CC.
+
+### 2. Sequenced opponent unlocks — RE-DEFERRED to v1.1 (2026-05-18)
+
+**Status:** Pulled in by /autoplan, then re-deferred when implementation revealed the codebase has no opponent-defeat path. `triggerKO()` only fires on PLAYER HP=0 (loss). `opponent.opponentHP` is defined on the data model but never decremented. To set `vitrineBloomDefeated = true` we'd first need to wire opponent HP drain + victory KO sequence + a separate victory card. ~1 day, not 2 hours. Bundled with v1.1 content drop where the win loop will be properly built.
+
+**Why originally:** /autoplan dual-voice consensus: 3 free cards = level select = no progression arc. Punch-Out's power was sequencing. Lock Warden behind beating Vitrine Bloom once.
+
+**Minimum viable shape:**
+- `@AppStorage("vitrineBloomDefeated") var beatenVB: Bool = false`
+- OpponentPicker shows Warden card greyed out with overlay text "BEAT VITRINE BLOOM" until `beatenVB == true`
+- Tutorial (Sandbag) always unlocked. Vitrine always unlocked.
+- Set `beatenVB = true` in `endFight(victory: true)` path when `opponent.id == "vitrine_bloom"`
+
+**Effort:** ~2 hours CC.
+
+---
+
+## 🔎 /review findings (2026-05-29) — build 4 in App Review
+
+### P0 — Game Center "knockouts" leaderboard counts player LOSSES
+
+`ContentView.handleGameOver` runs only when the player is KO'd, and it
+unconditionally calls `gameCenter.submitKnockout()` (ContentView.swift:128).
+Because there is no opponent-defeat path (see item 2 above), the
+`...leaderboard.totalkos` board increments once per player death — the metric
+is semantically inverted. **Bundle the fix with the v1.1 win-loop work:** only
+call `submitKnockout()` from the victory path, never from `handleGameOver`.
+Until then the totalKOs leaderboard is meaningless and should arguably be hidden
+in App Store Connect Game Center config.
+
+### FIXED in this review (committed to branch, NOT in build 4)
+
+- **Round advance no longer keyed on `score % 60`.** Combo-scaled scoring
+  (`10 × combo`) jumped in non-uniform steps and could skip 60 entirely, so
+  round breaks fired erratically. Now counts successful dodges
+  (`dodgesPerRound = 6`). GameScene.swift.
+- **KO `asyncAfter` now `[weak self]`.** Was the one closure capturing `self`
+  strongly; scene lingered 1.6s past KO. GameScene.swift:~1186.
+- **AudioSystem fade-out guarded by a generation token.** A `startMusic` during
+  an in-flight fade could step down / stop the freshly-started track. Now bails
+  if `musicGeneration`/player identity changed. AudioSystem.swift.
+- **GameKit auth handler hops to `@MainActor`** before mutating published state
+  (was publishing from GameKit's arbitrary queue). GameCenter.swift.
+- **`print()` → `os.Logger`** in AudioSystem + GameCenter; removed dead
+  `duckMusic`/`restoreMusicVolume`.
+
+### NOT changed — convention rule does not apply here
+
+CLAUDE.md mandates `@Observable`/`@State`, but the deployment target is
+**iOS 16.0** (`IPHONEOS_DEPLOYMENT_TARGET = 16.0`) and the store metadata
+advertises "iOS 16+". `@Observable` requires iOS 17+ (build fails otherwise —
+verified). `MotionManager` + `GameCenter` correctly stay on
+`ObservableObject`/`@Published`. Migrate only alongside the existing
+"Bump deployment target to iOS 17" TODO below.
+
+### Still open (v1.1)
+
+- **Zero unit tests.** Pure logic — `currentHeadZone()`, sensitivity threshold
+  table, score/combo math — is untested despite a documented history of
+  pitch/roll sign-convention bugs. Extract a pure `FightEngine`/`GameLogic` and
+  add a test target. (Already partially captured below.)
+- **In-game strings are English-only** ("OUCH!", "SLIPPED!", "K.O.", "BREAK")
+  despite 5-locale store metadata. Hoist to `String(localized:)`.
+- **`GameScene.swift` is a ~1200-line god object.** Split HUD/cards/engine.
+
+---
+
+## ❌ REJECTED user challenges (logged for future reconsideration if v1.0 underperforms)
+
+- **C1 App Preview video into v1.0** — both models flagged critical (head-motion invisible in stills). User declined; keep in v1.1.
+- **C2 Free + $1.99 unlock IAP** — both models flagged premium-pricing risk for novelty mechanic. User declined; keep premium $2.99.
+- **C4 Tap-to-dodge accessibility** — both models flagged Apple-rejection risk + locks out one-AirPod users. User declined. **If App Store review rejects under Guideline 2.5.1 or 5.1.1, this is the fix — ~2 hours of work.**
+
+---
+
+## Bump deployment target to iOS 17 + migrate MotionManager to @Observable
+
+**Why:** global preference (use `@Observable` over `ObservableObject`). Blocked currently by iOS 16 deployment target set in `project.yml`.
+
+**Where:**
+- `project.yml` — `deploymentTarget.iOS: "17.0"`
+- `AirpodsGame/Game/MotionManager.swift` — replace `ObservableObject` + `@Published` with `@Observable`, mark class `@MainActor final`
+- `AirpodsGame/ContentView.swift` — replace `@StateObject private var motion` with `@State private var motion`
+
+**Effort:** ~30 min. Do after the polish slice ships and the friend playtest is done.
+
+**Risk:** zero — iPhone 17 Pro test device runs iOS 26.4.2; deployment-target bump only affects which devices can install.
+
+---
+
+## Unit tests for currentHeadZone() and telegraph timing math
+
+**Why:** the dodge resolution math has clear input → output contracts (roll/pitch in degrees → DodgeZone enum, telegraph duration → minimum reaction time). Worth pinning with tests once the behavior is stable, so future changes can't silently regress the dodge feel.
+
+**Where:**
+- New `AirpodsGameTests/` target (XCTest)
+- Tests for `GameScene.currentHeadZone()` — table-driven, edge cases at threshold boundaries (±14°, ±22°)
+- Tests for `advanceRound()` telegraph-floor cap (must never go below 0.7s per design doc premise #3)
+
+**Effort:** ~2 hrs (XCTest target setup + ~10 test cases).
+
+**Wait until:** the polish slice ships and the dodge-feel contract is stable. Don't pin behavior that might still change.
+
+---
+
+## Split GameScene.swift
+
+**Why:** file is 844 LoC today and will hit ~1100-1200 LoC after this slice (cards, audio hooks, sprite animation, FightPhase state machine). The real seams only emerge after the work lands — premature splits cost more than they save.
+
+**Where (likely shape):**
+- `GameScene.swift` — state, game loop, public API, ~300 LoC
+- `GameScene+Setup.swift` — `setupBackground()`, `setupOpponent()`, `setupHUD()`, `setupCards()`, ~400 LoC
+- `GameScene+Punch.swift` — `nextPunch()`, `telegraphPunch()`, `windUpGlove()`, `throwPunch()`, `resolvePunch()`, ~250 LoC
+- `GameScene+Effects.swift` — flash, shake, particle, hit/dodge text, ~200 LoC
+
+**Effort:** ~1 hr extension-based split with no behavior changes.
+
+**Wait until:** you actually feel the pain. Real seams reveal themselves after working in the file for a weekend, not before.
+
+---
+
+## App Preview video (v1.1 highest-leverage post-launch lever)
+
+**Why:** Apple's own data shows preview videos lift App Store conversion ~30% over screenshots alone. For AirBoxer specifically, the value is unusually high — the magic of head-tracking dodge is impossible to convey in a static screenshot but obvious in 5 seconds of video. Deferred from v1.0 per /plan-ceo-review decision; this is the single highest-leverage post-launch lever.
+
+**Where:**
+- Capture via Xcode > Devices > Take Screenshot/Recording on iPhone 17 Pro (or iOS Simulator if a real device recording isn't viable)
+- Edit in iMovie or Final Cut: trim, add text overlays ("Tilt to slip" / "Nod to duck")
+- Export 1080x1920 portrait, H.264, < 500MB
+- Upload via App Store Connect Media Manager
+- Required device classes: iPhone 6.7", iPhone 6.5"
+
+**Effort:** ~2 hrs end-to-end.
+
+**Wait until:** v1.0 has been live for at least a week and you've validated the gameplay loop with real feedback. Re-recording later means using the most polished version of the game.
+
+---
+
+## Opponents 4-8 (v1.1 / v1.2 content drops)
+
+**Why:** v1.0 ships with 3 opponents (Sandbag tutorial + Vitrine Bloom + The Warden) per Apple's Guideline 4.2 minimum-functionality bar. More opponents = more retention, more screenshots, more App Store editorial appeal, more reasons to come back to the app.
+
+**Where:**
+- Add new entries via `OpponentDefinition` static factory (data-driven from /plan-eng-review Issue 1)
+- Each opponent: original character, 3-frame sprite, chiptune track, telegraph pattern, pep-talk text, KO sequence
+- Localize new strings into 5 languages (en + es + fr + de + ja)
+- Suggested roster expansion: SUMOTORI ŌKAMI (Tokyo, slow + heavy), RING-O THE ROBOT (frame-perfect tells), LEFT-HOOK LOLA (lefty boxer flips telegraphs), MIDNIGHT (silhouette opponent that fights in low light), ICEBERG (final-final boss, multi-phase)
+
+**Effort:** ~1 day per opponent once v1.0's slice is dialed (sprite art is the bottleneck).
+
+**Wait until:** v1.0 ships and you have at least one round of real-user feedback to inform what kind of opponent the game actually wants more of.
+
+---
+
+## Daily Challenge mode
+
+**Why:** classic retention mechanic. Single fight per day against a known opponent (cycles through the roster) with a fixed but rotating telegraph sequence. Players come back daily for the streak. GameKit leaderboard for "Daily Challenge streak" already configured. Free implementation since the engine is data-driven.
+
+**Where:**
+- New `DailyChallenge.swift` — uses current date as seed for deterministic telegraph sequence
+- New menu entry: "Daily Challenge" with streak count
+- New leaderboard: `com.airdodge.AirpodsGame.leaderboard.daily_streak`
+- App badge count shows current streak (Apple permission: notifications)
+
+**Effort:** ~1 weekend.
+
+**Wait until:** v1.0 has retention metrics. If players are coming back even without a daily challenge, this just polishes the loop. If they're not, this is the right lever.
+
+---
+
+## iPad layout
+
+**Why:** currently iPhone-only per `Info.plist` (`UIDeviceFamily` set to iPhone only). iPad has the same `CMHeadphoneMotionManager` support and the bigger screen makes the punch animations more dramatic. Trivially expands the addressable audience.
+
+**Where:**
+- `Info.plist` — change `UIDeviceFamily` to include `2` (iPad)
+- `project.yml` — `TARGETED_DEVICE_FAMILY = "1,2"`
+- `ContentView.swift` — verify `GeometryReader` adapts (it should already)
+- `GameScene.swift` — verify HUD chip positioning works at iPad scale (probably needs minor adjustment)
+- New screenshot set for iPad 12.9" (Apple requires)
+
+**Effort:** ~half day (verify scaling) + ~2 hrs (iPad screenshot set).
+
+**Wait until:** v1.0 has shipped on iPhone and you have data on iPad demand (App Store search shows "AirBoxer" + iPad searches even though you're not on iPad yet).
+
+---
+
+## Apple TV companion mode
+
+**Why:** the canonical "wow demo" form factor — friend stands in living room with AirPods on, Apple TV displays the fight on the big screen, friends/family watch and yell DUCK. `CMHeadphoneMotionManager` doesn't exist on tvOS, so this requires an iPhone-as-motion-relay architecture (iPhone reads AirPods motion → streams to Apple TV via MultipeerConnectivity).
+
+**Where:**
+- New tvOS target in `project.yml` (`AirBoxerTV`)
+- iPhone gains a "Cast to Apple TV" mode in Settings
+- `MotionRelayService.swift` — uses `MCSession` over Bonjour/local network to stream `(roll, pitch)` 25Hz from iPhone to AppleTV
+- AppleTV target reuses GameScene + AudioSystem + OpponentDefinition (engine portable)
+- Requires both devices on same Wi-Fi; no internet
+- Pairing UX: iPhone shows "Searching for Apple TV..." → "Connect" prompt on TV
+
+**Effort:** ~2-3 weekends (a different project in the same family — networking layer, pairing UX, two app targets).
+
+**Wait until:** v1.0 ships and any actual user requests it. This is the most-cool, longest-tail extension; don't gold-plate before validating demand.

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AirBoxer — Privacy Policy</title>
+<meta name="description" content="AirBoxer collects no personal data. The app reads your earbuds' motion locally, runs entirely offline, and ships no analytics, no tracking, and no advertising.">
+<style>
+  :root {
+    color-scheme: dark light;
+    --bg: #0d0a14;
+    --fg: #f3f0e7;
+    --muted: rgba(243,240,231,0.6);
+    --accent: #f3a23a;
+    --accent-2: #ffce4d;
+    --rule: rgba(243,240,231,0.12);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: radial-gradient(ellipse at top, #1a0e1f 0%, #0a0610 60%, #050309 100%);
+    color: var(--fg);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  .glove {
+    font-size: 48px;
+    line-height: 1;
+    text-align: center;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 8px 24px rgba(243,162,58,0.45));
+  }
+  h1 {
+    font-family: -apple-system-rounded, "SF Pro Rounded", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 40px;
+    letter-spacing: -0.5px;
+    text-align: center;
+    margin: 0 0 8px;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .lede {
+    text-align: center;
+    color: var(--muted);
+    font-size: 16px;
+    margin: 0 0 48px;
+  }
+  .section {
+    border-top: 1px solid var(--rule);
+    padding-top: 28px;
+    margin-top: 32px;
+  }
+  .section:first-of-type { border-top: 0; padding-top: 0; margin-top: 0; }
+  h2 {
+    font-family: -apple-system-rounded, "SF Pro Rounded", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin: 0 0 12px;
+  }
+  p { margin: 0 0 14px; font-size: 16px; }
+  p.small { font-size: 14px; color: var(--muted); }
+  ul {
+    padding-left: 20px;
+    margin: 0 0 14px;
+  }
+  li { margin-bottom: 8px; }
+  strong { color: var(--accent-2); }
+  code {
+    font-family: "SF Mono", ui-monospace, monospace;
+    background: rgba(255,255,255,0.06);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(76,217,100,0.4);
+    background: rgba(76,217,100,0.08);
+    color: #6ee78a;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<main>
+  <div class="glove">🥊</div>
+  <h1>AirBoxer Privacy</h1>
+  <p class="lede">Updated 2026-05-04 &middot; <span class="badge">Data Not Collected</span></p>
+
+  <div class="section">
+    <h2>The short version</h2>
+    <p>AirBoxer collects nothing. No accounts. No analytics. No advertising. No tracking. The app runs entirely on your iPhone, reads your earbuds' motion locally, and never sends any data to a server we control.</p>
+  </div>
+
+  <div class="section">
+    <h2>What the app uses</h2>
+    <ul>
+      <li><strong>Earbud motion data.</strong> AirBoxer asks for motion permission on first launch. The data (head pitch, roll, yaw at ~25Hz) is read directly from your paired motion-capable earbuds via Apple's <code>CMHeadphoneMotionManager</code> API, used in real time to detect dodge gestures, and discarded. It is never stored, transmitted, or analyzed.</li>
+      <li><strong>Game Center (optional).</strong> If you choose to sign in to Game Center, Apple manages your alias and leaderboard scores. Two scores are submitted: longest dodge streak per fight, and total knockouts. No other Game Center data is read or written. You can opt out at any time in iOS Settings &rarr; Game Center.</li>
+      <li><strong>Local game state.</strong> Your high score, settings preferences (motion sensitivity, sound, haptics, scanline), and tutorial-completion flag are stored on-device via Apple's <code>UserDefaults</code>. They never leave your phone.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>What the app does NOT do</h2>
+    <ul>
+      <li>No account creation or login</li>
+      <li>No advertising or ad SDKs</li>
+      <li>No analytics or telemetry</li>
+      <li>No tracking across apps or websites</li>
+      <li>No location access</li>
+      <li>No camera or microphone access</li>
+      <li>No contacts, photos, or HealthKit access</li>
+      <li>No third-party services</li>
+      <li>No internet connection required after install (Game Center is optional)</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Children</h2>
+    <p>AirBoxer does not collect data from anyone, including children. The game contains cartoon-style boxing animations and is rated 9+ on the App Store for "Infrequent/Mild Cartoon or Fantasy Violence."</p>
+  </div>
+
+  <div class="section">
+    <h2>Data deletion</h2>
+    <p>Because nothing is collected, there is nothing to delete on our end. To remove all local game state from your device, delete the AirBoxer app — iOS will purge all on-device data including settings and high scores. Game Center scores are managed by Apple; visit Game Center settings or contact Apple Support to remove them.</p>
+  </div>
+
+  <div class="section">
+    <h2>Third-party services</h2>
+    <p>AirBoxer relies only on Apple's first-party frameworks (CoreMotion, GameKit, SpriteKit, SwiftUI, AVFoundation). No third-party SDKs are integrated. Game Center is governed by <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple's privacy policy</a>.</p>
+  </div>
+
+  <div class="section">
+    <h2>Changes to this policy</h2>
+    <p>If AirBoxer's privacy practices ever change (for example, if a future version adds optional features that need data), this page will be updated and the change date at the top will reflect it. Material changes will be summarized in the App Store "What's New" section of the relevant version.</p>
+  </div>
+
+  <div class="section">
+    <h2>Contact</h2>
+    <p>Questions about privacy? Email <a href="mailto:dautov2@gmail.com">dautov2@gmail.com</a>.</p>
+  </div>
+
+  <footer>
+    AirBoxer is a hobby project by Ruslan Dautov. Made with SwiftUI &middot; SpriteKit &middot; CoreMotion &middot; GameKit.
+  </footer>
+</main>
+</body>
+</html>
