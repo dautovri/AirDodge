@@ -28,10 +28,21 @@
 		BC042C82C2B2F38FC80C1FE2 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723D53EB82905E8B1AF2F230 /* PaywallView.swift */; };
 		5A3CFF150641DCE306E52CCE /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F8B417B3A352AF4F509686 /* OnboardingView.swift */; };
 		4A3900DF9BE22D0531E683A6 /* PostureLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB92B824B5F5B808D4C1285E /* PostureLogicTests.swift */; };
+		51305BF6FA6C9AFF75A3B156 /* NecklineUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D5F8247209F6BA1ECE5088 /* NecklineUITests.swift */; };
+		87A2523DDB22D971BA7A0BF2 /* ProStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8887EB77938EB7D187A302 /* ProStoreTests.swift */; };
+		0CE84C69B59C46B12CDD8DA8 /* Neckline.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 1BF27BEA0150BC59B92C464E /* Neckline.storekit */; };
+		4EB921C81435FB8A4973CBD8 /* Neckline.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 1BF27BEA0150BC59B92C464E /* Neckline.storekit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		D599E1F97B96D1C6DAFD1BAF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C68DEF4885E49A27ABAF09DB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 11E5FFBC53CEF737A7FBE18B;
+			remoteInfo = AirpodsGame;
+		};
+		D14873C55A7116491A1E6FF7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C68DEF4885E49A27ABAF09DB /* Project object */;
 			proxyType = 1;
@@ -65,6 +76,10 @@
 		723D53EB82905E8B1AF2F230 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		14F8B417B3A352AF4F509686 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		EB92B824B5F5B808D4C1285E /* PostureLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostureLogicTests.swift; sourceTree = "<group>"; };
+		D0D5F8247209F6BA1ECE5088 /* NecklineUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NecklineUITests.swift; sourceTree = "<group>"; };
+		8A8887EB77938EB7D187A302 /* ProStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProStoreTests.swift; sourceTree = "<group>"; };
+		1BF27BEA0150BC59B92C464E /* Neckline.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Neckline.storekit; sourceTree = "<group>"; };
+		70A2BC49F123E57E73810FA2 /* NecklineUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NecklineUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +88,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6BE489C81626FEFFED47601 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C0BF78BB061B9C136131C1DB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +108,7 @@
 				9D5C617FC17B65B49F45379A /* Products */,
 				F130F5E6B382FE0A71619136 /* Frameworks */,
 				69C425FCB899AC2BC627A7B7 /* AirBoxerTests */,
+				AAA2A5C5D0E30751D67BAB2B /* NecklineUITests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -121,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				EB92B824B5F5B808D4C1285E /* PostureLogicTests.swift */,
+				8A8887EB77938EB7D187A302 /* ProStoreTests.swift */,
 			);
 			name = AirBoxerTests;
 			path = AirBoxerTests;
@@ -139,6 +163,7 @@
 			children = (
 				953E641886343623A73FBD20 /* AirpodsGame.app */,
 				418D6FF2E76ECADDE1C3A9E1 /* AirBoxerTests.xctest */,
+				70A2BC49F123E57E73810FA2 /* NecklineUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -154,6 +179,7 @@
 				7CBFF3E6D5C1F97BC00DAC77 /* Views */,
 				6B92B9629B733A6D8AF57DFD /* Localizable.xcstrings */,
 				7172777A306FC56B0069C66A /* InfoPlist.xcstrings */,
+				1BF27BEA0150BC59B92C464E /* Neckline.storekit */,
 			);
 			path = AirpodsGame;
 			sourceTree = "<group>";
@@ -164,6 +190,14 @@
 				9833193A8620F157F9F0F177 /* iOS */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AAA2A5C5D0E30751D67BAB2B /* NecklineUITests */ = {
+			isa = PBXGroup;
+			children = (
+				D0D5F8247209F6BA1ECE5088 /* NecklineUITests.swift */,
+			);
+			path = NecklineUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -203,6 +237,24 @@
 			productReference = 418D6FF2E76ECADDE1C3A9E1 /* AirBoxerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		4B1F7FC7B19C8627D0D47BDC /* NecklineUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DFFF1430CCECB108B100B383 /* Build configuration list for PBXNativeTarget "NecklineUITests" */;
+			buildPhases = (
+				AE34364A9A68632FC6CB675E /* Sources */,
+				C0BF78BB061B9C136131C1DB /* Frameworks */,
+				39CDD1A495637174492C68FA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C9B5FB688ADA954907EBFE2A /* PBXTargetDependency */,
+			);
+			name = NecklineUITests;
+			productName = NecklineUITests;
+			productReference = 70A2BC49F123E57E73810FA2 /* NecklineUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -215,6 +267,11 @@
 					11E5FFBC53CEF737A7FBE18B = {
 						DevelopmentTeam = 27EZNUVV57;
 						ProvisioningStyle = Automatic;
+					};
+					4B1F7FC7B19C8627D0D47BDC = {
+						DevelopmentTeam = 27EZNUVV57;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 11E5FFBC53CEF737A7FBE18B;
 					};
 				};
 			};
@@ -244,6 +301,7 @@
 			targets = (
 				11E5FFBC53CEF737A7FBE18B /* AirpodsGame */,
 				E5DE5B8FBF66ABEA1E41DDC0 /* AirBoxerTests */,
+				4B1F7FC7B19C8627D0D47BDC /* NecklineUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -263,6 +321,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0CE84C69B59C46B12CDD8DA8 /* Neckline.storekit in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		39CDD1A495637174492C68FA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4EB921C81435FB8A4973CBD8 /* Neckline.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,6 +364,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A3900DF9BE22D0531E683A6 /* PostureLogicTests.swift in Sources */,
+				87A2523DDB22D971BA7A0BF2 /* ProStoreTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE34364A9A68632FC6CB675E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				51305BF6FA6C9AFF75A3B156 /* NecklineUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +384,12 @@
 			name = AirpodsGame;
 			target = 11E5FFBC53CEF737A7FBE18B /* AirpodsGame */;
 			targetProxy = D599E1F97B96D1C6DAFD1BAF /* PBXContainerItemProxy */;
+		};
+		C9B5FB688ADA954907EBFE2A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AirpodsGame;
+			target = 11E5FFBC53CEF737A7FBE18B /* AirpodsGame */;
+			targetProxy = D14873C55A7116491A1E6FF7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -516,6 +598,36 @@
 			};
 			name = Release;
 		};
+		2BDB48FA113ED24683209FC6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 27EZNUVV57;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.airdodge.AirpodsGameUITests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = AirpodsGame;
+			};
+			name = Debug;
+		};
+		11D9657B208C0A383384BCBC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 27EZNUVV57;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.airdodge.AirpodsGameUITests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = AirpodsGame;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -542,6 +654,15 @@
 			buildConfigurations = (
 				1EE87F5149BA855EBFBB4585 /* Debug */,
 				5DB6DEEC21A3B6819B9AA268 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DFFF1430CCECB108B100B383 /* Build configuration list for PBXNativeTarget "NecklineUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2BDB48FA113ED24683209FC6 /* Debug */,
+				11D9657B208C0A383384BCBC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

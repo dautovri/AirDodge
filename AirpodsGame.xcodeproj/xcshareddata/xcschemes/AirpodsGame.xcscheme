@@ -47,6 +47,16 @@
                ReferencedContainer = "container:AirpodsGame.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "4B1F7FC7B19C8627D0D47BDC"
+               BuildableName = "NecklineUITests.xctest"
+               BlueprintName = "NecklineUITests"
+               ReferencedContainer = "container:AirpodsGame.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
