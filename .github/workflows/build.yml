@@ -46,7 +46,7 @@ jobs:
       - name: Export UI screenshots
         if: always()
         run: |
-          xcrun xcresulttool export attachments --path TestResults.xcresult --output-path screenshots || true
+          xcrun xcresulttool export attachments --path TestResults.xcresult --output-path screenshots > /dev/null || true
       - name: Upload screenshots
         if: always()
         uses: actions/upload-artifact@v4
@@ -54,3 +54,13 @@ jobs:
           name: ui-screenshots
           path: screenshots
           if-no-files-found: warn
+      - name: Test failure summary
+        if: always()
+        run: |
+          xcrun xcresulttool get test-results summary --path TestResults.xcresult > summary.json || exit 0
+          python3 -c '
+          import json
+          d = json.load(open("summary.json"))
+          print("result:", d.get("result"), "passed:", d.get("passedTests"), "failed:", d.get("failedTests"))
+          for f in d.get("testFailures", []):
+              print("FAIL", f.get("testIdentifierString"), "::", f.get("failureText"))'
