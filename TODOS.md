@@ -14,11 +14,12 @@ coach. It keeps the bundle ID `com.airdodge.AirpodsGame`, the App Store record
 2. **Rename the listing:** name "Neckline: Posture Coach", subtitle "Tech-neck
    alerts & stretches", category Health & Fitness (primary). Copy is in
    `metadata/app-info/en-US.json` and `metadata/version/2.0/en-US.json`.
-3. **Translate the listing** for the other 10 locales. `metadata/version/1.1/*`
-   still describes the boxing game. Don't ship 2.0 with those listings live.
-4. **Translate the in-app strings.** `Localizable.xcstrings` was reset; build
-   once in Xcode to extract the new strings, then translate. (The motion-permission
-   prompt and the display name in `InfoPlist.xcstrings` are already translated.)
+3. **Listing translations** for all 11 locales are in `metadata/app-info/` and
+   `metadata/version/2.0/` (machine-translated; get a native check for your top markets).
+4. **In-app strings** are translated for the same locales in `Localizable.xcstrings`
+   (also machine-translated). Local purchase testing: `AirpodsGame/Neckline.storekit`
+   (yearly 29.99 with a 1-week trial, monthly 4.99); confirm the scheme picks it up
+   under Run > Options > StoreKit Configuration.
 5. **Game Center:** the app no longer uses it. Remove the Game Center capability
    from the App ID and archive the leaderboards in ASC.
 6. **The old `fullcard` non-consumable** is unused. Remove it from sale.
