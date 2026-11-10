@@ -1,0 +1,82 @@
+{
+  "appPolicies": {
+    "eula": "",
+    "policies": [
+      {
+        "locale": "en_US",
+        "policyText": "",
+        "policyURL": ""
+      }
+    ]
+  },
+  "identifier": "4E45434B",
+  "nonRenewingSubscriptions": [],
+  "products": [],
+  "settings": {
+    "_failTransactionsEnabled": false,
+    "_locale": "en_US",
+    "_storefront": "USA",
+    "_storeKitErrors": []
+  },
+  "subscriptionGroups": [
+    {
+      "id": "21700001",
+      "localizations": [],
+      "name": "Neckline Pro",
+      "subscriptions": [
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "29.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "6700000001",
+          "localizations": [
+            {
+              "description": "Unlimited sessions, every routine and trends",
+              "displayName": "Yearly",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "com.airdodge.AirpodsGame.pro.yearly",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Pro Yearly",
+          "subscriptionGroupID": "21700001",
+          "type": "RecurringSubscription",
+          "winbackOffers": [],
+          "introductoryOffer": {
+            "internalID": "6700000003",
+            "numberOfPeriods": 1,
+            "paymentMode": "free",
+            "subscriptionPeriod": "P1W"
+          }
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "4.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "internalID": "6700000002",
+          "localizations": [
+            {
+              "description": "Unlimited sessions, every routine and trends",
+              "displayName": "Monthly",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "com.airdodge.AirpodsGame.pro.monthly",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Pro Monthly",
+          "subscriptionGroupID": "21700001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
+        }
+      ]
+    }
+  ],
+  "version": {
+    "major": 4,
+    "minor": 0
+  }
+}

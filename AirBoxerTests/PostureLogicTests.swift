@@ -8,21 +8,27 @@ import Testing
     @Test func uprightNeverNudges() {
         var d = SlouchDetector(threshold: 15, grace: 10)
         for t in stride(from: 0.0, to: 60, by: 0.1) {
-            #expect(!d.ingest(pitch: -5, at: t))
+            let r1 = d.ingest(pitch: -5, at: t)
+            #expect(!r1)
         }
         #expect(d.state == .upright)
     }
 
     @Test func nudgesOnceGraceRunsOut() {
         var d = SlouchDetector(threshold: 15, grace: 10, repeatInterval: 45)
-        #expect(!d.ingest(pitch: -20, at: 0))
+        let r2 = d.ingest(pitch: -20, at: 0)
+        #expect(!r2)
         #expect(d.state == .drifting)
-        #expect(!d.ingest(pitch: -20, at: 9.9))
-        #expect(d.ingest(pitch: -20, at: 10))
+        let r3 = d.ingest(pitch: -20, at: 9.9)
+        #expect(!r3)
+        let r4 = d.ingest(pitch: -20, at: 10)
+        #expect(r4)
         #expect(d.state == .slouching)
         // No repeat nudge inside the repeat interval.
-        #expect(!d.ingest(pitch: -20, at: 30))
-        #expect(d.ingest(pitch: -20, at: 55))
+        let r5 = d.ingest(pitch: -20, at: 30)
+        #expect(!r5)
+        let r6 = d.ingest(pitch: -20, at: 55)
+        #expect(r6)
     }
 
     @Test func liftingHeadResetsTheTimer() {
@@ -30,9 +36,12 @@ import Testing
         _ = d.ingest(pitch: -20, at: 0)
         _ = d.ingest(pitch: 0, at: 5)
         #expect(d.state == .upright)
-        #expect(!d.ingest(pitch: -20, at: 6))
-        #expect(!d.ingest(pitch: -20, at: 15))   // only 9s since it dropped again
-        #expect(d.ingest(pitch: -20, at: 16))
+        let r7 = d.ingest(pitch: -20, at: 6)
+        #expect(!r7)
+        let r8 = d.ingest(pitch: -20, at: 15)   // only 9s since it dropped again
+        #expect(!r8)
+        let r9 = d.ingest(pitch: -20, at: 16)
+        #expect(r9)
     }
 
     @Test func hysteresisBandKeepsSlouchState() {
