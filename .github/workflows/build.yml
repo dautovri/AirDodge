@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    name: AirDodge build
+    name: Build and test
     runs-on: macos-15
     timeout-minutes: 40
     steps:
@@ -36,9 +36,9 @@ jobs:
           print(ids[0] if ids else "")')
           [ -n "$UDID" ] || { echo "No iPhone simulator available" >&2; exit 1; }
           echo "destination=id=$UDID" >> "$GITHUB_OUTPUT"
-      - name: AirDodge build
+      - name: Build and test
         run: |
           set -o pipefail
-          xcodebuild build -project AirpodsGame.xcodeproj -scheme AirpodsGame \
+          xcodebuild test -project AirpodsGame.xcodeproj -scheme AirpodsGame \
             -destination "${{ steps.sim.outputs.destination }}" \
             CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO

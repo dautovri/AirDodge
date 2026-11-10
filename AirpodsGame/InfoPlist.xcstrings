@@ -8,67 +8,67 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "en": {
           "stringUnit": {
             "state": "new",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         }
       }
@@ -80,67 +80,67 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "en": {
           "stringUnit": {
             "state": "new",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer"
+            "value": "Neckline"
           }
         }
       }
@@ -152,67 +152,67 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer nutzt die Bewegungssensoren deiner Kopfhörer, um Kopfbewegungen beim Ausweichen zu erkennen. Bewegungsdaten werden in Echtzeit auf dem Gerät verarbeitet und verlassen nie dein Telefon."
+            "value": "Neckline liest die Kopfbewegung über deine Ohrhörer, um zu erkennen, wann dein Kopf zum Bildschirm sinkt, und um deine Nackendehnungen zu prüfen. Die Bewegungsdaten werden in Echtzeit auf deinem iPhone verarbeitet und verlassen es nie."
           }
         },
         "en": {
           "stringUnit": {
             "state": "new",
-            "value": "AirBoxer uses your motion earbuds' sensors to detect when you tilt your head to dodge punches. Motion data is processed in real time on-device and never leaves your phone."
+            "value": "Neckline reads head motion from your earbuds to spot when your head drops toward a screen and to check your neck stretches. Motion data is processed on your iPhone in real time and never leaves it."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer usa los sensores de tus auriculares con detección de movimiento para detectar cuándo inclinas la cabeza para esquivar golpes. Los datos de movimiento se procesan en tiempo real en el dispositivo y nunca salen de tu teléfono."
+            "value": "Neckline lee el movimiento de tu cabeza a través de tus auriculares para detectar cuándo se inclina hacia una pantalla y comprobar tus estiramientos de cuello. Los datos de movimiento se procesan en tiempo real en tu iPhone y nunca salen de él."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer utilise les capteurs de vos écouteurs pour détecter les mouvements de tête vous permettant d’esquiver les coups. Les données de mouvement sont traitées en temps réel sur l’appareil et ne quittent jamais votre téléphone."
+            "value": "Neckline lit les mouvements de votre tête via vos écouteurs pour repérer quand elle s'incline vers un écran et vérifier vos étirements de la nuque. Les données de mouvement sont traitées en temps réel sur votre iPhone et n'en sortent jamais."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer usa i sensori di movimento degli auricolari per rilevare i movimenti della testa e schivare i pugni. I dati di movimento vengono elaborati in tempo reale sul dispositivo e non lasciano mai il tuo telefono."
+            "value": "Neckline legge il movimento della testa tramite gli auricolari per capire quando si abbassa verso uno schermo e per verificare gli allungamenti del collo. I dati di movimento vengono elaborati in tempo reale sul tuo iPhone e non lo lasciano mai."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxerは、パンチを避けるための頭の傾きをモーション対応イヤフォンのセンサーで検出します。モーションデータはデバイス上でリアルタイムに処理され、外部に送信されることはありません。"
+            "value": "Neckline はイヤホンから頭の動きを読み取り、画面に向かって頭が下がったときを検知し、首のストレッチを確認します。モーションデータは iPhone 上でリアルタイムに処理され、外部に送信されることはありません。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer는 머리를 기울여 펀치를 피하는 동작을 감지하기 위해 이어폰의 모션 센서를 사용합니다. 모션 데이터는 기기 내에서 실시간으로 처리되며 외부로 전송되지 않습니다."
+            "value": "Neckline은 이어폰으로 머리 움직임을 읽어 머리가 화면 쪽으로 숙여지는 순간을 감지하고 목 스트레칭을 확인합니다. 모션 데이터는 iPhone에서 실시간으로 처리되며 기기 밖으로 전송되지 않습니다."
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer gebruikt de bewegingssensoren van je oordopjes om te detecteren wanneer je je hoofd beweegt om stoten te ontwijken. Bewegingsgegevens worden lokaal in realtime verwerkt en verlaten je telefoon nooit."
+            "value": "Neckline leest je hoofdbewegingen via je oordopjes om te merken wanneer je hoofd naar een scherm zakt en om je nekstrekoefeningen te controleren. Bewegingsgegevens worden realtime op je iPhone verwerkt en verlaten het toestel nooit."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "O AirBoxer usa os sensores de movimento dos fones de ouvido para detectar quando você inclina a cabeça para desviar de socos. Os dados de movimento são processados em tempo real no aparelho e nunca saem do seu iPhone."
+            "value": "O Neckline lê o movimento da sua cabeça pelos fones para perceber quando ela se inclina em direção a uma tela e para conferir seus alongamentos de pescoço. Os dados de movimento são processados em tempo real no seu iPhone e nunca saem dele."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer использует датчики наушников, чтобы определять наклоны головы для уклонения от ударов. Данные о движениях обрабатываются на устройстве в реальном времени и никогда не покидают ваш телефон."
+            "value": "Neckline считывает движения головы через наушники, чтобы замечать, когда голова опускается к экрану, и проверять упражнения для шеи. Данные о движении обрабатываются на iPhone в реальном времени и никогда его не покидают."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "AirBoxer使用运动耳机的传感器来检测你何时偏头闪避拳击。运动数据均在设备端实时处理，绝不离开你的手机。"
+            "value": "Neckline 通过耳机读取头部动作，检测你的头何时向屏幕低下，并检查你的颈部拉伸动作。动作数据在你的 iPhone 上实时处理，绝不会离开设备。"
           }
         }
       }

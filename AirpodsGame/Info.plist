@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>AirBoxer</string>
+	<string>Neckline</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>AirBoxer</string>
+	<string>Neckline</string>
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
@@ -23,11 +23,11 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.action-games</string>
+	<string>public.app-category.healthcare-fitness</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMotionUsageDescription</key>
-	<string>AirBoxer uses your motion earbuds' sensors to detect when you tilt your head to dodge punches. Motion data is processed in real time on-device and never leaves your phone.</string>
+	<string>Neckline reads head motion from your earbuds to spot when your head drops toward a screen and to check your neck stretches. Motion data is processed on your iPhone in real time and never leaves it.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
