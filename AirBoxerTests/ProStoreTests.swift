@@ -13,6 +13,16 @@ import Testing
         return session
     }
 
+    /// The entitlement list settles a moment after a store change, so poll.
+    private func proBecomes(_ expected: Bool) async -> Bool {
+        for _ in 0..<50 {
+            await ProStore.shared.refresh()
+            if await ProStore.shared.isPro == expected { return true }
+            try? await Task.sleep(for: .milliseconds(200))
+        }
+        return false
+    }
+
     @Test func bothPlansLoadAndYearlyHasAFreeTrial() async throws {
         let session = try makeSession()
         defer { withExtendedLifetime(session) {} }
@@ -29,18 +39,15 @@ import Testing
         let session = try makeSession()
         let id = yearly ? await ProStore.yearlyID : await ProStore.monthlyID
 
-        await ProStore.shared.refresh()
-        let before = await ProStore.shared.isPro
-        #expect(!before)
+        let startsLocked = await proBecomes(false)
+        #expect(startsLocked)
 
         _ = try await session.buyProduct(identifier: id)
-        await ProStore.shared.refresh()
-        let after = await ProStore.shared.isPro
-        #expect(after)
+        let unlocked = await proBecomes(true)
+        #expect(unlocked, "purchase should unlock Pro")
 
         session.clearTransactions()
-        await ProStore.shared.refresh()
-        let cleared = await ProStore.shared.isPro
-        #expect(!cleared)
+        let revoked = await proBecomes(false)
+        #expect(revoked, "clearing the purchase should revoke Pro")
     }
 }

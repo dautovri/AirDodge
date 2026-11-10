@@ -49,6 +49,17 @@ final class ProStore {
         isPro = active
     }
 
+    /// Applies a purchase made on the paywall straight away. The entitlement
+    /// list can lag a moment behind a fresh purchase, so the buyer shouldn't
+    /// have to wait for it.
+    func handlePurchase(_ verification: VerificationResult<Transaction>) async {
+        guard case .verified(let transaction) = verification,
+              Self.productIDs.contains(transaction.productID),
+              transaction.revocationDate == nil else { return }
+        await transaction.finish()
+        isPro = true
+    }
+
     func restore() async {
         try? await AppStore.sync()
         await refresh()

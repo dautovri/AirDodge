@@ -32,8 +32,12 @@ struct PaywallView: View {
         .subscriptionStorePolicyDestination(url: ProStore.privacyURL, for: .privacyPolicy)
         .tint(Theme.accent)
         .onInAppPurchaseCompletion { _, result in
-            await ProStore.shared.refresh()
-            if case .success(.success(_)) = result { dismiss() }
+            if case .success(.success(let verification)) = result {
+                await ProStore.shared.handlePurchase(verification)
+                dismiss()
+            } else {
+                await ProStore.shared.refresh()
+            }
         }
     }
 
