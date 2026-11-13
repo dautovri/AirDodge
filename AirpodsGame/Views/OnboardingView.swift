@@ -31,23 +31,19 @@ struct OnboardingView: View {
         VStack(spacing: 24) {
             TabView(selection: $page) {
                 ForEach(pages.indices, id: \.self) { i in
-                    VStack(spacing: 22) {
-                        Spacer()
-                        Image(systemName: pages[i].symbol)
-                            .font(.system(size: 64, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .frame(width: 128, height: 128)
-                            .background(Theme.heroGradient, in: RoundedRectangle(cornerRadius: 32))
-                        Text(pages[i].title)
-                            .font(.title.weight(.bold))
-                            .multilineTextAlignment(.center)
-                        Text(pages[i].body)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                        Spacer()
+                    // Scrolls only when the page doesn't fit (large Dynamic
+                    // Type, small iPhones); otherwise it stays centred.
+                    GeometryReader { geo in
+                        ScrollView {
+                            pageContent(pages[i])
+                                .padding(.horizontal, 28)
+                                .padding(.vertical, 24)
+                                // Keep text clear of the page dots.
+                                .padding(.bottom, 32)
+                                .frame(maxWidth: .infinity, minHeight: geo.size.height)
+                        }
+                        .scrollBounceBehavior(.basedOnSize)
                     }
-                    .padding(.horizontal, 28)
                     .tag(i)
                 }
             }
@@ -73,6 +69,23 @@ struct OnboardingView: View {
         }
         .sheet(isPresented: $showPaywall, onDismiss: onFinish) {
             PaywallView()
+        }
+    }
+
+    private func pageContent(_ page: Page) -> some View {
+        VStack(spacing: 22) {
+            Image(systemName: page.symbol)
+                .font(.system(size: 64, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 128, height: 128)
+                .background(Theme.heroGradient, in: RoundedRectangle(cornerRadius: 32))
+            Text(page.title)
+                .font(.title.weight(.bold))
+                .multilineTextAlignment(.center)
+            Text(page.body)
+                .font(.body)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
         }
     }
 }
