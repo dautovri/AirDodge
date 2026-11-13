@@ -130,7 +130,9 @@ struct StatTile: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        // Fill the row's height so tiles in an HStack line up when a
+        // translated label wraps to more lines in one tile than another.
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(14)
         .background(.background.secondary, in: RoundedRectangle(cornerRadius: 18))
     }

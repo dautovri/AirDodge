@@ -18,6 +18,7 @@ struct StatsView: View {
                                  label: String(localized: "routines done"),
                                  symbol: "checkmark.circle")
                     }
+                    .fixedSize(horizontal: false, vertical: true)
 
                     chartCard(title: String(localized: "Upright time, last 14 days")) {
                         Chart(progress.recent(days: 14), id: \.record.day) { item in

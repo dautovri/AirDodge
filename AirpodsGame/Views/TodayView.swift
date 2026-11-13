@@ -28,6 +28,7 @@ struct TodayView: View {
                                  label: String(localized: "routines today"),
                                  symbol: "checkmark.circle")
                     }
+                    .fixedSize(horizontal: false, vertical: true)
 
                     if !motion.status.isLive {
                         setupCard
