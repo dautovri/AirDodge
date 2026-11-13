@@ -230,6 +230,7 @@ struct RoutinePlayerView: View {
                     .padding(.vertical, 6)
             }
             .buttonStyle(.borderedProminent)
+            .tint(Theme.accentFill)
         }
         .task {
             if model.shouldAskForReview {

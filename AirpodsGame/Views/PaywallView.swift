@@ -30,7 +30,7 @@ struct PaywallView: View {
         .storeButton(.visible, for: .cancellation)
         .subscriptionStorePolicyDestination(url: ProStore.termsURL, for: .termsOfService)
         .subscriptionStorePolicyDestination(url: ProStore.privacyURL, for: .privacyPolicy)
-        .tint(Theme.accent)
+        .tint(Theme.accentFill)
         .onInAppPurchaseCompletion { _, result in
             if case .success(.success(let verification)) = result {
                 await ProStore.shared.handlePurchase(verification)

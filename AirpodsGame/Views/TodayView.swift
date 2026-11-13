@@ -54,7 +54,7 @@ struct TodayView: View {
                 .font(.title2.weight(.bold))
             Text("Keep Neckline open while you work. When your head drops toward the screen, a quiet voice in your earbuds reminds you to sit tall.")
                 .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.85))
+                .foregroundStyle(.white.opacity(0.9))
             Button {
                 showSession = true
             } label: {
@@ -65,7 +65,7 @@ struct TodayView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
                     .background(.white, in: RoundedRectangle(cornerRadius: 14))
-                    .foregroundStyle(Theme.accent)
+                    .foregroundStyle(Theme.accentFill)
             }
             .disabled(!motion.status.isLive)
             .opacity(motion.status.isLive ? 1 : 0.6)

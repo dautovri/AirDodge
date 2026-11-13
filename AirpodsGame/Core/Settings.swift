@@ -85,6 +85,8 @@ struct SettingsView: View {
     @State private var pro = ProStore.shared
     @State private var showPaywall = false
     @State private var showManage = false
+    @State private var isRestoring = false
+    @State private var restoreOutcome: ProStore.RestoreOutcome?
 
     var body: some View {
         NavigationStack {
@@ -101,9 +103,22 @@ struct SettingsView: View {
                             Label("Upgrade to Neckline Pro", systemImage: "sparkles")
                         }
                     }
-                    Button("Restore Purchases") {
-                        Task { await pro.restore() }
+                    Button {
+                        Task {
+                            isRestoring = true
+                            restoreOutcome = await pro.restore()
+                            isRestoring = false
+                        }
+                    } label: {
+                        HStack {
+                            Text("Restore Purchases")
+                            if isRestoring {
+                                Spacer()
+                                ProgressView()
+                            }
+                        }
                     }
+                    .disabled(isRestoring)
                 } header: {
                     Text("Subscription")
                 }
@@ -150,6 +165,29 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .sheet(isPresented: $showPaywall) { PaywallView() }
             .manageSubscriptionsSheet(isPresented: $showManage)
+            .alert(restoreTitle, isPresented: Binding(
+                get: { restoreOutcome != nil },
+                set: { if !$0 { restoreOutcome = nil } })) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(restoreMessage)
+            }
+        }
+    }
+
+    private var restoreTitle: String {
+        switch restoreOutcome {
+        case .restored:         return String(localized: "Purchases Restored")
+        case .nothingToRestore: return String(localized: "Nothing to Restore")
+        case .failed, nil:      return String(localized: "Couldn't Restore Purchases")
+        }
+    }
+
+    private var restoreMessage: String {
+        switch restoreOutcome {
+        case .restored:         return String(localized: "Neckline Pro is active.")
+        case .nothingToRestore: return String(localized: "No active Neckline Pro subscription was found for this Apple Account.")
+        case .failed, nil:      return String(localized: "Check your connection and Apple Account, then try again.")
         }
     }
 }

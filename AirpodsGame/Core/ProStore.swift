@@ -60,8 +60,22 @@ final class ProStore {
         isPro = true
     }
 
-    func restore() async {
-        try? await AppStore.sync()
+    enum RestoreOutcome: Equatable {
+        case restored
+        case nothingToRestore
+        case failed
+    }
+
+    /// Syncs with the App Store and reports what the buyer should be told.
+    /// A cancelled sign-in counts as a failure so the button never looks inert.
+    func restore() async -> RestoreOutcome {
+        do {
+            try await AppStore.sync()
+        } catch {
+            await refresh()
+            return isPro ? .restored : .failed
+        }
         await refresh()
+        return isPro ? .restored : .nothingToRestore
     }
 }

@@ -162,6 +162,7 @@ struct PostureSessionView: View {
                     .padding(.vertical, 6)
             }
             .buttonStyle(.borderedProminent)
+            .tint(Theme.accentFill)
         }
     }
 
@@ -202,6 +203,7 @@ struct PostureSessionView: View {
                     .padding(.vertical, 6)
             }
             .buttonStyle(.borderedProminent)
+            .tint(Theme.accentFill)
         }
     }
 

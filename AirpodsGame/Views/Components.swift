@@ -2,13 +2,26 @@ import SwiftUI
 import UIKit
 
 enum Theme {
-    static let accent = Color(red: 0.16, green: 0.72, blue: 0.64)
-    static let warm = Color(red: 0.98, green: 0.62, blue: 0.29)
-    static let alert = Color(red: 0.94, green: 0.36, blue: 0.36)
+    // Light-mode values are darkened to reach 4.5:1 against white; dark mode
+    // keeps the brighter originals, which clear 5:1 on dark backgrounds.
+    static let accent = adaptive(light: (0.11, 0.51, 0.45), dark: (0.16, 0.72, 0.64))
+    static let warm = adaptive(light: (0.54, 0.34, 0.16), dark: (0.98, 0.62, 0.29))
+    static let alert = adaptive(light: (0.77, 0.30, 0.30), dark: (0.94, 0.36, 0.36))
+
+    /// Fill behind white labels (prominent buttons, the paywall) and accent
+    /// text on a white surface. The same in both modes: 4.6:1 with white.
+    static let accentFill = Color(red: 0.11, green: 0.51, blue: 0.45)
 
     static let heroGradient = LinearGradient(
-        colors: [Color(red: 0.10, green: 0.36, blue: 0.42), Color(red: 0.16, green: 0.62, blue: 0.58)],
+        colors: [Color(red: 0.10, green: 0.36, blue: 0.42), Color(red: 0.12, green: 0.46, blue: 0.46)],
         startPoint: .topLeading, endPoint: .bottomTrailing)
+
+    private static func adaptive(light: (Double, Double, Double), dark: (Double, Double, Double)) -> Color {
+        Color(UIColor { traits in
+            let c = traits.userInterfaceStyle == .dark ? dark : light
+            return UIColor(red: c.0, green: c.1, blue: c.2, alpha: 1)
+        })
+    }
 
     static func color(for state: PostureState) -> Color {
         switch state {

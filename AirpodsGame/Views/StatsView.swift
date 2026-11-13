@@ -74,6 +74,7 @@ struct StatsView: View {
                             .font(.subheadline.weight(.semibold))
                     }
                     .buttonStyle(.borderedProminent)
+                    .tint(Theme.accentFill)
                 }
             }
         }
